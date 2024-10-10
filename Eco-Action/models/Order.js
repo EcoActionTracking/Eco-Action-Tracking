@@ -35,8 +35,19 @@ const OrderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["Credit Card", "PayPal"],
+      enum: ["Credit Card", "PayPal", "Stripe"],
       required: true,
+    },
+    stripePaymentId: {
+      type: String,
+      required: function () {
+        return this.paymentMethod === "Stripe";
+      },
+    },
+    stripePaymentStatus: {
+      type: String,
+      enum: ["pending", "succeeded", "failed"],
+      default: "pending",
     },
   },
   { timestamps: true }
