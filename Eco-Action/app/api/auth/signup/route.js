@@ -11,6 +11,8 @@ export async function POST(request) {
   try {
     const { username, email, password } = body;
     const user = await User.create({ username, email, password });
+
+
     const token = createToken(user._id);
     cookies().set('token', token, { 
       httpOnly: true, 
@@ -21,7 +23,7 @@ export async function POST(request) {
     });
     return NextResponse.json({ success: true, user: { id: user._id, username: user.username, email: user.email } });
   } catch (error) {
-    console.error(error)
+    console.error("Error during user creation:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

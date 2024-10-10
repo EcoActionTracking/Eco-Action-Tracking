@@ -1,10 +1,11 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
+
 
 const CompanySchema = new mongoose.Schema(
   {
     user_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: mongoose.Schema.Types.ObjectId, // Use ObjectId to reference the User table
+      ref: "User", // Reference to the User model
       required: true,
     },
     company_name: {
@@ -28,9 +29,21 @@ const CompanySchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Company ||
-  mongoose.model("Company", CompanySchema);
+// Check if the model already exists
+const Company = mongoose.models.Company || mongoose.model('Company', CompanySchema);
+
+export default Company;
+
+
