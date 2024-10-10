@@ -21,6 +21,7 @@ export async function POST(request) {
     });
     return NextResponse.json({ success: true, user: { id: user._id, username: user.username, email: user.email } });
   } catch (error) {
+    console.error(error)
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
