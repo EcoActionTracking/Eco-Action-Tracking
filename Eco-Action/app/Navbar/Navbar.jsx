@@ -1,8 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import LogoutButton from "../LogoutButton";
-
+import { usePathname } from "next/navigation";
 export default function Navbar({ token }) {
+  const pathName = usePathname();
+  const isAuth = pathName.startsWith("/admin");
+  if (isAuth) return null;
   return (
     
     <header className='flex shadow-md py-4 px-4 sm:px-10 bg-white font-sans min-h-[70px] tracking-wide relative z-50'>
