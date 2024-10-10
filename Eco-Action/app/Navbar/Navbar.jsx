@@ -1,8 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import LogoutButton from "../LogoutButton";
-
+import { usePathname } from "next/navigation";
 export default function Navbar({ token }) {
+  const pathName = usePathname();
+  const isAuth = pathName.startsWith("/admin");
+  if (isAuth) return null;
   return (
     <nav className="bg-gradient-to-r from-green-500 to-blue-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
