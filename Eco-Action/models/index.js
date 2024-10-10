@@ -6,6 +6,7 @@ import Challenges from "./Challenges";
 import Product from "./Product";
 import Company from "./Company";
 import Cart from "./Cart";
+import Order from "./Order";
 
 export {
   User,
@@ -16,4 +17,5 @@ export {
   Product,
   Company,
   Cart,
+  Order,
 };
