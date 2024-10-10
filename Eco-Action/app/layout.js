@@ -4,6 +4,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { cookies } from "next/headers";
 import Navbar from "../app/Navbar/Navbar";
+import { Footer } from "./Footer/Footer";
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,11 +33,19 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
+          <head>
+        {/* Include Swiper's CSS */}
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/swiper/swiper-bundle.min.css"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {!isLoginPage && <Navbar token={token} />}
         {children}
+        <Footer/>
       </body>
     </html>
   );
