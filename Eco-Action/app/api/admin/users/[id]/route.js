@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "../../../../../lib/mongodb";
 import User from "../../../../../models/User";
-import { sendEmail } from "../../../../../lib/mailer"; // Import the sendEmail function
+import sendEmail from "../../../../../lib/mailer"; // Import the sendEmail function
 
 export async function GET(request, { params }) {
   const { id } = params;
