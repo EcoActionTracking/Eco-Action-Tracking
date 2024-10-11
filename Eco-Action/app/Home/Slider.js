@@ -7,8 +7,6 @@ import "../globals.css";
 import { Swiper, SwiperSlide } from 'swiper/react'; // Import Swiper and SwiperSlide
 import { Navigation, Pagination } from 'swiper/modules'; // Import modules correctly
 
-
-
 export function Slider() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);

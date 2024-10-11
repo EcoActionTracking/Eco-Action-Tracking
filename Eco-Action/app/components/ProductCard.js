@@ -52,7 +52,6 @@
 
 import React from "react";
 import { useCart } from "../context/CartContext";
-
 function ProductCard({ product }) {
   const { updateCartQuantity } = useCart();
 
