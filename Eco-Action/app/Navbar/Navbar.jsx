@@ -101,6 +101,7 @@ import { useCart } from "../context/CartContext";
 import { usePathname } from "next/navigation";
 
 export default function Navbar({ token }) {
+
   const cartContext = useCart(); // Store the context in a variable
   const cartQuantity = cartContext?.cartQuantity || 0; // Safely access cartQuantity
   const pathName = usePathname();

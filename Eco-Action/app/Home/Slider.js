@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Script from 'next/script';
 import "../globals.css";
+import Swiper from 'swiper';
 export function Slider() {
   useEffect(() => {
     const swiper = new Swiper('.swiper', {
