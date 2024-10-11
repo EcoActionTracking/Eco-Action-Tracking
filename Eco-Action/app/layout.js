@@ -44,8 +44,10 @@ export default function RootLayout({ children }) {
         <CartProvider>
           {!isLoginPage && <Navbar token={token} />}
           {children}
+
           <Footer />
         </CartProvider>
+
       </body>
     </html>
   );

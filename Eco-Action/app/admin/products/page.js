@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 import { FaSearch, FaBox, FaDollarSign, FaTrashAlt } from "react-icons/fa";
 import { MdEdit, MdAdd, MdCategory } from "react-icons/md";
 import { BsInboxesFill } from "react-icons/bs";
 import Swal from "sweetalert2";
 import { motion, AnimatePresence } from "framer-motion";
-import ImageUpload from "../components/ImageUpload";
+import { uploadImage } from "@/utils/uploadImage";
+import { Input } from "@/components/ui/input";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([]);
@@ -18,6 +21,11 @@ const ProductManagement = () => {
   const [productsPerPage] = useState(5);
   const [editingProduct, setEditingProduct] = useState(null);
   const [addingProduct, setAddingProduct] = useState(false);
+  const [file, setFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const formRef = useRef(null);
 
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -44,18 +52,56 @@ const ProductManagement = () => {
     }
   };
 
-  const handleAddProduct = async () => {
-    // if (!validateProductData(newProduct)) return;
+  const handleFileChange = useCallback(e => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  }, []);
+
+  const handleImageUpload = useCallback(async () => {
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadError("");
 
     try {
+      const downloadURL = await uploadImage(file);
+      setImageUrl(downloadURL);
+      // Reset the form
+      if (formRef.current) {
+        formRef.current.reset();
+      }
+      setFile(null);
+
+      return downloadURL;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setUploadError("Failed to upload image. Please try again.");
+      throw error;
+    } finally {
+      setIsUploading(false);
+    }
+  }, [file]);
+
+  const handleAddProduct = async () => {
+    if (!validateProductData(newProduct)) return;
+
+    try {
+      if (file) {
+        const imageUrl = await handleImageUpload();
+        newProduct.images = [imageUrl];
+      }
+
       await axios.post("/api/admin/products", newProduct);
       setNewProduct({
         name: "",
         description: "",
         price: "",
         category: "",
+        images: [],
         stock_quantity: "",
       });
+      setAddingProduct(false);
       fetchProducts();
       Swal.fire({
         title: "Product added!",
@@ -76,9 +122,14 @@ const ProductManagement = () => {
   };
 
   const handleEditProduct = async () => {
-    // if (!validateProductData(editingProduct)) return;
+    if (!validateProductData(editingProduct)) return;
 
     try {
+      if (file) {
+        const imageUrl = await handleImageUpload();
+        editingProduct.images = [imageUrl];
+      }
+
       await axios.put(
         `/api/admin/products/${editingProduct._id}`,
         editingProduct
@@ -102,7 +153,8 @@ const ProductManagement = () => {
       });
     }
   };
-  const handleDeleteProduct = async (_id) => {
+
+  const handleDeleteProduct = async _id => {
     try {
       await axios.delete(`/api/admin/products/${_id}`);
       fetchProducts();
@@ -124,7 +176,7 @@ const ProductManagement = () => {
     }
   };
 
-  const validateProductData = (product) => {
+  const validateProductData = product => {
     const requiredFields = [
       "name",
       "description",
@@ -146,20 +198,10 @@ const ProductManagement = () => {
         return false;
       }
     }
-    if (product.images.length === 0) {
-      Swal.fire({
-        title: "Validation Error",
-        text: "At least one image is required.",
-        icon: "error",
-        confirmButtonText: "OK",
-        confirmButtonColor: "#2F855A",
-      });
-      return false;
-    }
     return true;
   };
 
-  const filteredProducts = products.filter((product) =>
+  const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -191,7 +233,7 @@ const ProductManagement = () => {
               placeholder="Search by name..."
               className="w-full p-4 pl-12 border-2 border-green-300 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-300"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
             />
             <FaSearch className="absolute top-5 left-4 text-green-500 text-xl" />
           </div>
@@ -238,7 +280,7 @@ const ProductManagement = () => {
                 <tbody>
                   <AnimatePresence>
                     {currentProducts.length > 0 ? (
-                      currentProducts.map((product) => (
+                      currentProducts.map(product => (
                         <motion.tr
                           key={product._id}
                           initial={{ opacity: 0, y: 20 }}
@@ -282,7 +324,7 @@ const ProductManagement = () => {
                               <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => handleDeleteProduct(product._id)} // Fixed here
+                                onClick={() => handleDeleteProduct(product._id)}
                                 className="text-red-500 hover:text-red-700 transition duration-300"
                               >
                                 <FaTrashAlt className="text-xl" />
@@ -328,7 +370,7 @@ const ProductManagement = () => {
               </motion.button>
 
               {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-                (page) => (
+                page => (
                   <motion.button
                     key={page}
                     whileHover={{ scale: 1.1 }}
@@ -337,7 +379,7 @@ const ProductManagement = () => {
                     className={`py-2 px-4 rounded-full shadow-lg transition duration-300 ${
                       currentPage === page
                         ? "bg-green-600 text-white"
-                        : "bg-gray-100 text-green-600 hover:bg-green-500 hover:text-white"
+                        : "bg-gray-100 text-green-600  hover:bg-green-500 hover:text-white"
                     }`}
                   >
                     {page}
@@ -380,7 +422,7 @@ const ProductManagement = () => {
                 <input
                   type="text"
                   value={editingProduct.name}
-                  onChange={(e) =>
+                  onChange={e =>
                     setEditingProduct({
                       ...editingProduct,
                       name: e.target.value,
@@ -393,7 +435,7 @@ const ProductManagement = () => {
                 <label className="block text-gray-700">Description</label>
                 <textarea
                   value={editingProduct.description}
-                  onChange={(e) =>
+                  onChange={e =>
                     setEditingProduct({
                       ...editingProduct,
                       description: e.target.value,
@@ -407,7 +449,7 @@ const ProductManagement = () => {
                 <input
                   type="number"
                   value={editingProduct.price}
-                  onChange={(e) =>
+                  onChange={e =>
                     setEditingProduct({
                       ...editingProduct,
                       price: e.target.value,
@@ -421,7 +463,7 @@ const ProductManagement = () => {
                 <input
                   type="text"
                   value={editingProduct.category}
-                  onChange={(e) =>
+                  onChange={e =>
                     setEditingProduct({
                       ...editingProduct,
                       category: e.target.value,
@@ -435,7 +477,7 @@ const ProductManagement = () => {
                 <input
                   type="number"
                   value={editingProduct.stock_quantity}
-                  onChange={(e) =>
+                  onChange={e =>
                     setEditingProduct({
                       ...editingProduct,
                       stock_quantity: e.target.value,
@@ -444,10 +486,25 @@ const ProductManagement = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
+              <div>
+                <label className="block text-gray-700">Image</label>
+                <Input
+                  type="file"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                />
+                {editingProduct.images && editingProduct.images.length > 0 && (
+                  <img
+                    src={editingProduct.images[0]}
+                    alt="Current product image"
+                    className="mt-2 max-w-xs h-auto"
+                  />
+                )}
+              </div>
               <button
                 type="button"
-                onClick={handleEditProduct} // Close the modal after editing
-                className="py-2 px-4 mr-2  bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
+                onClick={handleEditProduct}
+                className="py-2 px-4 mr-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
               >
                 Save Changes
               </button>
@@ -474,7 +531,7 @@ const ProductManagement = () => {
                 <input
                   type="text"
                   value={newProduct.name}
-                  onChange={(e) =>
+                  onChange={e =>
                     setNewProduct({
                       ...newProduct,
                       name: e.target.value,
@@ -487,7 +544,7 @@ const ProductManagement = () => {
                 <label className="block text-gray-700">Description</label>
                 <textarea
                   value={newProduct.description}
-                  onChange={(e) =>
+                  onChange={e =>
                     setNewProduct({
                       ...newProduct,
                       description: e.target.value,
@@ -501,7 +558,7 @@ const ProductManagement = () => {
                 <input
                   type="number"
                   value={newProduct.price}
-                  onChange={(e) =>
+                  onChange={e =>
                     setNewProduct({
                       ...newProduct,
                       price: e.target.value,
@@ -515,7 +572,7 @@ const ProductManagement = () => {
                 <input
                   type="text"
                   value={newProduct.category}
-                  onChange={(e) =>
+                  onChange={e =>
                     setNewProduct({
                       ...newProduct,
                       category: e.target.value,
@@ -529,7 +586,7 @@ const ProductManagement = () => {
                 <input
                   type="number"
                   value={newProduct.stock_quantity}
-                  onChange={(e) =>
+                  onChange={e =>
                     setNewProduct({
                       ...newProduct,
                       stock_quantity: e.target.value,
@@ -538,7 +595,14 @@ const ProductManagement = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
-
+              <div>
+                <label className="block text-gray-700">Image</label>
+                <Input
+                  type="file"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                />
+              </div>
               <button
                 type="button"
                 onClick={handleAddProduct}
@@ -554,6 +618,12 @@ const ProductManagement = () => {
                 Cancel
               </button>
             </form>
+            {uploadError && (
+              <Alert variant="destructive" className="mt-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{uploadError}</AlertDescription>
+              </Alert>
+            )}
           </div>
         </div>
       )}

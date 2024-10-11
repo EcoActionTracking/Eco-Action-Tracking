@@ -49,7 +49,6 @@
 import { NextResponse } from "next/server";
 import dbConnect from "../../../../../../lib/mongodb";
 import User from "../../../../../../models/User";
-// import { sendEmail } from "../../../../../../lib/mailer";
 import { sendEmail } from "@/lib/mailer";
 export async function PUT(request, { params }) {
   const { id } = params;
