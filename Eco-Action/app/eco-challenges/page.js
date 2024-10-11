@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Leaf, Wind, Droplets, Sun } from "lucide-react";
+import Cookies from "js-cookie"; // Import js-cookie
 
 const Challenge = () => {
   const [challenges, setChallenges] = useState([]);
@@ -20,8 +21,40 @@ const Challenge = () => {
     fetchChallenges();
   }, []);
 
-  const GrowingLeafButton = ({ text }) => (
-    <button className="w-full relative overflow-hidden group bg-gradient-to-r from-[#116A7B] via-[#1DAA8D] to-[#116A7B] hover:from-[#137B8E] hover:via-[#1DAA8D] hover:to-[#2BDBB5] text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+  const handleTakeAction = async (challengeId) => {
+    console.log("Challenge ID:", challengeId);
+    try {
+      // Retrieve the token from cookies
+      const token = Cookies.get('token'); // Adjust this based on your cookie name
+
+      if (!token) {
+        alert("No token found. Please log in.");
+        return;
+      }
+
+      const response = await fetch(`/api/userChallenges/${challengeId}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`, // Pass the token
+          'Content-Type': 'application/json', // Ensure the content type is correct
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Something went wrong");
+      alert(data.message);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred. Please try again later.");
+    }
+  };
+
+  const GrowingLeafButton = ({ text, onClick }) => (
+    <button
+      onClick={onClick}
+      className="w-full relative overflow-hidden group bg-gradient-to-r from-[#116A7B] via-[#1DAA8D] to-[#116A7B] hover:from-[#137B8E] hover:via-[#1DAA8D] hover:to-[#2BDBB5] text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+    >
       <span className="relative z-10 flex items-center justify-center">
         {text}
         <svg
@@ -66,6 +99,7 @@ const Challenge = () => {
           <Droplets className="text-blue-400 animate-float" size={32} style={{ animationDelay: '0.5s' }} />
           <Sun className="text-yellow-400 animate-float" size={32} style={{ animationDelay: '1s' }} />
         </div>
+      
         <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#116A7B] to-[#116A7B] mb-4">
           Every Action Counts: Be a Part of the Solution!
         </h1>
@@ -92,10 +126,14 @@ const Challenge = () => {
                   Target: {challenge.targetValue}
                 </span>
                 <span className="text-gray-500 text-sm">
-                  {new Date(challenge.createdAt).toLocaleDateString()}
+                <a href={`/challengeDetails/${challenge._id}`} className="text-[#aaa123]">
+        Know more
+      </a>
+                  {/* {new Date(challenge.createdAt).toLocaleDateString()} */}
                 </span>
               </div>
-              <GrowingLeafButton text="Take Action Now" />
+              <GrowingLeafButton text="Take Action Now" onClick={() => handleTakeAction(challenge._id)} />
+           
             </div>
           </div>
         ))}
