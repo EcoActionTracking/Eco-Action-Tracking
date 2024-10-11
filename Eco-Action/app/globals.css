@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "https://unpkg.com/swiper/swiper-bundle.min.css";
 
 
 
@@ -13,7 +14,7 @@
     position: relative;
     }
     .swiper-pagination-bullet {
-    background: #4f46e5;
+    background: #116A7B;
     }
 
 @layer base {
