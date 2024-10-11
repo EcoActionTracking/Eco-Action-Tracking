@@ -2,12 +2,12 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 
 const ImageUpload = ({ images, setImages, setFile }) => {
-  const handleFileChange = e => {
+  const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
       // Create a local preview
       const reader = new FileReader();
-      reader.onload = event => {
+      reader.onload = (event) => {
         setImages([event.target.result]);
       };
       reader.readAsDataURL(e.target.files[0]);

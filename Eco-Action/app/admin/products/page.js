@@ -36,7 +36,7 @@ const ProductManagement = () => {
     getProducts();
   }, []);
 
-  const handleAddProduct = async newProduct => {
+  const handleAddProduct = async (newProduct) => {
     try {
       const response = await fetch("/api/admin/products", {
         method: "POST",
@@ -72,7 +72,7 @@ const ProductManagement = () => {
     }
   };
 
-  const handleEditProduct = async updatedProduct => {
+  const handleEditProduct = async (updatedProduct) => {
     try {
       const response = await fetch(
         `/api/admin/products/${updatedProduct._id}`,
@@ -86,7 +86,7 @@ const ProductManagement = () => {
       );
 
       if (response.ok) {
-        const updatedProducts = products.map(p =>
+        const updatedProducts = products.map((p) =>
           p._id === updatedProduct._id ? updatedProduct : p
         );
         setProducts(updatedProducts);
@@ -113,7 +113,7 @@ const ProductManagement = () => {
     }
   };
 
-  const handleDeleteProduct = async _id => {
+  const handleDeleteProduct = async (_id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -131,7 +131,7 @@ const ProductManagement = () => {
         });
 
         if (response.ok) {
-          const updatedProducts = products.filter(p => p._id !== _id);
+          const updatedProducts = products.filter((p) => p._id !== _id);
           setProducts(updatedProducts);
           Swal.fire("Deleted!", "The product has been deleted.", "success");
         } else {
@@ -163,11 +163,11 @@ const ProductManagement = () => {
   const totalPages = Math.ceil(products.length / productsPerPage);
 
   // Handle page change
-  const handlePageChange = pageNumber => {
+  const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const filteredProducts = currentProducts.filter(product =>
+  const filteredProducts = currentProducts.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
