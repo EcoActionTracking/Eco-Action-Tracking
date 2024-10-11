@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { Menu, ShoppingCart } from "lucide-react";
 import LogoutButton from "../LogoutButton";
-import { useCart } from "../context/CartContext";
+// import { useCart } from "../context/CartContext";
 import { usePathname } from "next/navigation";
 
 export default function Navbar({ token }) {
-  const { cartQuantity } = useCart();
+  // const { cartQuantity } = useCart();
   const pathName = usePathname();
   const isAuth = pathName.startsWith("/admin");
   if (isAuth) return null;
@@ -22,12 +22,12 @@ export default function Navbar({ token }) {
           />
         </Link>
         <div className="flex items-center lg:order-2 max-lg:ml-auto">
-          <Link href="/cart" className="relative mr-4">
+          {/* <Link href="/cart" className="relative mr-4">
             <ShoppingCart className="w-6 h-6 cursor-pointer hover:text-[#116A7B]" />
             <span className="absolute -top-2 -right-2 px-1 py-0.5 text-xs text-white bg-red-500 rounded-full">
               {cartQuantity}
             </span>
-          </Link>
+          </Link> */}
           {!token && (
             <Link
               href="/login"
