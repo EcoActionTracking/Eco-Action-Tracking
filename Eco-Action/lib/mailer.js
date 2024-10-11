@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function sendEmail(to, subject, text) {
+export async function sendEmail(to, subject, text) {
   try {
     console.log("Email: ", process.env.EMAIL_USER);
     await transporter.sendMail({
@@ -23,5 +23,3 @@ async function sendEmail(to, subject, text) {
     throw error; // Rethrow the error so the calling function can handle it
   }
 }
-
-module.exports = sendEmail;
