@@ -5,7 +5,6 @@ import Navbar from "../app/Navbar/Navbar";
 import { Footer } from "./Footer/Footer";
 import { CartProvider } from "./context/CartContext";
 
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -32,7 +31,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-          <head>
+      <head>
         {/* Include Swiper's CSS */}
         <link
           rel="stylesheet"
@@ -45,11 +44,9 @@ export default function RootLayout({ children }) {
         <CartProvider>
           {!isLoginPage && <Navbar token={token} />}
           {children}
-          <Footer/>
+
+          <Footer />
         </CartProvider>
-        {/* {!isLoginPage && <Navbar token={token} />}
-        {children} */}
-        
       </body>
     </html>
   );
