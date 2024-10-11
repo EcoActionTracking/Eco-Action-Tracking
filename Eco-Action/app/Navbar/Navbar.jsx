@@ -183,7 +183,7 @@ export default function Navbar({ token }) {
               </li>
               <li>
                 <Link
-                  href="/contact"
+                  href="/eco-challenges"
                   className="lg:p-4 py-2 block hover:text-[#116A7B]"
                 >
                   Contact
