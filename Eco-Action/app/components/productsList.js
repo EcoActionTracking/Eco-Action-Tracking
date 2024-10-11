@@ -32,17 +32,17 @@
 //   if (error) return <div>Error: {error}</div>;
 
 //   return (
-//     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+//     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 //       {products.map((product) => (
 //         <div
 //           key={product._id}
-//           className="bg-white shadow-md rounded-lg overflow-hidden"
+//           className="overflow-hidden bg-white rounded-lg shadow-md"
 //         >
 //           <div className="p-4">
-//             <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
-//             <p className="text-gray-600 mb-4">{product.description}</p>
+//             <h2 className="mb-2 text-xl font-semibold">{product.name}</h2>
+//             <p className="mb-4 text-gray-600">{product.description}</p>
 //             <p className="font-bold">Price: ${product.price.toFixed(2)}</p>
-//             <p className="text-sm text-gray-500 mt-2">
+//             <p className="mt-2 text-sm text-gray-500">
 //               Category: {product.category}
 //             </p>
 //           </div>
@@ -74,6 +74,7 @@ function ProductsList() {
           throw new Error("Failed to fetch products");
         }
         const data = await res.json();
+        console.log("data", data);
         setProducts(data);
         setLoading(false);
       } catch (err) {
@@ -88,7 +89,7 @@ function ProductsList() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {products.map((product) => (
         <ProductCard key={product._id} product={product} />
       ))}

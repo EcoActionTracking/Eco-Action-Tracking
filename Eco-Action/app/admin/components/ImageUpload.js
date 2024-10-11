@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { uploadImage } from "@/utils/uploadImage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,45 +19,55 @@ export default function ImageUpload() {
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const formRef = useRef(null);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = useCallback(e => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
     }
-  };
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!file) return;
+  const handleSubmit = useCallback(
+    async e => {
+      e.preventDefault();
+      if (!file) return;
 
-    setIsLoading(true);
-    setError("");
+      setIsLoading(true);
+      setError("");
 
-    try {
-      const downloadURL = await uploadImage(file);
-      setImageUrl(downloadURL);
+      try {
+        const downloadURL = await uploadImage(file);
+        setImageUrl(downloadURL);
 
-      // Save image URL to MongoDB
-      const response = await fetch("/api/saveImage", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ imageUrl: downloadURL }),
-      });
+        // Save image URL to MongoDB
+        const response = await fetch("/api/saveImage", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ imageUrl: downloadURL }),
+        });
 
-      if (response.ok) {
+        if (!response.ok) {
+          throw new Error("Failed to save image URL");
+        }
+
         console.log("Image URL saved to database");
-      } else {
-        throw new Error("Failed to save image URL");
+
+        // Reset the form
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+        setFile(null);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        setError("Failed to upload image. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      setError("Failed to upload image. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [file]
+  );
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -65,7 +75,7 @@ export default function ImageUpload() {
         <CardTitle>Upload Image</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
           <Input type="file" onChange={handleFileChange} accept="image/*" />
           <Button type="submit" disabled={!file || isLoading}>
             {isLoading ? (
