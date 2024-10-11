@@ -538,9 +538,7 @@ const ProductManagement = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
-              <div>
-                <ImageUpload />
-              </div>
+
               <button
                 type="button"
                 onClick={handleAddProduct}
