@@ -5,7 +5,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie'; 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+const homeImage = "/images/home.jpg";
 
 export default function CompanyForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,11 +48,28 @@ export default function CompanyForm() {
     }
   }
 
+
+  const handleSubscribeClick = () => {
+    const token = Cookies.get('token'); // Check if token exists
+  
+    if (!token) {
+      toast.info('Please log in to subscribe.'); // Notify user to log in
+    } else {
+      setIsModalOpen(true); // Open the modal if token is present
+    }
+  };
+
   return (
   
       
-<div className="flex items-center text-center p-8 min-h-[380px] bg-gradient-to-t from-[#116A7B] to-gray-600 w-full font-[sans-serif] bg-[url('/path-to-your-image.jpg')] bg-cover bg-center bg-no-repeat">
-  <div className="max-w-4xl p-6 mx-auto bg-[#116A7B] bg-opacity-50 rounded-lg">
+    <div className={`flex items-center text-center  min-h-[10rem] bg-gradient-to-t from-[#116A7B] to-gray-600 w-full font-[sans-serif]`} 
+    style={{
+        backgroundImage: `url(${homeImage})`, // Use the image URL directly
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+    }}>
+  <div className="max-w-full p-6 mx-auto bg-[#116A7B] bg-opacity-50 rounded-lg">
     <h1 className="my-10 text-lg font-bold text-white sm:text-2xl">
     Join us in our mission to reduce food waste! Sign up your company or restaurant to provide excess food and enjoy exclusive discounts on our services. Together, we can make a difference!
     </h1>
@@ -60,7 +77,7 @@ export default function CompanyForm() {
     <button
           className="px-6 py-3 text-sm font-semibold text-[#116A7B] bg-white rounded hover:bg-slate-100"
           type="button"
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleSubscribeClick}
         >
           Subscribe Now
         </button>
