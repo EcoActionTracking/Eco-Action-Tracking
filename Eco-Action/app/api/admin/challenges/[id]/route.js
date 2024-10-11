@@ -6,6 +6,8 @@ export async function PUT(req, { params }) {
   const { id } = params;
   const body = await req.json();
 
+  console.log("edit", id);
+
   try {
     await dbConnect(); // Connect to the database
 

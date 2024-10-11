@@ -1,20 +1,18 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Trash2, PenSquare, Plus, Search } from "lucide-react";
+  FaSearch,
+  FaTrophy,
+  FaTrashAlt,
+  FaClock,
+  FaMedal,
+  FaSpinner,
+} from "react-icons/fa";
+import { MdEdit, MdAdd } from "react-icons/md";
+import Swal from "sweetalert2";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ChallengeManagement = () => {
   const [challenges, setChallenges] = useState([]);
@@ -26,7 +24,7 @@ const ChallengeManagement = () => {
   const [editingChallenge, setEditingChallenge] = useState(null);
   const [addingChallenge, setAddingChallenge] = useState(false);
 
-  const emptyChallenge = {
+  const [newChallenge, setNewChallenge] = useState({
     title: "",
     description: "",
     targetValue: 0,
@@ -36,12 +34,10 @@ const ChallengeManagement = () => {
     },
     difficultyLevel: "intermediate",
     participationCount: 0,
-    stages: [],
+    stages: [], // Initialize as an empty array
     image: "",
     isDeleted: false,
-  };
-
-  const [newChallenge, setNewChallenge] = useState(emptyChallenge);
+  });
 
   useEffect(() => {
     fetchChallenges();
@@ -50,118 +46,173 @@ const ChallengeManagement = () => {
   const fetchChallenges = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/admin/challenges");
-      const data = await response.json();
-      setChallenges(data);
+      const response = await axios.get("/api/admin/challenges");
+      setChallenges(response.data);
+      setLoading(false);
     } catch (err) {
       setError("Error fetching challenges");
-    } finally {
       setLoading(false);
     }
   };
 
-  const handleAddStage = (challengeData) => {
-    const newStage = {
-      stageNumber: challengeData.stages.length + 1,
-      stageDescription: "",
-      imageUrl: "",
-    };
+  const handleAddChallenge = async () => {
+    if (!validateChallengeData(newChallenge)) return;
 
-    if (editingChallenge) {
-      setEditingChallenge({
-        ...editingChallenge,
-        stages: [...editingChallenge.stages, newStage],
-      });
-    } else {
+    try {
+      await axios.post("/api/admin/challenges", newChallenge);
       setNewChallenge({
-        ...newChallenge,
-        stages: [...newChallenge.stages, newStage],
+        title: "",
+        description: "",
+        targetValue: "",
+        discount: {
+          amount: "",
+          discountCode: "",
+        },
+        difficultyLevel: "intermediate",
+        participationCount: 0,
+        image: "",
+        isDeleted: false,
+      });
+      setAddingChallenge(false);
+      fetchChallenges();
+      Swal.fire({
+        title: "Challenge added!",
+        icon: "success",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2F855A",
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to add the challenge.",
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2F855A",
       });
     }
   };
 
-  const handleStageChange = (index, field, value, isEditing) => {
-    const updateStages = (stages) => {
-      const newStages = [...stages];
-      newStages[index] = {
-        ...newStages[index],
-        [field]: value,
-      };
-      return newStages;
-    };
+  const handleEditChallenge = async () => {
+    if (!validateChallengeData(editingChallenge)) return;
 
-    if (isEditing) {
-      setEditingChallenge({
-        ...editingChallenge,
-        stages: updateStages(editingChallenge.stages),
+    try {
+      await axios.put(
+        `/api/admin/challenges/${editingChallenge._id}`,
+        editingChallenge
+      );
+      setEditingChallenge(null);
+      fetchChallenges();
+      Swal.fire({
+        title: "Challenge updated!",
+        icon: "success",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2F855A",
       });
-    } else {
-      setNewChallenge({
-        ...newChallenge,
-        stages: updateStages(newChallenge.stages),
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to update the challenge.",
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2F855A",
       });
     }
   };
 
-  const validateChallenge = (challenge) => {
-    if (
-      !challenge.title ||
-      !challenge.description ||
-      challenge.targetValue < 0
-    ) {
-      return false;
+  const handleSoftDelete = async (id) => {
+    try {
+      await axios.patch(`/api/admin/challenges/${id}`, { isDeleted: true });
+      fetchChallenges();
+      Swal.fire({
+        title: "Challenge deleted!",
+        icon: "success",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2F855A",
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to delete the challenge.",
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2F855A",
+      });
     }
-    if (!challenge.discount.amount || !challenge.discount.discountCode) {
-      return false;
-    }
-    if (challenge.participationCount < 0) {
-      return false;
+  };
+
+  const validateChallengeData = (challenge) => {
+    const requiredFields = [
+      "title",
+      "description",
+      "targetValue",
+      "discount",
+      "difficultyLevel",
+      "participationCount",
+    ];
+    for (let field of requiredFields) {
+      if (field === "discount") {
+        if (!challenge.discount.amount || !challenge.discount.discountCode) {
+          Swal.fire({
+            title: "Validation Error",
+            text: "Discount amount and code are required.",
+            icon: "error",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#2F855A",
+          });
+          return false;
+        }
+      } else if (!challenge[field]) {
+        Swal.fire({
+          title: "Validation Error",
+          text: `${
+            field.charAt(0).toUpperCase() + field.slice(1)
+          } is required.`,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#2F855A",
+        });
+        return false;
+      }
     }
     return true;
   };
 
-  const handleSubmit = async (challenge, isEditing) => {
-    if (!validateChallenge(challenge)) {
-      setError("Please fill all required fields correctly");
-      return;
-    }
-
-    try {
-      const url = isEditing
-        ? `/api/admin/challenges/${challenge._id}`
-        : "/api/admin/challenges";
-
-      const method = isEditing ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(challenge),
-      });
-
-      if (!response.ok) throw new Error("Failed to save challenge");
-
-      await fetchChallenges();
-      setEditingChallenge(null);
-      setAddingChallenge(false);
-      setNewChallenge(emptyChallenge);
-    } catch (err) {
-      setError(err.message);
-    }
+  const addStage = () => {
+    setNewChallenge({
+      ...newChallenge,
+      stages: [
+        ...newChallenge.stages,
+        { stageNumber: "", stageDescription: "", imageUrl: "" },
+      ],
+    });
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await fetch(`/api/admin/challenges/${id}`, {
-        method: "DELETE",
-      });
-      await fetchChallenges();
-    } catch (err) {
-      setError("Failed to delete challenge");
-    }
+  const updateStage = (index, updatedStage) => {
+    const updatedStages = newChallenge.stages.map((stage, i) =>
+      i === index ? { ...stage, ...updatedStage } : stage
+    );
+    setNewChallenge({ ...newChallenge, stages: updatedStages });
   };
+
+  const removeStage = (index) => {
+    const updatedStages = newChallenge.stages.filter((_, i) => i !== index);
+    setNewChallenge({ ...newChallenge, stages: updatedStages });
+  };
+
+  const filteredChallenges = challenges.filter(
+    (challenge) =>
+      challenge.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !challenge.isDeleted // Use isDeleted instead of status
+  );
+
+  const indexOfLastChallenge = currentPage * challengesPerPage;
+  const indexOfFirstChallenge = indexOfLastChallenge - challengesPerPage;
+  const currentChallenges = filteredChallenges.slice(
+    indexOfFirstChallenge,
+    indexOfLastChallenge
+  );
+
+  const totalPages = Math.ceil(filteredChallenges.length / challengesPerPage);
 
   const getDifficultyColor = (difficulty) => {
     const colors = {
@@ -171,192 +222,6 @@ const ChallengeManagement = () => {
     };
     return colors[difficulty] || "bg-gray-100 text-gray-800";
   };
-
-  const ChallengeForm = ({ challenge, isEditing, onSubmit }) => (
-    <div className="space-y-4 p-4 border rounded-lg">
-      <Input
-        placeholder="Title"
-        value={challenge.title}
-        onChange={(e) =>
-          isEditing
-            ? setEditingChallenge({
-                ...editingChallenge,
-                title: e.target.value,
-              })
-            : setNewChallenge({ ...newChallenge, title: e.target.value })
-        }
-      />
-      <Textarea
-        placeholder="Description"
-        value={challenge.description}
-        onChange={(e) =>
-          isEditing
-            ? setEditingChallenge({
-                ...editingChallenge,
-                description: e.target.value,
-              })
-            : setNewChallenge({ ...newChallenge, description: e.target.value })
-        }
-      />
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          type="number"
-          placeholder="Target Value"
-          value={challenge.targetValue}
-          onChange={(e) =>
-            isEditing
-              ? setEditingChallenge({
-                  ...editingChallenge,
-                  targetValue: Number(e.target.value),
-                })
-              : setNewChallenge({
-                  ...newChallenge,
-                  targetValue: Number(e.target.value),
-                })
-          }
-        />
-        <Input
-          type="number"
-          placeholder="Participation Count"
-          value={challenge.participationCount}
-          onChange={(e) =>
-            isEditing
-              ? setEditingChallenge({
-                  ...editingChallenge,
-                  participationCount: Number(e.target.value),
-                })
-              : setNewChallenge({
-                  ...newChallenge,
-                  participationCount: Number(e.target.value),
-                })
-          }
-        />
-      </div>
-
-      <div className="space-y-2">
-        <h3 className="font-semibold">Discount</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            type="number"
-            placeholder="Discount Amount"
-            value={challenge.discount.amount}
-            onChange={(e) => {
-              const value = Number(e.target.value);
-              if (isEditing) {
-                setEditingChallenge({
-                  ...editingChallenge,
-                  discount: { ...editingChallenge.discount, amount: value },
-                });
-              } else {
-                setNewChallenge({
-                  ...newChallenge,
-                  discount: { ...newChallenge.discount, amount: value },
-                });
-              }
-            }}
-          />
-          <Input
-            placeholder="Discount Code"
-            value={challenge.discount.discountCode}
-            onChange={(e) => {
-              if (isEditing) {
-                setEditingChallenge({
-                  ...editingChallenge,
-                  discount: {
-                    ...editingChallenge.discount,
-                    discountCode: e.target.value,
-                  },
-                });
-              } else {
-                setNewChallenge({
-                  ...newChallenge,
-                  discount: {
-                    ...newChallenge.discount,
-                    discountCode: e.target.value,
-                  },
-                });
-              }
-            }}
-          />
-        </div>
-      </div>
-
-      <Select
-        value={challenge.difficultyLevel}
-        onValueChange={(value) =>
-          isEditing
-            ? setEditingChallenge({
-                ...editingChallenge,
-                difficultyLevel: value,
-              })
-            : setNewChallenge({ ...newChallenge, difficultyLevel: value })
-        }
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select difficulty" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="beginner">Beginner</SelectItem>
-          <SelectItem value="intermediate">Intermediate</SelectItem>
-          <SelectItem value="advanced">Advanced</SelectItem>
-        </SelectContent>
-      </Select>
-
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <h3 className="font-semibold">Stages</h3>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleAddStage(challenge)}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Stage
-          </Button>
-        </div>
-        {challenge.stages.map((stage, index) => (
-          <div key={index} className="space-y-2 p-2 border rounded">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold">Stage {stage.stageNumber}</span>
-            </div>
-            <Textarea
-              placeholder="Stage Description"
-              value={stage.stageDescription}
-              onChange={(e) =>
-                handleStageChange(
-                  index,
-                  "stageDescription",
-                  e.target.value,
-                  isEditing
-                )
-              }
-            />
-            <Input
-              placeholder="Image URL"
-              value={stage.imageUrl}
-              onChange={(e) =>
-                handleStageChange(index, "imageUrl", e.target.value, isEditing)
-              }
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          onClick={() =>
-            isEditing ? setEditingChallenge(null) : setAddingChallenge(false)
-          }
-        >
-          Cancel
-        </Button>
-        <Button onClick={() => onSubmit(challenge, isEditing)}>
-          {isEditing ? "Update" : "Create"} Challenge
-        </Button>
-      </div>
-    </div>
-  );
 
   return (
     <motion.div
@@ -391,318 +256,342 @@ const ChallengeManagement = () => {
             Add New Challenge
           </motion.button>
         </div>
+      </div>
 
+      <div className="overflow-x-auto">
         {loading ? (
-          <div className="text-center text-xl text-purple-700">
-            Loading challenges...
+          <div className="text-center py-10">
+            <FaSpinner className="h-10 w-10 text-purple-500 animate-spin" />
           </div>
         ) : error ? (
-          <div className="text-center text-red-500 text-xl">{error}</div>
+          <div className="text-red-500 text-center py-10">{error}</div>
+        ) : filteredChallenges.length > 0 ? (
+          <table className="table-auto w-full text-left border-collapse">
+            <thead>
+              <tr className="text-purple-600 bg-purple-50">
+                <th className="p-4">Title</th>
+                <th className="p-4">Description</th>
+                <th className="p-4">Target Value</th>
+                <th className="p-4">Discount</th>
+                <th className="p-4">Difficulty</th>
+                <th className="p-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentChallenges.map((challenge) => (
+                <tr key={challenge._id} className="border-b">
+                  <td className="p-4">{challenge.title}</td>
+                  <td className="p-4">{challenge.description}</td>
+                  <td className="p-4">{challenge.targetValue}</td>
+                  <td className="p-4">
+                    {challenge.discount.amount} -{" "}
+                    {challenge.discount.discountCode}
+                  </td>
+                  <td className="p-4">
+                    <span
+                      className={`px-3 py-1 rounded-full ${getDifficultyColor(
+                        challenge.difficultyLevel
+                      )}`}
+                    >
+                      {challenge.difficultyLevel}
+                    </span>
+                  </td>
+                  <td className="p-4 flex space-x-4">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setEditingChallenge(challenge)}
+                      className="px-3 py-1 bg-blue-500 text-white rounded-full shadow hover:bg-blue-600"
+                    >
+                      Edit
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleSoftDelete(challenge._id)}
+                      className="px-3 py-1 bg-red-500 text-white rounded-full shadow hover:bg-red-600"
+                    >
+                      Delete
+                    </motion.button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
-          <>
-            <div className="overflow-x-auto">
-              <table className="w-full table-auto bg-white rounded-lg overflow-hidden">
-                <thead className="bg-gradient-to-r from-purple-600 to-blue-600">
-                  <tr>
-                    <th className="py-4 px-6 text-left text-white font-semibold">
-                      Title
-                    </th>
-                    <th className="py-4 px-6 text-left text-white font-semibold">
-                      Difficulty
-                    </th>
-                    <th className="py-4 px-6 text-left text-white font-semibold">
-                      Points
-                    </th>
-                    <th className="py-4 px-6 text-left text-white font-semibold">
-                      Duration
-                    </th>
-                    <th className="py-4 px-6 text-left text-white font-semibold">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <AnimatePresence>
-                    {currentChallenges.map((challenge) => (
-                      <motion.tr
-                        key={challenge._id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                        className="hover:bg-purple-50 transition-colors duration-300"
-                      >
-                        <td className="py-4 px-6 text-gray-800 flex items-center">
-                          <FaTrophy className="text-purple-500 mr-3" />
-                          {challenge.title}
-                        </td>
-                        <td className="py-4 px-6">
-                          <span
-                            className={`px-3 py-1 rounded-full text-sm ${getDifficultyColor(
-                              challenge.difficulty
-                            )}`}
-                          >
-                            {challenge.difficulty}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-gray-800">
-                          <div className="flex items-center">
-                            <FaMedal className="text-purple-500 mr-2" />
-                            {challenge.points}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6 text-gray-800">
-                          <div className="flex items-center">
-                            <FaClock className="text-purple-500 mr-2" />
-                            {challenge.duration}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6 text-gray-800">
-                          <div className="flex items-center space-x-4">
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => setEditingChallenge(challenge)}
-                              className="text-blue-500 hover:text-blue-700 transition duration-300"
-                            >
-                              <MdEdit className="text-2xl" />
-                            </motion.button>
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => handleSoftDelete(challenge._id)}
-                              className="text-red-500 hover:text-red-700 transition duration-300"
-                            >
-                              <FaTrashAlt className="text-xl" />
-                            </motion.button>
-                          </div>
-                        </td>
-                      </motion.tr>
-                    ))}
-                  </AnimatePresence>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Pagination */}
-            <div className="flex items-center justify-center mt-8 space-x-2">
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-                (page) => (
-                  <motion.button
-                    key={page}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setCurrentPage(page)}
-                    className={`py-2 px-4 rounded-full shadow-lg transition duration-300 ${
-                      currentPage === page
-                        ? "bg-purple-600 text-white"
-                        : "bg-gray-100 text-purple-600 hover:bg-purple-500 hover:text-white"
-                    }`}
-                  >
-                    {page}
-                  </motion.button>
-                )
-              )}
-            </div>
-          </>
+          <div className="text-center py-10 text-purple-600">
+            No challenges found.
+          </div>
         )}
       </div>
 
-      {/* Edit Challenge Modal */}
-      {editingChallenge && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-2/3">
-            <h3 className="text-2xl font-bold mb-4">Edit Challenge</h3>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-gray-700">Title</label>
-                <input
-                  type="text"
-                  value={editingChallenge.title}
-                  onChange={(e) =>
-                    setEditingChallenge({
-                      ...editingChallenge,
-                      title: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Description</label>
-                <textarea
-                  value={editingChallenge.description}
-                  onChange={(e) =>
-                    setEditingChallenge({
-                      ...editingChallenge,
-                      description: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Difficulty</label>
-                <select
-                  value={editingChallenge.difficulty}
-                  onChange={(e) =>
-                    setEditingChallenge({
-                      ...editingChallenge,
-                      difficulty: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
+      <div className="flex justify-center items-center space-x-4 mt-8">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+          className={`px-4 py-2 bg-purple-500 text-white rounded-full shadow-lg hover:bg-purple-600 transition duration-300 ${
+            currentPage === 1 && "opacity-50 cursor-not-allowed"
+          }`}
+        >
+          Previous
+        </motion.button>
+        <span className="text-purple-600">
+          Page {currentPage} of {totalPages}
+        </span>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          className={`px-4 py-2 bg-purple-500 text-white rounded-full shadow-lg hover:bg-purple-600 transition duration-300 ${
+            currentPage === totalPages && "opacity-50 cursor-not-allowed"
+          }`}
+        >
+          Next
+        </motion.button>
+      </div>
+
+      {addingChallenge && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-8 rounded-xl shadow-lg w-2/3">
+            <h3 className="text-2xl font-bold text-purple-700 mb-4">
+              Add New Challenge
+            </h3>
+            <form>
+              {/* Title */}
+              <input
+                type="text"
+                placeholder="Title"
+                value={newChallenge.title}
+                onChange={(e) =>
+                  setNewChallenge({ ...newChallenge, title: e.target.value })
+                }
+                className="w-full p-2 mb-4 border-2 border-purple-300 rounded-lg"
+              />
+
+              {/* Description */}
+              <textarea
+                placeholder="Description"
+                value={newChallenge.description}
+                onChange={(e) =>
+                  setNewChallenge({
+                    ...newChallenge,
+                    description: e.target.value,
+                  })
+                }
+                className="w-full p-2 mb-4 border-2 border-purple-300 rounded-lg"
+              />
+
+              {/* Target Value */}
+              <input
+                type="number"
+                placeholder="Target Value"
+                value={newChallenge.targetValue}
+                onChange={(e) =>
+                  setNewChallenge({
+                    ...newChallenge,
+                    targetValue: e.target.value,
+                  })
+                }
+                className="w-full p-2 mb-4 border-2 border-purple-300 rounded-lg"
+              />
+
+              {/* Discount Amount */}
+              <input
+                type="number"
+                placeholder="Discount Amount"
+                value={newChallenge.discount.amount}
+                onChange={(e) =>
+                  setNewChallenge({
+                    ...newChallenge,
+                    discount: {
+                      ...newChallenge.discount,
+                      amount: e.target.value,
+                    },
+                  })
+                }
+                className="w-full p-2 mb-4 border-2 border-purple-300 rounded-lg"
+              />
+
+              {/* Discount Code */}
+              <input
+                type="text"
+                placeholder="Discount Code"
+                value={newChallenge.discount.discountCode}
+                onChange={(e) =>
+                  setNewChallenge({
+                    ...newChallenge,
+                    discount: {
+                      ...newChallenge.discount,
+                      discountCode: e.target.value,
+                    },
+                  })
+                }
+                className="w-full p-2 mb-4 border-2 border-purple-300 rounded-lg"
+              />
+
+              {/* Difficulty Level */}
+              <select
+                value={newChallenge.difficultyLevel}
+                onChange={(e) =>
+                  setNewChallenge({
+                    ...newChallenge,
+                    difficultyLevel: e.target.value,
+                  })
+                }
+                className="w-full p-2 mb-4 border-2 border-purple-300 rounded-lg"
+              >
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+
+              {/* Participation Count */}
+              <input
+                type="number"
+                placeholder="Participation Count"
+                value={newChallenge.participationCount}
+                onChange={(e) =>
+                  setNewChallenge({
+                    ...newChallenge,
+                    participationCount: e.target.value,
+                  })
+                }
+                className="w-full p-2 mb-4 border-2 border-purple-300 rounded-lg"
+              />
+
+              {/* Stages */}
+              {newChallenge.stages.map((stage, index) => (
+                <div key={index} className="mb-4">
+                  <input
+                    type="number"
+                    placeholder={`Stage ${index + 1} Number`}
+                    value={stage.stageNumber}
+                    onChange={(e) =>
+                      updateStage(index, { stageNumber: e.target.value })
+                    }
+                    className="w-full p-2 mb-2 border-2 border-purple-300 rounded-lg"
+                  />
+                  <textarea
+                    placeholder={`Stage ${index + 1} Description`}
+                    value={stage.stageDescription}
+                    onChange={(e) =>
+                      updateStage(index, { stageDescription: e.target.value })
+                    }
+                    className="w-full p-2 mb-2 border-2 border-purple-300 rounded-lg"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Image URL (optional)"
+                    value={stage.imageUrl}
+                    onChange={(e) =>
+                      updateStage(index, { imageUrl: e.target.value })
+                    }
+                    className="w-full p-2 mb-2 border-2 border-purple-300 rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeStage(index)}
+                    className="px-2 py-1 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600"
+                  >
+                    Remove Stage
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addStage}
+                className="px-4 py-2 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 mb-4"
+              >
+                Add Stage
+              </button>
+
+              {/* Image */}
+              <input
+                type="text"
+                placeholder="Image URL"
+                value={newChallenge.image}
+                onChange={(e) =>
+                  setNewChallenge({ ...newChallenge, image: e.target.value })
+                }
+                className="w-full p-2 mb-4 border-2 border-purple-300 rounded-lg"
+              />
+
+              {/* Form Buttons */}
+              <div className="flex space-x-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleAddChallenge}
+                  className="px-4 py-2 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600"
                 >
-                  <option value="">Select Difficulty</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
+                  Add Challenge
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setAddingChallenge(false)}
+                  className="px-4 py-2 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600"
+                >
+                  Cancel
+                </motion.button>
               </div>
-              <div>
-                <label className="block text-gray-700">Points</label>
-                <input
-                  type="number"
-                  value={editingChallenge.points}
-                  onChange={(e) =>
-                    setEditingChallenge({
-                      ...editingChallenge,
-                      points: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">
-                  Duration (in minutes)
-                </label>
-                <input
-                  type="number"
-                  value={editingChallenge.duration}
-                  onChange={(e) =>
-                    setEditingChallenge({
-                      ...editingChallenge,
-                      duration: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={handleEditChallenge}
-                className="py-2 px-4 mr-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition duration-300"
-              >
-                Save Changes
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditingChallenge(null)}
-                className="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
-              >
-                Cancel
-              </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* Add Challenge Modal */}
-      {addingChallenge && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-2/3">
-            <h3 className="text-2xl font-bold mb-4">Add New Challenge</h3>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-gray-700">Title</label>
-                <input
-                  type="text"
-                  value={newChallenge.title}
-                  onChange={(e) =>
-                    setNewChallenge({
-                      ...newChallenge,
-                      title: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Description</label>
-                <textarea
-                  value={newChallenge.description}
-                  onChange={(e) =>
-                    setNewChallenge({
-                      ...newChallenge,
-                      description: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Difficulty</label>
-                <select
-                  value={newChallenge.difficulty}
-                  onChange={(e) =>
-                    setNewChallenge({
-                      ...newChallenge,
-                      difficulty: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
+      {editingChallenge && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-8 rounded-xl shadow-lg w-1/2">
+            <h3 className="text-2xl font-bold text-purple-700 mb-4">
+              Edit Challenge
+            </h3>
+            <form>
+              <input
+                type="text"
+                placeholder="Title"
+                value={editingChallenge.title}
+                onChange={(e) =>
+                  setEditingChallenge({
+                    ...editingChallenge,
+                    title: e.target.value,
+                  })
+                }
+                className="w-full p-2 mb-4 border-2 border-purple-300 rounded-lg"
+              />
+              <textarea
+                placeholder="Description"
+                value={editingChallenge.description}
+                onChange={(e) =>
+                  setEditingChallenge({
+                    ...editingChallenge,
+                    description: e.target.value,
+                  })
+                }
+                className="w-full p-2 mb-4 border-2 border-purple-300 rounded-lg"
+              />
+              {/* Additional form fields */}
+              <div className="flex space-x-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleEditChallenge}
+                  className="px-4 py-2 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600"
                 >
-                  <option value="">Select Difficulty</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
+                  Save Changes
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setEditingChallenge(null)}
+                  className="px-4 py-2 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600"
+                >
+                  Cancel
+                </motion.button>
               </div>
-              <div>
-                <label className="block text-gray-700">Points</label>
-                <input
-                  type="number"
-                  value={newChallenge.points}
-                  onChange={(e) =>
-                    setNewChallenge({
-                      ...newChallenge,
-                      points: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">
-                  Duration (in minutes)
-                </label>
-                <input
-                  type="number"
-                  value={newChallenge.duration}
-                  onChange={(e) =>
-                    setNewChallenge({
-                      ...newChallenge,
-                      duration: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={handleAddChallenge}
-                className="py-2 px-4 mr-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition duration-300"
-              >
-                Add Challenge
-              </button>
-              <button
-                type="button"
-                onClick={() => setAddingChallenge(false)}
-                className="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
-              >
-                Cancel
-              </button>
             </form>
           </div>
         </div>
