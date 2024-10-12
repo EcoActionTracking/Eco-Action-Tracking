@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Leaf, Wind, Droplets, Sun } from "lucide-react";
-import Link from 'next/link';
+import Link from "next/link";
 
 const Challenge = () => {
   const [challenges, setChallenges] = useState([]);
@@ -23,9 +23,7 @@ const Challenge = () => {
 
   const GrowingLeafButton = ({ text, link }) => (
     <Link href={link} passHref>
-      <button
-        className="w-full relative overflow-hidden group bg-gradient-to-r from-[#116A7B] via-[#1DAA8D] to-[#116A7B] hover:from-[#137B8E] hover:via-[#1DAA8D] hover:to-[#2BDBB5] text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-      >
+      <button className="w-full relative overflow-hidden group bg-gradient-to-r from-[#116A7B] via-[#1DAA8D] to-[#116A7B] hover:from-[#137B8E] hover:via-[#1DAA8D] hover:to-[#2BDBB5] text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
         <span className="relative z-10 flex items-center justify-center">
           {text}
           <svg
@@ -68,19 +66,32 @@ const Challenge = () => {
       <header className="text-center mb-12 relative">
         <div className="absolute inset-0 flex justify-between items-center pointer-events-none opacity-30">
           <Wind className="text-[#116A7B] animate-float" size={32} />
-          <Droplets className="text-blue-400 animate-float" size={32} style={{ animationDelay: '0.5s' }} />
-          <Sun className="text-yellow-400 animate-float" size={32} style={{ animationDelay: '1s' }} />
+          <Droplets
+            className="text-blue-400 animate-float"
+            size={32}
+            style={{ animationDelay: "0.5s" }}
+          />
+          <Sun
+            className="text-yellow-400 animate-float"
+            size={32}
+            style={{ animationDelay: "1s" }}
+          />
         </div>
 
         <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#116A7B] to-[#116A7B] mb-4">
           Every Action Counts: Be a Part of the Solution!
         </h1>
-        <p className="text-lg text-[#116A7B]">Join us in making a difference, one challenge at a time</p>
+        <p className="text-lg text-[#116A7B]">
+          Join us in making a difference, one challenge at a time
+        </p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12">
         {challenges.map((challenge, index) => (
-          <div key={index} className="bg-white grid sm:grid-cols-2 items-center shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] w-full max-w-2xl max-sm:max-w-sm rounded-lg font-[sans-serif] overflow-hidden mx-auto mt-4">
+          <div
+            key={index}
+            className="bg-white grid sm:grid-cols-2 items-center shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] w-full max-w-2xl max-sm:max-w-sm rounded-lg font-[sans-serif] overflow-hidden mx-auto mt-4"
+          >
             <div className="min-h-[280px] h-full">
               <img
                 src={challenge.image}
@@ -97,10 +108,12 @@ const Challenge = () => {
                 <span className="px-3 py-1 bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] rounded-lg text-sm text-white font-medium">
                   Target: {challenge.targetValue}
                 </span>
-                
               </div>
               {/* Use the GrowingLeafButton with the link prop */}
-              <GrowingLeafButton text="Know more" link={`/challengeDetails/${challenge._id}`} />
+              <GrowingLeafButton
+                text="Know more"
+                link={`/challengeDetails/${challenge._id}`}
+              />
             </div>
           </div>
         ))}
