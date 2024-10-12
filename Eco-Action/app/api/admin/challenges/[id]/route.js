@@ -31,11 +31,12 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+// Change the function name to PATCH to match the frontend request method.
+export async function PATCH(req, { params }) {
   const { id } = params;
 
   try {
-    await dbConnect(); // Connect to the database
+    await dbConnect();
 
     const deletedChallenge = await Challenges.findByIdAndUpdate(
       id,

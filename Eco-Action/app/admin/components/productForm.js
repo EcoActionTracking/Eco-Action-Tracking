@@ -1,9 +1,13 @@
+"use client"; // This indicates client-side rendering for Next.js
+
 import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import ImageUpload from "./ImageUpload";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { uploadImage } from "@/utils/uploadImage";
+import { FaTimes } from "react-icons/fa";
 
 const ProductForm = ({ product, onClose, onSave }) => {
   const [name, setName] = useState(product?.name || "");
@@ -13,7 +17,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
   const [stockQuantity, setStockQuantity] = useState(
     product?.stock_quantity || ""
   );
-  const [images, setImages] = useState(product?.images || []);
+  const [imageUrl, setImageUrl] = useState(product?.images?.[0] || "");
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
@@ -26,20 +30,24 @@ const ProductForm = ({ product, onClose, onSave }) => {
       setPrice(product.price);
       setCategory(product.category);
       setStockQuantity(product.stock_quantity);
-      setImages(product.images);
+      setImageUrl(product.images?.[0] || "");
     }
   }, [product]);
 
-  const handleSubmit = async e => {
+  const handleImageUpload = (file) => {
+    setFile(file);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsUploading(true);
     setUploadError(null);
 
-    let imageUrl = images[0]; // Use existing image if available
+    let updatedImageUrl = imageUrl;
 
     if (file) {
       try {
-        imageUrl = await uploadImage(file);
+        updatedImageUrl = await uploadImage(file);
       } catch (error) {
         console.error("Error uploading image:", error);
         setUploadError("Failed to upload image. Please try again.");
@@ -54,7 +62,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
       price,
       category,
       stock_quantity: stockQuantity,
-      images: [imageUrl],
+      images: [updatedImageUrl],
     };
 
     try {
@@ -71,86 +79,152 @@ const ProductForm = ({ product, onClose, onSave }) => {
       setIsUploading(false);
     }
   };
+
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-2/3 relative">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-        >
-          ×
-        </button>
-        <h3 className="text-2xl font-bold mb-4">
-          {product ? "Edit Product" : "Add New Product"}
-        </h3>
-        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto"
+    >
+      <motion.div
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 50, opacity: 0 }}
+        className="bg-white rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 max-w-4xl my-8 overflow-hidden"
+      >
+        <div className="bg-gradient-to-r from-green-600 to-teal-600  p-6 flex justify-between items-center">
+          <h3 className="text-2xl font-bold text-white">
+            {product ? "Edit Product" : "Add New Product"}
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-white hover:text-gray-200 transition duration-300"
+          >
+            <FaTimes size={24} />
+          </button>
+        </div>
+
+        <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Name */}
           <div>
-            <label className="block text-gray-700">Name</label>
+            <label
+              htmlFor="name"
+              className="block text-gray-700 font-semibold mb-2"
+            >
+              Name
+            </label>
             <Input
+              id="name"
               type="text"
               value={name}
-              onChange={e => setName(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
+
+          {/* Description */}
           <div>
-            <label className="block text-gray-700">Description</label>
+            <label
+              htmlFor="description"
+              className="block text-gray-700 font-semibold mb-2"
+            >
+              Description
+            </label>
             <textarea
+              id="description"
               value={description}
-              onChange={e => setDescription(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24 resize-y"
               required
             />
           </div>
-          <div>
-            <label className="block text-gray-700">Price</label>
-            <Input
-              type="number"
-              value={price}
-              onChange={e => setPrice(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
-              required
-            />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Price */}
+            <div>
+              <label
+                htmlFor="price"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Price
+              </label>
+              <Input
+                id="price"
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              />
+            </div>
+
+            {/* Category */}
+            <div>
+              <label
+                htmlFor="category"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Category
+              </label>
+              <Input
+                id="category"
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              />
+            </div>
           </div>
+
+          {/* Stock Quantity */}
           <div>
-            <label className="block text-gray-700">Category</label>
+            <label
+              htmlFor="stockQuantity"
+              className="block text-gray-700 font-semibold mb-2"
+            >
+              Stock Quantity
+            </label>
             <Input
-              type="text"
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Stock Quantity</label>
-            <Input
+              id="stockQuantity"
               type="number"
               value={stockQuantity}
-              onChange={e => setStockQuantity(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              onChange={(e) => setStockQuantity(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
+
+          {/* Image Upload */}
           <div>
-            <label className="block text-gray-700">Image</label>
-            <ImageUpload
-              images={images}
-              setImages={setImages}
-              setFile={setFile}
-            />
+            <label className="block text-gray-700 font-semibold mb-2">
+              Image
+            </label>
+            <ImageUpload onUpload={handleImageUpload} imageUrl={imageUrl} />
           </div>
+
+          {/* Upload Error Message */}
           {uploadError && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{uploadError}</AlertDescription>
             </Alert>
           )}
-          <div className="flex justify-end">
+
+          {/* Form Buttons */}
+          <div className="flex justify-end space-x-4 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="py-2 px-6 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
-              className="py-2 px-4 mr-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
+              className="py-2 px-6 bg-gradient-to-r from-green-600 to-teal-600  text-white rounded-lg hover:from-green-600 hover:to-teal-600 transition duration-300"
               disabled={isUploading}
             >
               {isUploading
@@ -159,17 +233,10 @@ const ProductForm = ({ product, onClose, onSave }) => {
                 ? "Save Changes"
                 : "Add Product"}
             </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
-            >
-              Cancel
-            </button>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

@@ -25,7 +25,7 @@ const Challenge = () => {
     console.log("Challenge ID:", challengeId);
     try {
       // Retrieve the token from cookies
-      const token = Cookies.get('token'); // Adjust this based on your cookie name
+      const token = Cookies.get("token"); // Adjust this based on your cookie name
 
       if (!token) {
         alert("No token found. Please log in.");
@@ -33,11 +33,11 @@ const Challenge = () => {
       }
 
       const response = await fetch(`/api/userChallenges/${challengeId}`, {
-        method: 'POST',
-        credentials: 'include',
+        method: "POST",
+        credentials: "include",
         headers: {
-          'Authorization': `Bearer ${token}`, // Pass the token
-          'Content-Type': 'application/json', // Ensure the content type is correct
+          Authorization: `Bearer ${token}`, // Pass the token
+          "Content-Type": "application/json", // Ensure the content type is correct
         },
       });
 
@@ -96,19 +96,32 @@ const Challenge = () => {
       <header className="text-center mb-12 relative">
         <div className="absolute inset-0 flex justify-between items-center pointer-events-none opacity-30">
           <Wind className="text-[#116A7B] animate-float" size={32} />
-          <Droplets className="text-blue-400 animate-float" size={32} style={{ animationDelay: '0.5s' }} />
-          <Sun className="text-yellow-400 animate-float" size={32} style={{ animationDelay: '1s' }} />
+          <Droplets
+            className="text-blue-400 animate-float"
+            size={32}
+            style={{ animationDelay: "0.5s" }}
+          />
+          <Sun
+            className="text-yellow-400 animate-float"
+            size={32}
+            style={{ animationDelay: "1s" }}
+          />
         </div>
-      
+
         <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#116A7B] to-[#116A7B] mb-4">
           Every Action Counts: Be a Part of the Solution!
         </h1>
-        <p className="text-lg text-[#116A7B]">Join us in making a difference, one challenge at a time</p>
+        <p className="text-lg text-[#116A7B]">
+          Join us in making a difference, one challenge at a time
+        </p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12">
         {challenges.map((challenge, index) => (
-          <div key={index} className="bg-white grid sm:grid-cols-2 items-center shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] w-full max-w-2xl max-sm:max-w-sm rounded-lg font-[sans-serif] overflow-hidden mx-auto mt-4">
+          <div
+            key={index}
+            className="bg-white grid sm:grid-cols-2 items-center shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] w-full max-w-2xl max-sm:max-w-sm rounded-lg font-[sans-serif] overflow-hidden mx-auto mt-4"
+          >
             <div className="min-h-[280px] h-full">
               <img
                 src={challenge.image}
@@ -126,14 +139,19 @@ const Challenge = () => {
                   Target: {challenge.targetValue}
                 </span>
                 <span className="text-gray-500 text-sm">
-                <a href={`/challengeDetails/${challenge._id}`} className="text-[#aaa123]">
-        Know more
-      </a>
+                  <a
+                    href={`/challengeDetails/${challenge._id}`}
+                    className="text-[#aaa123]"
+                  >
+                    Know more
+                  </a>
                   {/* {new Date(challenge.createdAt).toLocaleDateString()} */}
                 </span>
               </div>
-              <GrowingLeafButton text="Take Action Now" onClick={() => handleTakeAction(challenge._id)} />
-           
+              <GrowingLeafButton
+                text="Take Action Now"
+                onClick={() => handleTakeAction(challenge._id)}
+              />
             </div>
           </div>
         ))}
