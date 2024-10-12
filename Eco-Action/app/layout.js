@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import Navbar from "../app/Navbar/Navbar";
 import { Footer } from "./Footer/Footer";
 import { CartProvider } from "./context/CartContext";
-
+import { SessionProvider } from "next-auth/react";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",

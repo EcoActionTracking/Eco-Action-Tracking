@@ -28,72 +28,73 @@ export function Slider() {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto my-20 font-sans max-md:max-w-md">
-      <h1 className="text-4xl font-extrabold text-center text-[#116A7B] my-10">
-        Products
-      </h1>
-
-      <div className="relative w-full">
-        {loading ? (
-          <div className="text-center text-gray-500">Loading...</div>
-        ) : error ? (
-          <div className="text-center text-red-500">{error}</div>
-        ) : products.length === 0 ? (
-          <div className="text-center text-gray-500">No products available.</div>
-        ) : (
-          <Swiper
-            modules={[Navigation, Pagination]} // Use modules array correctly
-            loop={true}
+    <div className="mx-auto my-20 font-sans max-md:max-w-md max-w-7xl">
+    <h1 className="text-4xl font-extrabold text-center text-[#116A7B] my-10 mb-20">
+      Products
+    </h1>
   
-            pagination={{ clickable: true }}
-            slidesPerView={1}
-            spaceBetween={30}
-            breakpoints={{
-              640: {
-                slidesPerView: 1,
-              },
-              768: {
-                slidesPerView: 2,
-              },
-              1024: {
-                slidesPerView: 3,
-              },
-            }}
-            className="multiple-slide-carousel py-52"
-          >
-            {products.map((product) => (
-              <SwiperSlide key={product.id}>
-                <div className="flex items-center justify-center rounded-2xl ">
-                  <div className="bg-white shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] border p-2 w-full max-w-sm rounded-lg font-[sans-serif] overflow-hidden mx-auto mt-4 ">
-                    <div className="min-h-[10rem]">
-                      <img
-                        className="w-full rounded-lg h-80"
-                        src={product.images[0]} // Assuming each product has an image property
-                        alt={product.name} // Assuming each product has a name property
-                      />
-                    </div>
-                    <div className="p-6 text-center">
-                      <h3 className="text-xl font-bold">{product.name}</h3>
-                      <p className="mt-3 text-sm leading-relaxed text-gray-500">
-                        {product.price} JD{/* Assuming description property */}
-                      </p>
-                      <button
-                        className="mt-6 bg-[#116A7B] hover:bg-transparent hover:text-[#116A7B] border-2 border-[#116A7B] transition-all text-white font-semibold text-sm tracking-wide rounded-md px-6 py-2.5 w-full"
-                        type="button"
-                      >
-                        View
-                      </button>
-                    </div>
+    <div className="relative w-full">
+      {loading ? (
+        <div className="text-center text-gray-500">Loading...</div>
+      ) : error ? (
+        <div className="text-center text-red-500">{error}</div>
+      ) : products.length === 0 ? (
+        <div className="text-center text-gray-500">No products available.</div>
+      ) : (
+        <Swiper
+          modules={[Navigation, Pagination]}
+          loop={true}
+          pagination={{ clickable: true }}
+          slidesPerView={1}
+          spaceBetween={5}
+          breakpoints={{
+            640: {
+              slidesPerView: 1, // Show 1 product on small screens
+            },
+            768: {
+              slidesPerView: 2, // Show 2 products on medium screens
+            },
+            1024: {
+              slidesPerView: 3, // Show 3 products on large screens
+            },
+            1280: {
+              slidesPerView: 4, // Show 4 products on extra-large screens
+            },
+            1536: {
+              slidesPerView: 5, // Show 5 products on ultra-wide screens
+            },
+          }}
+          className="multiple-slide-carousel py-52"
+        >
+          {products.map((product) => (
+            <SwiperSlide key={product.id}>
+              <div className="relative z-50 overflow-hidden rounded-lg shadow-md cursor-pointer group hover:before:bg-black before:absolute before:inset-0 before:opacity-20 before:transition-all w-72 h-80">
+                <div className="w-full mx-auto overflow-hidden h-80 aspect-w-16 aspect-h-8">
+                  <img
+                    src={product.images[0]}
+                    alt="product3"
+                    className="w-full h-full"
+                  />
+                </div>
+                <div className="absolute left-0 right-0 w-11/12 p-3 mx-auto transition-all duration-300 bg-white rounded-lg -bottom-80 group-hover:bottom-2">
+                  <div className="text-center">
+                    <h3 className="text-base font-bold text-gray-800">{product.name}</h3>
+                    <h4 className="text-lg text-[#116A7B] font-bold mt-2">{product.price} JD</h4>
                   </div>
                 </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        )}
-      </div>
-
-      {/* Adding Swiper.js with next/script */}
-      <Script src="https://unpkg.com/swiper/swiper-bundle.min.js" strategy="beforeInteractive" />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </div>
+  
+    {/* Adding Swiper.js with next/script */}
+    <Script
+      src="https://unpkg.com/swiper/swiper-bundle.min.js"
+      strategy="beforeInteractive"
+    />
+  </div>
+  
   );
 }

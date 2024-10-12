@@ -4,18 +4,36 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ChangePassword from './ChangePassword';
-
+import UserChallenges from './UserChallenges';
+import { Leaf, User, Mail, Image, Save, X } from 'lucide-react';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from '../../lib/firebase'; 
+import { OrderUser } from './OrdersUser';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
+    const [view, setView] = useState('challenges'); 
     const [formData, setFormData] = useState({
         username: "",
         email: "",
         image: "",
     });
+    const [imageFile, setImageFile] = useState(null);
+    
+    const handleImageUpload = async (file) => {
+        const storageRef = ref(storage, `images/${file.name}`);
+        try {
+            await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(storageRef);
+            setFormData(prevData => ({ ...prevData, image: downloadURL }));
+            toast.success('Image uploaded successfully!');
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            toast.error('Failed to upload image.');
+        }
+    };
 
   
     useEffect(() => {
@@ -23,7 +41,6 @@ const Profile = () => {
         try {
           const response = await axios.get('/api/user');
           setUser(response.data.user);
-          console.log(response.data.user)
           setFormData({
             username: response.data.user.username,
             email: response.data.user.email,
@@ -52,7 +69,7 @@ const Profile = () => {
         try {
             await axios.put(`/api/user/${user._id}`, formData);
             setUser({ ...user, ...formData });
-            setIsEditing(false);
+            setView('challenges');
             toast.success('successfully!'); 
         } catch (err) {
             if (err.response && err.response.status === 401) {
@@ -64,10 +81,18 @@ const Profile = () => {
             }
         }
     };
+    
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImageFile(file); // Save the selected file
+            handleImageUpload(file); // Call the upload function
+        }
+    };
 
     const handleCancelEdit = () => {
      
-        setIsEditing(false);
+        setView('challenges');
     };
     
         if (loading) {
@@ -125,18 +150,22 @@ const Profile = () => {
                 </div>
                 <div className="flex flex-col lg:flex-row max-lg:gap-5 items-center justify-between py-0.5">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => setIsEditing(true)} className="py-3.5 px-5 rounded-md bg-[#116A7B] text-white font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-400 hover:bg-[#58938e]">
+                        <button onClick={() => setView('edit')} className={`py-3.5 px-5 rounded-md ${view === 'edit' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'}   font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-400 hover:bg-[#58938e]`}>
                             Edit Profile
                         </button>
-                        <button className="py-3.5 px-5 rounded-md bg-[#C2DEDC] text-[#116A7B] font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#bfc7c6]">
+                        <button onClick={() => setView('changePassword')} 
+                        className={`py-3.5 px-5 rounded-md ${view === 'changePassword' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'} font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#58938e]`}
+                                >
                           Change Password
                         </button>
                     </div>
                     <div className="flex flex-col items-center gap-6 md:flex-row">
-                        <p className="flex items-center gap-2 text-lg font-medium leading-8 text-[#116A7B]">
+                        <p onClick={() => setView('challenges')} 
+                                    className={`py-3.5 px-5 rounded-md ${view === 'challenges' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'} font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#58938e]`}
+                        >
                             Challenges |
                         </p>
-                        <p className="flex items-center gap-2 text-lg font-medium leading-8 text-[#116A7B]">
+                        <p onClick={() => setView('Orders')}   className={`py-3.5 px-5 rounded-md ${view === 'Orders' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'} font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#58938e]`}>
                             Orders |
                         </p>
                         <p className="flex items-center gap-2 text-lg font-medium leading-8 text-[#116A7B]">
@@ -144,53 +173,63 @@ const Profile = () => {
                         </p>
                     </div>
                 </div>
-                {!isEditing ? (
-                            <>
-                                <div className="flex flex-col items-center justify-between mb-5 sm:flex-row max-sm:gap-5">
-                                   <ChangePassword id={user._id}/>
-                                </div>
-                            </>
-                           ) : (
-                            <div className="flex flex-col gap-4 my-20">
+                {view === 'edit' ? (
+                            <div className="flex flex-col items-center justify-center mt-20">
+                             <div className="p-8 space-y-8 bg-white rounded-lg shadow-xl w-[40rem]">
+                                    <div className="text-center">
+                                        <Leaf className="w-16 h-16 mx-auto text-[#116A7B]" />
+                                        <h2 className="mt-6 text-3xl font-extrabold text-[#116A7B]">Edit Profile</h2>
+                                    </div>
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                handleProfileEdit();
+                            }} className="flex flex-col gap-4">
+                            <div className="relative">
+                              <User className="absolute w-5 h-5 text-[#116A7B] top-3 left-3" />
                                 <input
                                     type="text"
                                     name="username"
                                     value={formData.username}
                                     onChange={handleInputChange}
-                                    className="p-2 border rounded"
+                                    className="w-full pl-10 pr-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#116A7B] focus:border-[#116A7B]"
                                     placeholder="Username"
                                 />
+                            </div>
+                            <div className="relative">
+                             <Mail className="absolute w-5 h-5 text-[#116A7B] top-3 left-3" />
                                 <input
                                     type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleInputChange}
-                                    className="p-2 border rounded"
+                                    className="w-full pl-10 pr-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#116A7B] focus:border-[#116A7B]"
                                     placeholder="Email"
                                 />
+                             </div>   
+                            <div className="relative">
+                              <Image className="absolute w-5 h-5 text-[#116A7B] top-3 left-3" />
                                 <input
-                                    type="text"
-                                    name="image"
-                                    value={formData.image}
-                                    onChange={handleInputChange}
-                                    className="p-2 border rounded"
-                                    placeholder="Image URL"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    className="w-full pl-10 pr-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#116A7B] focus:border-[#116A7B]"
                                 />
-                                <div className="flex w-full gap-4">
-                                    <button
-                                        className="py-3.5 px-5 rounded-md bg-[#116A7B] text-white font-semibold w-full hover:shadow-gray-400 hover:bg-[#58938e] duration-500"
-                                        onClick={handleProfileEdit}
-                                    >
-                                        Save Changes
-                                    </button>
-                                    <button
-                                        className="py-3.5 px-5 rounded-md bg-red-500 text-white font-semibold w-full"
-                                        onClick={handleCancelEdit}
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
                             </div>
+                                <div className="flex gap-2">
+                                    <button type="submit"  className="w-full px-4  bg-gradient-to-r from-[#116A7B] to-[#67cbd8] text-white hover:bg-[#137B8E] rounded-md flex justify-center items-center gap-2"> <Save />
+                                    Save Changes</button>
+                                    <button onClick={handleCancelEdit} className="flex items-center justify-center w-full gap-2 px-4 py-2 text-white rounded-md bg-gradient-to-r from-red-500 to-red-400 hover:bg-red-600"> <X />
+                                    Cancel</button>
+                                </div>
+                                </form>
+                             </div>
+                            </div>
+                        ) : view === 'changePassword' ? (
+                            <ChangePassword id={user._id}/>
+                        ) : view === 'Orders' ? (
+                            <OrderUser userId={user._id}/>
+                        ) : (
+                            <UserChallenges userId={user._id} />
                         )}
             </div>
         </section>
