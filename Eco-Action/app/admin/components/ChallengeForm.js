@@ -1,23 +1,23 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import ImageUpload from "./ImageUpload";
 import { uploadImage } from "@/utils/uploadImage";
-import { FaTimes, FaPlus, FaMinus } from "react-icons/fa";
+import { FaTimes, FaPlus, FaMinus, FaInfoCircle } from "react-icons/fa";
 
 const ChallengeForm = ({ challenge, onSave, onClose }) => {
   const [formData, setFormData] = useState(
     challenge || {
       title: "",
       description: "",
-      targetValue: 0,
+      targetValue: "",
       discount: {
-        amount: 0,
+        amount: "",
         discountCode: "",
       },
       difficultyLevel: "intermediate",
-      participationCount: 0,
+      participationCount: "",
       stages: [],
       image: null,
       isDeleted: false,
@@ -26,6 +26,7 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
 
   const [uploadError, setUploadError] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [showTargetTooltip, setShowTargetTooltip] = useState(false);
   const formRef = useRef(null);
 
   const handleChange = (e) => {
@@ -106,11 +107,22 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
-      <div className="bg-white rounded-lg shadow-xl w-11/12 max-w-4xl my-8 overflow-hidden">
-        <div className="bg-gradient-to-r from-green-600 to-teal-600 p-6 flex justify-between items-center">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto"
+    >
+      <motion.div
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 50, opacity: 0 }}
+        className="bg-white rounded-lg shadow-2xl w-11/12 max-w-3xl my-8 overflow-y-auto ml-32"
+        style={{ maxHeight: "85vh" }}
+      >
+        <div className="bg-gradient-to-r from-green-500 to-teal-500 p-6 rounded-t-lg flex justify-between items-center">
           <h3 className="text-2xl font-bold text-white">
-            {challenge ? "Edit Challenge" : "Add New Challenge"}
+            {challenge ? "Edit Challenge" : "Create New Challenge"}
           </h3>
           <button
             onClick={onClose}
@@ -121,65 +133,88 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
         </div>
 
         <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Title */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Title
-              </label>
-              <input
-                type="text"
-                name="title"
-                placeholder="Enter challenge title"
-                value={formData.title}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                required
-              />
-            </div>
-
-            {/* Target Value */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Target Value
-              </label>
-              <input
-                type="number"
-                name="targetValue"
-                placeholder="Enter target value"
-                value={formData.targetValue}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                required
-              />
-            </div>
-          </div>
-
-          {/* Description */}
+          {/* Title */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Description
+            <label
+              htmlFor="title"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              Title (required)
             </label>
-            <textarea
-              name="description"
-              placeholder="Enter challenge description"
-              value={formData.description}
+            <input
+              type="text"
+              id="title"
+              name="title"
+              placeholder="E.g., 30-Day Fitness Challenge"
+              value={formData.title}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent h-32"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               required
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Description */}
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              Description (required)
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Tell us about your challenge..."
+              value={formData.description}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent h-28 resize-y"
+              required
+            />
+          </div>
+
+          {/* Target Value & Tooltip */}
+          <div className="relative">
+            <label
+              htmlFor="targetValue"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              Target Value (optional){" "}
+              <FaInfoCircle
+                className="inline-block ml-1 text-gray-500 cursor-pointer"
+                onMouseEnter={() => setShowTargetTooltip(true)}
+                onMouseLeave={() => setShowTargetTooltip(false)}
+              />
+            </label>
+            {showTargetTooltip && (
+              <div className="absolute z-10 bg-gray-800 text-white text-sm rounded-lg p-2 shadow-lg -left-20 top-8">
+                E.g., Number of steps, miles, etc.
+              </div>
+            )}
+            <input
+              type="number"
+              id="targetValue"
+              name="targetValue"
+              placeholder="E.g., 10000"
+              value={formData.targetValue}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Discount Amount */}
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Discount Amount
+              <label
+                htmlFor="discount.amount"
+                className="block text-gray-700 font-semibold mb-1"
+              >
+                Discount Amount (optional)
               </label>
               <input
-                type="number"
+                type="number" // Use type="number" for number inputs
+                id="discount.amount"
                 name="discount.amount"
-                placeholder="Enter discount amount"
+                placeholder="E.g., 10"
                 value={formData.discount.amount}
                 onChange={handleChange}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -188,46 +223,58 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
 
             {/* Discount Code */}
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Discount Code
+              <label
+                htmlFor="discount.discountCode"
+                className="block text-gray-700 font-semibold mb-1"
+              >
+                Discount Code (optional)
               </label>
               <input
                 type="text"
+                id="discount.discountCode"
                 name="discount.discountCode"
-                placeholder="Enter discount code"
+                placeholder="E.g., SUMMER20"
                 value={formData.discount.discountCode}
                 onChange={handleChange}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
             </div>
+          </div>
 
-            {/* Difficulty Level */}
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                Difficulty Level
-              </label>
-              <select
-                name="difficultyLevel"
-                value={formData.difficultyLevel}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              >
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-              </select>
-            </div>
+          {/* Difficulty Level */}
+          <div>
+            <label
+              htmlFor="difficultyLevel"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              Difficulty Level
+            </label>
+            <select
+              id="difficultyLevel"
+              name="difficultyLevel"
+              value={formData.difficultyLevel}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            >
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
           </div>
 
           {/* Participation Count */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Participation Count
+            <label
+              htmlFor="participationCount"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              Expected Participants (optional)
             </label>
             <input
               type="number"
+              id="participationCount"
               name="participationCount"
-              placeholder="Enter participation count"
+              placeholder="E.g., 100"
               value={formData.participationCount}
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -237,12 +284,15 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
           {/* Stages Section */}
           <div className="space-y-4">
             <h4 className="text-xl font-semibold text-gray-700">
-              Challenge Stages
+              Challenge Stages (optional)
             </h4>
             <AnimatePresence>
               {formData.stages.map((stage, index) => (
-                <div
+                <motion.div
                   key={index}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
                   className="p-4 border border-gray-200 rounded-lg space-y-3"
                 >
                   <div className="flex justify-between items-center">
@@ -254,7 +304,7 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
                       onClick={() => removeStage(index)}
                       className="text-red-500 hover:text-red-700 transition duration-300 px-4 py-2"
                     >
-                      <FaMinus size={25} />
+                      <FaMinus size={20} /> {/* Smaller icon size */}
                     </button>
                   </div>
                   <input
@@ -270,56 +320,69 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
                     placeholder="Stage Description"
                     value={stage.stageDescription}
                     onChange={(e) =>
-                      updateStage(index, { stageDescription: e.target.value })
+                      updateStage(index, {
+                        stageDescription: e.target.value,
+                      })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent h-24"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent h-20" // Reduced textarea height
                   />
-                </div>
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                      Stage Image (optional)
+                    </label>
+                    <ImageUpload
+                      onUpload={(file) => handleStageImageUpload(index, file)}
+                      imageUrl={stage.imageUrl}
+                    />
+                  </div>
+                </motion.div>
               ))}
             </AnimatePresence>
-
-            <div>
-              <button
-                type="button"
-                onClick={handleAddStage}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300 flex gap-1 "
-              >
-                <FaPlus size={20} />
-                Add Stage
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleAddStage}
+              className="w-full py-3 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 flex items-center justify-center"
+            >
+              <FaPlus className="mr-2" /> Add Stage
+            </button>
           </div>
 
-          {/* Image Upload */}
-          <div className="space-y-3">
+          {/* Image Upload Section */}
+          <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              Upload Challenge Image
+              Challenge Image (optional)
             </label>
             <ImageUpload
-              onImageUpload={handleImageUpload}
-              error={uploadError}
-              isUploading={isUploading}
+              onUpload={handleImageUpload}
+              imageUrl={formData.image}
             />
           </div>
 
-          <div className="flex justify-end space-x-4">
+          {/* Upload Error Message */}
+          {uploadError && (
+            <div className="mt-2 text-red-500">
+              <span>{uploadError}</span>
+            </div>
+          )}
+
+          <div className="flex justify-end space-x-4 mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-300"
+              className="py-2 px-6 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300"
+              className="py-2 px-6 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-lg hover:from-green-600 hover:to-teal-600 transition duration-300"
             >
-              {challenge ? "Update Challenge" : "Create Challenge"}
+              {challenge ? "Save Changes" : "Create Challenge"}
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
