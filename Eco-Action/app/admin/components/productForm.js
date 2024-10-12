@@ -1,7 +1,6 @@
 "use client"; // This indicates client-side rendering for Next.js
 
 import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import ImageUpload from "./ImageUpload";
 import { AlertCircle } from "lucide-react";
@@ -81,19 +80,9 @@ const ProductForm = ({ product, onClose, onSave }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto"
-    >
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 50, opacity: 0 }}
-        className="bg-white rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 max-w-4xl my-8 overflow-hidden"
-      >
-        <div className="bg-gradient-to-r from-green-600 to-teal-600  p-6 flex justify-between items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 max-w-4xl my-8 overflow-hidden">
+        <div className="bg-gradient-to-r from-green-600 to-teal-600 p-6 flex justify-between items-center">
           <h3 className="text-2xl font-bold text-white">
             {product ? "Edit Product" : "Add New Product"}
           </h3>
@@ -224,7 +213,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
             </button>
             <button
               type="submit"
-              className="py-2 px-6 bg-gradient-to-r from-green-600 to-teal-600  text-white rounded-lg hover:from-green-600 hover:to-teal-600 transition duration-300"
+              className="py-2 px-6 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-600 hover:to-teal-600 transition duration-300"
               disabled={isUploading}
             >
               {isUploading
@@ -235,8 +224,8 @@ const ProductForm = ({ product, onClose, onSave }) => {
             </button>
           </div>
         </form>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };
 

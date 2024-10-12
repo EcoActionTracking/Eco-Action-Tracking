@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import ImageUpload from "./ImageUpload";
 import { uploadImage } from "@/utils/uploadImage";
 import { FaTimes, FaPlus, FaMinus } from "react-icons/fa";
@@ -106,18 +106,8 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto"
-    >
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 50, opacity: 0 }}
-        className="bg-white rounded-lg shadow-xl w-11/12 max-w-4xl my-8 overflow-hidden"
-      >
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl w-11/12 max-w-4xl my-8 overflow-hidden">
         <div className="bg-gradient-to-r from-green-600 to-teal-600 p-6 flex justify-between items-center">
           <h3 className="text-2xl font-bold text-white">
             {challenge ? "Edit Challenge" : "Add New Challenge"}
@@ -251,11 +241,8 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
             </h4>
             <AnimatePresence>
               {formData.stages.map((stage, index) => (
-                <motion.div
+                <div
                   key={index}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
                   className="p-4 border border-gray-200 rounded-lg space-y-3"
                 >
                   <div className="flex justify-between items-center">
@@ -287,64 +274,52 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
                     }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent h-24"
                   />
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                      Stage Image
-                    </label>
-                    <ImageUpload
-                      onUpload={(file) => handleStageImageUpload(index, file)}
-                      imageUrl={stage.imageUrl}
-                    />
-                  </div>
-                </motion.div>
+                </div>
               ))}
             </AnimatePresence>
-            <button
-              type="button"
-              onClick={handleAddStage}
-              className="w-full py-3 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 flex items-center justify-center"
-            >
-              <FaPlus className="mr-2" /> Add Stage
-            </button>
+
+            <div>
+              <button
+                type="button"
+                onClick={handleAddStage}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300 flex gap-1 "
+              >
+                <FaPlus size={20} />
+                Add Stage
+              </button>
+            </div>
           </div>
 
-          {/* Image Upload Section (Main Challenge Image) */}
-          <div>
+          {/* Image Upload */}
+          <div className="space-y-3">
             <label className="block text-gray-700 font-semibold mb-2">
-              Challenge Image
+              Upload Challenge Image
             </label>
             <ImageUpload
-              onUpload={handleImageUpload}
-              imageUrl={formData.image}
+              onImageUpload={handleImageUpload}
+              error={uploadError}
+              isUploading={isUploading}
             />
           </div>
 
-          {/* Upload Error Message */}
-          {uploadError && (
-            <div className="mt-2 text-red-500">
-              <span>{uploadError}</span>
-            </div>
-          )}
-
-          {/* Form Buttons */}
-          <div className="flex justify-end space-x-4 mt-6">
+          <div className="flex justify-end space-x-4">
             <button
               type="button"
               onClick={onClose}
-              className="py-2 px-6 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-300"
+              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-300"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="py-2 px-6 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-lg hover:from-green-600 hover:to-teal-600 transition duration-300"
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300"
             >
-              {challenge ? "Save Changes" : "Add Challenge"}
+              {challenge ? "Update Challenge" : "Create Challenge"}
             </button>
           </div>
         </form>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };
 
