@@ -51,19 +51,19 @@ export function Slider() {
             spaceBetween={5}
             breakpoints={{
               640: {
-                slidesPerView: 1, // Show 1 product on small screens
+                slidesPerView: 4, // Show 4 products on small screens
               },
               768: {
-                slidesPerView: 2, // Show 2 products on medium screens
+                slidesPerView: 4, // Show 4 products on medium screens
               },
               1024: {
-                slidesPerView: 3, // Show 3 products on large screens
+                slidesPerView: 4, // Show 4 products on large screens
               },
               1280: {
                 slidesPerView: 4, // Show 4 products on extra-large screens
               },
               1536: {
-                slidesPerView: 5, // Show 5 products on ultra-wide screens
+                slidesPerView: 4, // Show 4 products on ultra-wide screens
               },
             }}
             className="multiple-slide-carousel py-52"

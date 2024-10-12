@@ -33,10 +33,6 @@ const UserChallengesSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    disscountUsed: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true }
 );
