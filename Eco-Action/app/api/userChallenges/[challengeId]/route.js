@@ -42,3 +42,5 @@ export async function POST(req, { params }) {
         return NextResponse.json({ message: 'Error adding challenge', error: error.message }, { status: 500 });
     }
 }
+
+

@@ -33,11 +33,11 @@ const ProductForm = ({ product, onClose, onSave }) => {
     }
   }, [product]);
 
-  const handleImageUpload = (file) => {
+  const handleImageUpload = file => {
     setFile(file);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setIsUploading(true);
     setUploadError(null);
@@ -107,7 +107,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
               id="name"
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
@@ -124,7 +124,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
             <textarea
               id="description"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={e => setDescription(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24 resize-y"
               required
             />
@@ -143,7 +143,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
                 id="price"
                 type="number"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={e => setPrice(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
@@ -161,7 +161,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
                 id="category"
                 type="text"
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={e => setCategory(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
@@ -180,7 +180,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
               id="stockQuantity"
               type="number"
               value={stockQuantity}
-              onChange={(e) => setStockQuantity(e.target.value)}
+              onChange={e => setStockQuantity(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
