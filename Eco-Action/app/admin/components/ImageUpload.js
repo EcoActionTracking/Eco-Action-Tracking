@@ -18,7 +18,7 @@ const ImageUpload = ({ images, setImages, setFile }) => {
     <div>
       <Input type="file" onChange={handleFileChange} accept="image/*" />
       {images && images.length > 0 && (
-        <img src={images[0]} alt="Preview" className="mt-2 max-w-xs h-auto" />
+        <img src={images[0]} alt="Preview" className="mt-2 max-w-40 h-auto" />
       )}
     </div>
   );
