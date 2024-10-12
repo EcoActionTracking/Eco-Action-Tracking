@@ -22,7 +22,7 @@ export default function ChallengeDetails() {
   const [challenge, setChallenge] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeStage, setActiveStage] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(null); 
+  const [selectedImage, setSelectedImage] = useState(null); // state للصورة
   const [uploadCount, setUploadCount] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef(null);
@@ -44,11 +44,6 @@ export default function ChallengeDetails() {
     if (params.id) {
       fetchChallenge();
     }
-      // Load uploadCount from localStorage on page load
-      const savedUploadCount = localStorage.getItem('uploadCount');
-      if (savedUploadCount) {
-        setUploadCount(parseInt(savedUploadCount, 10)); // Convert to number
-      }
   }, [params.id]);
   const handleImageUpload = async () => {
     if (!selectedImage) {
@@ -75,17 +70,17 @@ export default function ChallengeDetails() {
       const data = await response.json();
       alert(data.message);
   
-      setUploadCount((prevCount) => {
-        const newCount = prevCount + 1;
-        localStorage.setItem('uploadCount', newCount); // Save to localStorage
-        return newCount;
-      });
+      // زيادة عدد مرات التحميل عند النجاح
+      setUploadCount((prevCount) => prevCount + 1);
+      setUploadProgress(0); // إعادة التهيئة إذا استخدمت progress bar
+  
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred: " + error.message);
     }
   };
   
+  // دالة حساب النسبة المئوية للتقدم
   const progressPercentage = (uploadCount / challenge?.targetValue) * 100;
   
 
@@ -184,7 +179,20 @@ export default function ChallengeDetails() {
           <div>
             <h1 className="text-4xl font-bold text-[#116A7B] mb-4">{challenge.title}</h1>
             <p className="text-lg text-[#116A7B]/70 mb-6">{challenge.description}</p>
-         
+            <div className="mt-8">
+                      <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setSelectedImage(e.target.files[0])} // Update state with selected file
+                      />
+          <button
+            onClick={handleImageUpload}
+            className="mt-4 bg-[#116A7B] text-white py-2 px-4 rounded-lg"
+          >
+            Upload Image
+          </button>
+
+        </div>
             <div className="grid grid-cols-2 gap-4 mb-8">
               <div className="bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
                 <Target className="text-[#116A7B] mb-2" size={24} />
@@ -276,37 +284,23 @@ export default function ChallengeDetails() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {challenge.stages.map((stage) => (
-               <div
-               key={stage.stageNumber}
-               className={`relative p-6 rounded-xl cursor-pointer transition-all duration-300 ${
-                 activeStage === stage.stageNumber
-                   ? 'bg-[#116A7B] text-white shadow-lg'
-                   : 'bg-[#116A7B]/5 text-[#116A7B] hover:bg-[#116A7B]/10'
-               }`}
-               onClick={() => setActiveStage(stage.stageNumber)}
-             >
-               <div className="flex items-center justify-between">
-                 <h3 className="font-semibold text-lg">Stage {stage.stageNumber}</h3>
-                 <div className="w-16 h-20 rounded-2xl overflow-hidden flex-shrink-0">
-                   <img 
-                     src={stage.imageUrl} 
-                     className="w-full h-full object-cover" 
-                     alt={`Stage ${stage.stageNumber}`} 
-                   />
-                 </div>
-               </div>
-             
-               <p
-                 className={`mt-1 text-sm ${
-                   activeStage === stage.stageNumber
-                     ? 'text-white/90'
-                     : 'text-[#116A7B]/70'
-                 }`}
-               >
-                 {stage.stageDescription}
-               </p>
-             </div>
-             
+                <div 
+                  key={stage.stageNumber}
+                  className={`relative p-6 rounded-xl cursor-pointer transition-all duration-300 ${
+                    activeStage === stage.stageNumber 
+                    ? 'bg-[#116A7B] text-white shadow-lg' 
+                    : 'bg-[#116A7B]/5 text-[#116A7B] hover:bg-[#116A7B]/10'
+                  }`}
+                  onClick={() => setActiveStage(stage.stageNumber)}
+                >
+                  <div className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center bg-white text-[#116A7B] font-semibold">
+                    {stage.stageNumber}
+                  </div>
+                  <h3 className="font-semibold mb-2">Stage {stage.stageNumber}</h3>
+                  <p className={activeStage === stage.stageNumber ? 'text-white/90' : 'text-[#116A7B]/70'}>
+                    {stage.stageDescription}
+                  </p>
+                </div>
               ))}
             </div>
           </div>

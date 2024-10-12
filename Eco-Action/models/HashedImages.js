@@ -18,10 +18,10 @@ const imageSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true // Ensure that the hash is unique
-  }
+  },uploadCount: { type: Number, default: 0 }
 });
 
 // Create the Image model from the schema
-const Image = mongoose.model('Image', imageSchema);
+const Imageh = mongoose.models.Image || mongoose.model('Image', imageSchema);
 
-module.exports = Image;
+export default Imageh;
