@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 import Navbar from "../app/Navbar/Navbar";
 import { Footer } from "./Footer/Footer";
 import { CartProvider } from "./context/CartContext";
+import { NotificationProvider } from "./context/NotificationContext";
+import NotificationAlert from "./components/NotificationAlert";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -41,12 +43,15 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <CartProvider>
-          {!isLoginPage && <Navbar token={token} />}
-          {children}
+        <NotificationProvider>
+          <CartProvider>
+            {!isLoginPage && <Navbar token={token} />}
+            <NotificationAlert />
 
-          <Footer />
-        </CartProvider>
+            {children}
+            <Footer />
+          </CartProvider>
+        </NotificationProvider>
       </body>
     </html>
   );
