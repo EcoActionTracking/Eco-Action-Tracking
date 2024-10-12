@@ -5,14 +5,15 @@ import CompanyForm from './Home/companyform';
 import { FAQ } from './Home/FAQ';
 import { Slider } from './Home/Slider';
 import {Image} from './Home/image';
-
+import { AboutUs } from './Home/AboutUs';
 
 const HomePage = () => {
   return (
    <>
    <HeroSection/>
-   <CompanyForm/>
    <Slider/>
+   <CompanyForm/>
+   <AboutUs/>
    <Image/>
    <FAQ/>
    </>

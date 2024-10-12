@@ -5,7 +5,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie'; 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-const homeImage = "/images/home.jpg";
+const homeImage = "/images/section.svg";
 
 export default function CompanyForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,15 +62,15 @@ export default function CompanyForm() {
   return (
   
       
-    <div className={`flex items-center text-center  min-h-[10rem] bg-gradient-to-t from-[#116A7B] to-gray-600 w-full font-[sans-serif]`} 
+    <div className={`flex items-center text-center  min-h-[10rem] bg-gradient-to-t from-[#116A7B] to-gray-600 w-full font-[sans-serif] mt-20 `} 
     style={{
         backgroundImage: `url(${homeImage})`, // Use the image URL directly
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
     }}>
-  <div className="max-w-full p-6 mx-auto bg-[#116A7B] bg-opacity-50 rounded-lg">
-    <h1 className="my-10 text-lg font-bold text-white sm:text-2xl">
+  <div className="max-w-full p-6 mx-auto bg-[#116A7B] bg-opacity-50  px-20">
+    <h1 className="my-10 text-sm font-bold text-white sm:text-lg">
     Join us in our mission to reduce food waste! Sign up your company or restaurant to provide excess food and enjoy exclusive discounts on our services. Together, we can make a difference!
     </h1>
   
