@@ -107,6 +107,10 @@ const OrderSchema = new mongoose.Schema(
       enum: ["pending", "succeeded", "failed"],
       default: "pending",
     },
+    orderStatus: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
