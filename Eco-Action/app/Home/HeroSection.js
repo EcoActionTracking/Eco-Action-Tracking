@@ -99,6 +99,7 @@ export default function HeroSection(){
                   </li>
                 </ul>
               </div>
+              
             </div>
           </div>
         </div>

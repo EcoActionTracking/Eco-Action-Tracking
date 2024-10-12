@@ -1,109 +1,30 @@
-"use client";
-
-import { useState, useCallback, useRef } from "react";
-import { uploadImage } from "@/utils/uploadImage";
-import { Button } from "@/components/ui/button";
+// ImageUpload.js
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { AlertCircle, Loader2 } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function ImageUpload() {
-  const [file, setFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const formRef = useRef(null);
+const ImageUpload = ({ onUpload, imageUrl }) => {
+  const [previewImage, setPreviewImage] = useState(imageUrl);
 
-  const handleFileChange = useCallback(e => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreviewImage(URL.createObjectURL(file));
+      onUpload(file);
     }
-  }, []);
-
-  const handleSubmit = useCallback(
-    async e => {
-      e.preventDefault();
-      if (!file) return;
-
-      setIsLoading(true);
-      setError("");
-
-      try {
-        const downloadURL = await uploadImage(file);
-        setImageUrl(downloadURL);
-
-        // Save image URL to MongoDB
-        const response = await fetch("/api/saveImage", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ imageUrl: downloadURL }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to save image URL");
-        }
-
-        console.log("Image URL saved to database");
-
-        // Reset the form
-        if (formRef.current) {
-          formRef.current.reset();
-        }
-        setFile(null);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        setError("Failed to upload image. Please try again.");
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [file]
-  );
+  };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>Upload Image</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-          <Input type="file" onChange={handleFileChange} accept="image/*" />
-          <Button type="submit" disabled={!file || isLoading}>
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Uploading...
-              </>
-            ) : (
-              "Upload"
-            )}
-          </Button>
-        </form>
-        {error && (
-          <Alert variant="destructive" className="mt-4">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-      </CardContent>
-      {imageUrl && (
-        <CardFooter>
-          <img
-            src={imageUrl}
-            alt="Uploaded"
-            className="max-w-full h-auto rounded-md"
-          />
-        </CardFooter>
+    <div>
+      <Input type="file" onChange={handleFileChange} accept="image/*" />
+      {previewImage && (
+        <img
+          src={previewImage}
+          alt="Preview"
+          className="mt-2 max-w-40 h-auto"
+        />
       )}
-    </Card>
+    </div>
   );
-}
+};
+
+export default ImageUpload;

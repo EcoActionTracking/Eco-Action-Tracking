@@ -6,7 +6,7 @@ export function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Define protected routes
-  const protectedRoutes = ["/"];
+  const protectedRoutes = ["/", "/checkout", "/order-confirmation"];
 
   if (protectedRoutes.some((route) => pathname.startsWith(route))) {
     if (!token || !verifyToken(token)) {
@@ -27,5 +27,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/", "/login", "/signup"],
+  matcher: ["/", "/checkout", "/order-confirmation", "/login", "/signup"],
 };
