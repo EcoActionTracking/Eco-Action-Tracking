@@ -9,8 +9,8 @@ const sidebarItems = [
   { name: "Overview", icon: Leaf, path: "/admin" },
   { name: "Users", icon: BarChart2, path: "/admin/users" },
   { name: "Products", icon: Users, path: "/admin/products" },
-  { name: "Energy Saving", icon: Sun, path: "/admin/energy-saving" },
-  { name: "Settings", icon: Settings, path: "/admin/settings" },
+  { name: "Challenges", icon: Sun, path: "/admin/challenges" },
+  { name: "Articles", icon: Settings, path: "/admin/articles" },
 ];
 
 const Sidebar = () => {

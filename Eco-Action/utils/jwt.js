@@ -11,9 +11,7 @@ export const createToken = (id) => {
 
 export const verifyToken = (token) => {
   try {
-    
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("sssssssss", decoded);
     return decoded;
   } catch (error) {
     return false;
