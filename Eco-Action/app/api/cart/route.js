@@ -2,7 +2,7 @@
 
 import { NextResponse } from "next/server";
 import dbConnect from "../../../lib/mongodb";
-import Cart from "../../../models/Cart ";
+import Cart from "../../../models/Cart";
 import Product from "../../../models/Product"; // Assuming you have a Product model
 import { verifyToken } from "../../../utils/jwt";
 
@@ -57,7 +57,7 @@ export async function POST(req) {
     }
 
     const existingItemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
+      item => item.productId.toString() === productId
     );
 
     if (existingItemIndex > -1) {
@@ -94,7 +94,7 @@ export async function PUT(req) {
     }
 
     const itemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
+      item => item.productId.toString() === productId
     );
     if (itemIndex === -1) {
       return NextResponse.json(
