@@ -2,7 +2,7 @@
 
 import { NextResponse } from "next/server";
 import dbConnect from "../../../../lib/mongodb";
-import Cart from "../../../../models/Cart ";
+import Cart from "../../../../models/Cart";
 import { verifyToken } from "../../../../utils/jwt";
 
 // Helper function to get user ID from token
@@ -31,7 +31,7 @@ export async function DELETE(req, { params }) {
 
     // Filter out the product from the cart
     cart.items = cart.items.filter(
-      (item) => item.productId.toString() !== productId
+      item => item.productId.toString() !== productId
     );
 
     await cart.save();

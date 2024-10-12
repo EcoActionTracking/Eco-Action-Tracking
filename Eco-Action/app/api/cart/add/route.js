@@ -2,7 +2,7 @@
 
 import { NextResponse } from "next/server";
 import dbConnect from "../../../../lib/mongodb";
-import Cart from "../../../../models/Cart ";
+import Cart from "../../../../models/Cart";
 import { verifyToken } from "../../../../utils/jwt";
 
 export async function POST(req) {
@@ -30,7 +30,7 @@ export async function POST(req) {
     }
 
     const existingItemIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
+      item => item.productId.toString() === productId
     );
 
     if (existingItemIndex > -1) {

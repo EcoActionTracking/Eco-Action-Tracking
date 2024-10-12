@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import dbConnect from "@/lib/mongodb";
 import Order from "../../../models/Order";
-import Cart from "../../../models/Cart ";
+import Cart from "../../../models/Cart";
 import { verifyToken } from "@/utils/jwt";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
