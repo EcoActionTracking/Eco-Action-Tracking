@@ -119,6 +119,10 @@ const OrderSchema = new mongoose.Schema(
       amount: Number,
       code: String,
     },
+    orderStatus: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

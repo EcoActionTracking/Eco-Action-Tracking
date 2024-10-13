@@ -34,7 +34,7 @@ const ArticleItem = ({ article, handleReadMore }) => (
     <div className="flex justify-between items-center text-sm text-gray-300">
       <div className="flex items-center">
         <Calendar size={16} className="mr-2" />
-        <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
+        <span>{new Date(article.updatedAt).toLocaleDateString()}</span>
       </div>
       <div className="flex items-center">
         <Tag size={16} className="mr-2" />
