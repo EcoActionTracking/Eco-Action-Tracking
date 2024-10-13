@@ -10,3 +10,13 @@ export const fetchProducts = async () => {
     throw error;
   }
 };
+
+export const fetchContacts = async () => {
+  try {
+    const res = await axios.get("/api/admin/contacts"); // Correct endpoint
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching contacts:", error); // Log error details
+    throw new Error("Failed to fetch contacts: " + error.message);
+  }
+};

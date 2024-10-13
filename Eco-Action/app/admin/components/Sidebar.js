@@ -1,16 +1,24 @@
 "use client";
 
 import React from "react";
-import { Leaf, BarChart2, Users, Sun, Settings } from "lucide-react";
+import {
+  PieChart,
+  Users,
+  Package,
+  Flag,
+  FileText,
+  PhoneCall,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const sidebarItems = [
-  { name: "Overview", icon: Leaf, path: "/admin" },
-  { name: "Users", icon: BarChart2, path: "/admin/users" },
-  { name: "Products", icon: Users, path: "/admin/products" },
-  { name: "Challenges", icon: Sun, path: "/admin/challenges" },
-  { name: "Articles", icon: Settings, path: "/admin/articles" },
+  { name: "Overview", icon: PieChart, path: "/admin" },
+  { name: "Users", icon: Users, path: "/admin/users" },
+  { name: "Products", icon: Package, path: "/admin/products" },
+  { name: "Challenges", icon: Flag, path: "/admin/challenges" },
+  { name: "Articles", icon: FileText, path: "/admin/articles" },
+  { name: "Contacts", icon: PhoneCall, path: "/admin/contacts" },
 ];
 
 const Sidebar = () => {
