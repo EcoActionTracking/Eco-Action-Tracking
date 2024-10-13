@@ -22,7 +22,7 @@ export async function POST(request) {
 
     const token = createToken(user._id);
     cookies().set("token", token, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV !== "development",
       sameSite: "strict",
       maxAge: 30 * 24 * 60 * 60, // 30 days
