@@ -1,5 +1,5 @@
 import dbConnect from "../../../../lib/mongodb";
-import Challenge from '../../../../models/Challenge';
+import Challenge from '../../../../models/Challenges';
 
 // GET: Fetch a challenge by ID
 export async function GET(request, { params }) {

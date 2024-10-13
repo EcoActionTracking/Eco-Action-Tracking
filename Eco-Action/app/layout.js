@@ -45,15 +45,15 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NotificationProvider>
+        {/* <NotificationProvider> */}
           <CartProvider>
             {!isLoginPage && <Navbar token={token} />}
-            <NotificationAlert />
+            {/* <NotificationAlert /> */}
 
             {children}
             <Footer />
           </CartProvider>
-        </NotificationProvider>
+        {/* </NotificationProvider> */}
       </body>
     </html>
   );

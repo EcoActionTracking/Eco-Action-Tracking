@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import path from 'path';
 import fs from 'fs/promises';
-import Imageh from '../../../models/HashedImages'; // استيراد نموذج Image
+import Imageh from '../../../models/HashedImages';  
 import dbConnect from "../../../lib/mongodb";
 
 export const config = {
@@ -32,25 +32,20 @@ export async function POST(request) {
 
     const image_hash = crypto.createHash('sha256').update(buffer).digest('hex');
 
-    // تحقق مما إذا كانت الصورة موجودة لهذا المستخدم
     const existingImage = await Imageh.findOne({ user_id });
 
-    // إذا كان للمستخدم صور مسبقة، زد العد
-    let uploadCount = 1; // تعيين العد الافتراضي إلى 1
+    let uploadCount = 1; 
     if (existingImage) {
-      // زيادة العد في حال كانت الصور موجودة
       uploadCount = existingImage.uploadCount + 1;
 
-      // تحديث الصورة الحالية بالعد الجديد
       await Imageh.updateOne(
         { user_id }, 
-        { uploadCount } // تحديث العد
+        { uploadCount } 
       );
     }
 
-    // حفظ الصورة في الفولدر
     const uploadsDir = path.join(process.cwd(), 'uploads');
-    await fs.mkdir(uploadsDir, { recursive: true }); // تأكد من وجود الفولدر
+    await fs.mkdir(uploadsDir, { recursive: true }); 
 
     const uniqueFileName = `${Date.now()}-${file.name}`;
     const file_path = path.join(uploadsDir, uniqueFileName);
@@ -61,7 +56,7 @@ export async function POST(request) {
       user_id,
       file_path,
       image_hash,
-      uploadCount // استخدم قيمة العد
+      uploadCount 
     });
 
     await newImage.save(); 
@@ -70,7 +65,7 @@ export async function POST(request) {
       message: 'Image uploaded successfully',
       file_path,
       image_hash,
-      uploadCount // أعد العد بعد التحميل
+      uploadCount     
     }, { status: 200 });
 
   } catch (error) {
