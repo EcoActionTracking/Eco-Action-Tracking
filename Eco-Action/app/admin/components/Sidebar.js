@@ -8,7 +8,8 @@ import {
   Flag,
   FileText,
   PhoneCall,
-} from "lucide-react";
+  ShoppingCart, // New import for Orders
+} from "lucide-react"; // Add your chosen icon here
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -16,7 +17,7 @@ const sidebarItems = [
   { name: "Overview", icon: PieChart, path: "/admin" },
   { name: "Users", icon: Users, path: "/admin/users" },
   { name: "Products", icon: Package, path: "/admin/products" },
-  { name: "Orders", icon: Package, path: "/admin/orders" },
+  { name: "Orders", icon: ShoppingCart, path: "/admin/orders" },
   { name: "Challenges", icon: Flag, path: "/admin/challenges" },
   { name: "Articles", icon: FileText, path: "/admin/articles" },
   { name: "Contacts", icon: PhoneCall, path: "/admin/contacts" },
