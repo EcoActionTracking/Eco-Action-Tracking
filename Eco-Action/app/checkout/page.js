@@ -224,7 +224,7 @@ export default function CheckoutPage() {
               </h2>
             </div>
             <div className="p-6 space-y-4">
-              {cart.map((item) => (
+              {cart.map(item => (
                 <div
                   key={item.productId._id}
                   className="flex justify-between items-center border-b border-[#CDE8E5] pb-4"
@@ -243,14 +243,14 @@ export default function CheckoutPage() {
                 </div>
               ))}
               <div className="pt-4 border-t border-[#CDE8E5]">
-                <div className="flex justify-between items-center">
+                {/* <div className="flex justify-between items-center">
                   <p className="text-lg font-semibold text-[#4D869C]">
-                    Subtotal:
+                    Total Before Discount:
                   </p>
                   <p className="text-xl font-bold text-[#4D869C]">
                     ${calculateSubtotal()}
                   </p>
-                </div>
+                </div> */}
                 {appliedDiscount && (
                   <div className="flex justify-between items-center text-green-600">
                     <p className="text-lg font-semibold">Discount:</p>

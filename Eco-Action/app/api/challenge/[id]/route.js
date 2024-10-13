@@ -1,5 +1,4 @@
 import dbConnect from "../../../../lib/mongodb";
-
 import Challenge from "../../../../models/Challenges";
 
 // GET: Fetch a challenge by ID

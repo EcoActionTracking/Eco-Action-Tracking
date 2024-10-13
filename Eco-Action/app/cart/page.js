@@ -282,9 +282,10 @@ export default function CartPage() {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const [promoCode, setPromoCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(null);
-  const { fetchCartQuantity } = useCart();
+  const { setCartQuantity, cartQuantity, fetchCartQuantity } = useCart();
   const router = useRouter();
 
   useEffect(() => {
@@ -319,14 +320,29 @@ export default function CartPage() {
         throw new Error("Failed to update quantity");
       }
       const updatedCart = await response.json();
-      setCart(updatedCart);
-      fetchCartQuantity();
+      //upadte quantity for this updatedCart item
+      setCart(
+        cart.map(item =>
+          item.productId._id === productId
+            ? { ...item, quantity: newQuantity }
+            : item
+        )
+      );
+      //update cart quantity
+      if (
+        newQuantity >
+        cart.find(item => item.productId._id === productId).quantity
+      ) {
+        setCartQuantity(cartQuantity + 1);
+      } else {
+        setCartQuantity(cartQuantity - 1);
+      }
     } catch (err) {
       setError(err.message);
     }
   };
 
-  const removeItem = async (productId) => {
+  const removeItem = async productId => {
     try {
       const response = await fetch(`/api/cart/${productId}`, {
         method: "DELETE",
@@ -334,9 +350,10 @@ export default function CartPage() {
       if (!response.ok) {
         throw new Error("Failed to remove item");
       }
-      const updatedCart = await response.json();
-      setCart(updatedCart);
-      fetchCartQuantity();
+      // remove the item from cart
+      setCart(cart.filter(item => item.productId._id !== productId));
+      //update cart quantity
+      setCartQuantity(cartQuantity - 1);
     } catch (err) {
       setError(err.message);
     }
@@ -569,7 +586,7 @@ export default function CartPage() {
                   placeholder="Promo code"
                   className="w-full outline-none bg-white text-[#4D869C] text-lg px-4 py-3"
                   value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
+                  onChange={e => setPromoCode(e.target.value)}
                 />
                 <button
                   type="button"

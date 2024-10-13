@@ -27,13 +27,18 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const updateCartQuantity = (quantity) => {
-    setCartQuantity((prevQuantity) => prevQuantity + quantity);
+  const updateCartQuantity = quantity => {
+    setCartQuantity(prevQuantity => prevQuantity + quantity);
   };
 
   return (
     <CartContext.Provider
-      value={{ cartQuantity, updateCartQuantity, fetchCartQuantity }}
+      value={{
+        cartQuantity,
+        updateCartQuantity,
+        fetchCartQuantity,
+        setCartQuantity,
+      }}
     >
       {children}
     </CartContext.Provider>

@@ -144,6 +144,7 @@ export default function ArticleDetailsPage() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                           >
+                            {console.log(photo)}
                             <Image
                               src={photo}
                               alt={`Photo ${index + 1} for ${article.title}`}
@@ -171,7 +172,7 @@ export default function ArticleDetailsPage() {
                             key={index}
                             className="relative w-full aspect-video"
                           >
-                            <iframe
+                            {/* <iframe
                               class="absolute top-0 left-0 w-full h-full"
                               src={video}
                               title="YouTube video player"
@@ -179,7 +180,12 @@ export default function ArticleDetailsPage() {
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                               referrerpolicy="strict-origin-when-cross-origin"
                               allowfullscreen
-                            ></iframe>
+                            ></iframe> */}
+                            <video
+                              src={video}
+                              controls
+                              className="w-full h-64"
+                            ></video>
                           </div>
                         ))}
                       </div>

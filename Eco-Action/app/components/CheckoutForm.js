@@ -249,6 +249,7 @@
 
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
+import { useRouter } from "next/navigation";
 import {
   Elements,
   CardElement,
@@ -260,7 +261,7 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
-function CheckoutForm({ cart, total }) {
+function CheckoutForm({ cart, total, searchParams }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
@@ -271,19 +272,21 @@ function CheckoutForm({ cart, total }) {
     zipCode: "",
     phoneNumber: "",
   });
-
+  const discount = JSON.parse(
+    new URLSearchParams(window.location.search).get("discount")
+  );
   const stripe = useStripe();
   const elements = useElements();
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
+    setFormData(prevState => ({
       ...prevState,
       [name]: value,
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -314,11 +317,12 @@ function CheckoutForm({ cart, total }) {
         body: JSON.stringify({
           paymentMethodId: paymentMethod.id,
           amount: parseInt(total * 100), // Convert to cents
-          products: cart.map((item) => ({
+          products: cart.map(item => ({
             product: item.productId._id,
             quantity: item.quantity,
           })),
           shippingAddress: formData,
+          discountId: discount.id,
         }),
       });
 
