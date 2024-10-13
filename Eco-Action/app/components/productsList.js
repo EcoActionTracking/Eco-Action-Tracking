@@ -20,15 +20,13 @@ function ProductsList() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const apiUrl =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-        const res = await fetch(`${apiUrl}/api/products`);
+        const res = await fetch(`/api/products`);
         if (!res.ok) {
           throw new Error("Failed to fetch products");
         }
         const data = await res.json();
         setProducts(data);
-        setCategories([...new Set(data.map((product) => product.category))]);
+        setCategories([...new Set(data.map(product => product.category))]);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -39,7 +37,7 @@ function ProductsList() {
   }, []);
 
   const filteredProducts = products.filter(
-    (product) =>
+    product =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedCategory === "" || product.category === selectedCategory)
   );
@@ -53,9 +51,9 @@ function ProductsList() {
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
-  const handleCategorySelect = (category) => {
+  const handleCategorySelect = category => {
     setSelectedCategory(category);
     setIsDropdownOpen(false);
   };
@@ -67,7 +65,7 @@ function ProductsList() {
     <div className="container mx-auto px-4">
       <form
         className="max-w-lg mx-auto mb-4"
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={e => e.preventDefault()}
       >
         <div className="flex items-center">
           <div className="relative">
@@ -110,7 +108,7 @@ function ProductsList() {
                       All Categories
                     </button>
                   </li>
-                  {categories.map((category) => (
+                  {categories.map(category => (
                     <li key={category}>
                       <button
                         type="button"
@@ -132,7 +130,7 @@ function ProductsList() {
               className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
               placeholder="Search products..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               required
               style={{ height: "42px" }} // نفس الارتفاع
             />
@@ -162,7 +160,7 @@ function ProductsList() {
         </div>
       </form>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {currentProducts.map((product) => (
+        {currentProducts.map(product => (
           <ProductCard key={product._id} product={product} />
         ))}
       </div>
