@@ -43,4 +43,50 @@ export async function POST(req, { params }) {
     }
 }
 
+// app/api/userChallenges/[challengeId]/route.js
 
+
+export async function PUT(request, { params }) {
+    const { challengeId } = params;
+    const { progress } = await request.json();
+
+    // Validate progress value
+    if (progress < 0 || progress > 100) {
+        return new Response(JSON.stringify({ message: "Progress must be between 0 and 100" }), {
+            status: 400,
+        });
+    }
+
+    try {
+        await dbConnect();   
+
+        // Find the UserChallenge by ID
+        const userChallenge = await UserChallenges.findById(challengeId);
+        if (!userChallenge) {
+            return new Response(JSON.stringify({ message: "UserChallenge not found" }), {
+                status: 404,
+            });
+        }
+
+        // Update the progress
+        userChallenge.progress = progress;
+
+        // Update the completion status if progress is 100
+        if (progress >= 100) {
+            userChallenge.completed = true;
+        }
+
+        // Save the updated document
+        await userChallenge.save();
+
+        return new Response(JSON.stringify(userChallenge), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (error) {
+        console.error("Error updating UserChallenge:", error);
+        return new Response(JSON.stringify({ message: "Internal Server Error" }), {
+            status: 500,
+        });
+    }
+}
