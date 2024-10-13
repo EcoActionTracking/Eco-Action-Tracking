@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -33,16 +35,16 @@ function ProductPopup({ product, onClose }) {
           />
           <div className="flex flex-col justify-between lg:w-1/2">
             <div>
-              <h2 className="text-4xl font-bold mb-6 text-[#4D869C]">
+              <h2 className="text-3xl font-bold mb-4 text-gray-800">
                 {product.name}
               </h2>
-              <p className="text-lg text-[#7AB2B2] mb-6">{product.description}</p>
-              <span className="text-base font-semibold text-[#4D869C] bg-[#CDE8E5] px-4 py-2 rounded-full inline-block">
+              <p className="text-gray-600 mb-4">{product.description}</p>
+              <span className="text-sm font-semibold text-gray-800 bg-gray-200 px-3 py-1 rounded-full">
                 {product.category}
               </span>
             </div>
-            <div className="mt-8">
-              <p className="text-3xl font-bold text-[#4D869C] mb-6">
+            <div className="mt-4">
+              <p className="text-2xl font-bold text-gray-800 mb-4">
                 ${product.price.toFixed(2)}
               </p>
             </div>
@@ -87,26 +89,32 @@ function ProductCard({ product }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-red-100 shadow-xl rounded-lg overflow-hidden cursor-pointer max-w-lg mx-auto mb-8"
+        className="bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md"
         onClick={() => setIsPopupOpen(true)}
       >
         <div className="relative">
           <img
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-80 object-cover"
+            className="w-full h-48 object-cover"
           />
-          <div className="absolute top-0 right-0 bg-[#7AB2B2] text-white px-3 py-2 m-4 rounded-md text-lg font-semibold">
-            ${product.price.toFixed(2)}
-          </div>
+          {product.status === "Available" ? (
+            <div className="absolute top-2 right-2 bg-green-500 w-3 h-3 rounded-full"></div>
+          ) : (
+            <div className="absolute top-2 right-2 bg-red-500 w-3 h-3 rounded-full"></div>
+          )}
         </div>
-        <div className="p-8">
-          <h2 className="text-3xl font-bold mb-4 text-[#4D869C]">
-            {product.name}
-          </h2>
-          <p className="text-lg text-[#7AB2B2] mb-6">{product.description}</p>
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-base font-semibold text-[#4D869C] bg-[#CDE8E5] px-4 py-2 rounded-full">
+        <div className="p-4">
+          <div className="flex justify-between items-start mb-2">
+            <h2 className="text-sm font-medium text-gray-800 truncate flex-grow">
+              {product.name}
+            </h2>
+            <span className="text-sm font-bold text-gray-800 ml-2">
+              ${product.price.toFixed(2)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
               {product.category}
             </span>
             <motion.button
@@ -116,9 +124,9 @@ function ProductCard({ product }) {
                 e.stopPropagation();
                 addToCart();
               }}
-              className="flex items-center justify-center bg-[#4D869C] text-white px-6 py-3 rounded-lg hover:bg-[#7AB2B2] transition-colors duration-300 text-lg"
+              className="flex items-center justify-center bg-gray-800 text-white px-2 py-1 rounded-full text-xs hover:bg-gray-700 transition-colors duration-300"
             >
-              <ShoppingCart className="mr-3 h-6 w-6" />
+              <ShoppingCart className="mr-1 h-3 w-3" />
               Add to Cart
             </motion.button>
           </div>
