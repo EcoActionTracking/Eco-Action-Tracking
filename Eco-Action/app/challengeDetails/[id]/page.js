@@ -29,6 +29,25 @@ export default function ChallengeDetails() {
   const fileInputRef = useRef(null);
   const params = useParams();
 
+
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const response = await fetch("/api/upload");
+        const data = await response.json();
+        setUserId(data.userId); // حفظ userId في state
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    }
+  
+    fetchUserData();
+  }, []);
+
+
+
   useEffect(() => {
     async function fetchChallenge() {
       try {
@@ -59,7 +78,7 @@ export default function ChallengeDetails() {
   
     const formData = new FormData();
     formData.append("img", selectedImage);
-    formData.append("user_id", "670955cd48dd94ad979bf8c3");
+    formData.append("user_id", userId);
   
     try {
       const response = await fetch("/api/upload", {
