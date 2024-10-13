@@ -16,6 +16,7 @@ const sidebarItems = [
   { name: "Overview", icon: PieChart, path: "/admin" },
   { name: "Users", icon: Users, path: "/admin/users" },
   { name: "Products", icon: Package, path: "/admin/products" },
+  { name: "Orders", icon: Package, path: "/admin/orders" },
   { name: "Challenges", icon: Flag, path: "/admin/challenges" },
   { name: "Articles", icon: FileText, path: "/admin/articles" },
   { name: "Contacts", icon: PhoneCall, path: "/admin/contacts" },
