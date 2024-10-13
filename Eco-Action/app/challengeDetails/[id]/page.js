@@ -78,7 +78,7 @@ export default function ChallengeDetails() {
   
     const formData = new FormData();
     formData.append("img", selectedImage);
-    formData.append("user_id", userId);
+    formData.append("user_id", "670955cd48dd94ad979bf8c3");
   
     try {
       const response = await fetch("/api/upload", {

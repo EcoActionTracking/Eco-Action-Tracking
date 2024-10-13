@@ -1,7 +1,3 @@
-Here’s the updated README with the removal of Express.js and the addition of Figma and Trello links:
-
----
-
 # RotRight - Turning Food Waste into Compost
 
 **RotRight** is a web-based platform designed to reduce food waste by converting it into compost. The project aims to educate users on the importance of food waste management and provide tools and resources to efficiently turn waste into valuable compost.
