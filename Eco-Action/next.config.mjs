@@ -16,8 +16,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-
-    domains: ["fakestoreapi.com"],
+    domains: [
+      "fakestoreapi.com",
+      "i.pinimg.com",
+      "firebasestorage.googleapis.com",
+    ],
   },
   env: {
     EMAIL_USER: process.env.EMAIL_USER,
@@ -26,4 +29,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-

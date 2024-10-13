@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import dbConnect from "@/lib/mongodb";
 import Order from "../../../models/Order";
 import Cart from "../../../models/Cart";
+import Discount from "@/models/Discount";
 import { verifyToken } from "@/utils/jwt";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -17,9 +18,9 @@ export async function POST(req) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { paymentMethodId, amount, products, shippingAddress } =
+  const { paymentMethodId, amount, products, shippingAddress, discountId } =
     await req.json();
-
+  console.log("discountId", discountId);
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
@@ -47,6 +48,13 @@ export async function POST(req) {
       { user: decodedToken.id },
       { $set: { items: [] } }
     );
+    // update the discount usage
+    if (discountId) {
+      await Discount.findByIdAndUpdate(
+        { _id: discountId },
+        { $set: { isUsed: true } }
+      );
+    }
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {

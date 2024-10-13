@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import dbConnect from "../../../../../lib/mongodb";
-import Challenges from "../../../../../models/Challenge";
+import Challenges from "../../../../../models/Challenges";
 
 export async function PUT(req, { params }) {
   const { id } = params;
