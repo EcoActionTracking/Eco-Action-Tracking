@@ -68,7 +68,7 @@ export function Slider() {
             }}
             className="multiple-slide-carousel py-52"
           >
-            {products.map(product => (
+            {products.map((product) => (
               <SwiperSlide key={product.id}>
                 <div className="relative z-50 overflow-hidden rounded-lg shadow-md cursor-pointer group hover:before:bg-black before:absolute before:inset-0 before:opacity-20 before:transition-all w-72 h-80">
                   <div className="w-full mx-auto overflow-hidden h-80 aspect-w-16 aspect-h-8">
