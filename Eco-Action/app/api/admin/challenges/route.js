@@ -1,5 +1,5 @@
 import dbConnect from "../../../../lib/mongodb";
-import Challenge from "../../../../models/Challenge";
+import Challenges from "../../../../models/Challenges";
 
 // GET: Fetch challenges
 export async function GET() {
@@ -7,7 +7,7 @@ export async function GET() {
 
   try {
     // Fetch all challenges that are not marked as deleted
-    const challenges = await Challenge.find({ isDeleted: false });
+    const challenges = await Challenges.find({ isDeleted: false });
 
     // Return the challenges in JSON format
     return new Response(JSON.stringify(challenges), {
@@ -41,7 +41,7 @@ export async function POST(req) {
     const data = await req.json();
 
     // Create a new Challenge document in the database
-    const newChallenge = await Challenge.create(data);
+    const newChallenge = await Challenges.create(data);
 
     // Return the newly created challenge in JSON format
     return new Response(JSON.stringify(newChallenge), {

@@ -122,7 +122,7 @@ export default function Navbar({ token }) {
           {!token && (
             <Link
               href="/login"
-              className="px-4 py-2 text-sm rounded-full font-bold text-white bg-[#116A7B] hover:bg-[#0E5A6A] transition-colors"
+              className="px-1 py-1 text-sm rounded-full font-bold text-white bg-[#116A7B] hover:bg-[#0E5A6A] transition-colors"
             >
               Login
             </Link>
@@ -138,7 +138,7 @@ export default function Navbar({ token }) {
                   {cartQuantity}
                 </span>
               </Link>
-              <div className="px-4 py-2 text-sm rounded-full font-bold text-white bg-[#116A7B] hover:bg-[#0E5A6A] transition-colors cursor-pointer">
+              <div className="px-1 py-1 text-sm rounded-full font-bold text-white bg-[#116A7B] hover:bg-[#0E5A6A] transition-colors cursor-pointer">
                 <LogoutButton />
               </div>
             </>

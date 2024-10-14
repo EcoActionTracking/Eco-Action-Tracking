@@ -10,15 +10,16 @@ const sidebarItems = [
   { name: "Users", icon: BarChart2, path: "/admin/users" },
   { name: "Products", icon: Users, path: "/admin/products" },
   { name: "Challenges", icon: Sun, path: "/admin/challenges" },
-  { name: "Articles", icon: Settings, path: "/admin/articles" },
+  { name: "Articles", icon: Settings, path: "/admin/Articles" },
+  { name: "Add Articles", icon: Settings, path: "/admin/AddArticles" },
 ];
 
 const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <div className="w-64 bg-green-800 text-white p-4 h-screen">
-      <h1 className="text-2xl font-bold mb-8">Eco Action Tracking</h1>
+    <div className="w-64 h-screen p-4 text-white bg-green-800">
+      <h1 className="mb-8 text-2xl font-bold">Eco Action Tracking</h1>
       <nav>
         {sidebarItems.map((item) => {
           const Icon = item.icon;

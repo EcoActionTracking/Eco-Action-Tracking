@@ -91,7 +91,7 @@ export default function CompanyForm() {
             <div className="absolute inset-0 transform -skew-y-6 shadow-lg bg-gradient-to-r from-[#116A7B] to-[#122e33] sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
             <div className="relative px-4 py-10 text-white bg-[#116A7B] shadow-lg sm:rounded-3xl sm:p-20">
               <div className="pb-6 text-center">
-                <h1 className="text-3xl">Company Registration</h1>
+                <h1 className="text-3xl">Subscribe Eith Us</h1>
                 <p className="text-gray-300">
                   Fill up the form below to register your company.
                 </p>
