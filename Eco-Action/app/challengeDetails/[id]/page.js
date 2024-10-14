@@ -2,6 +2,7 @@
 import { useState, useEffect,useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Cookies from "js-cookie"; // Import js-cookie
+import Swal from 'sweetalert2';
 
 import { 
   Wind, 
@@ -27,6 +28,25 @@ export default function ChallengeDetails() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef(null);
   const params = useParams();
+
+
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const response = await fetch("/api/upload");
+        const data = await response.json();
+        setUserId(data.userId); // حفظ userId في state
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    }
+  
+    fetchUserData();
+  }, []);
+
+
 
   useEffect(() => {
     async function fetchChallenge() {
@@ -87,7 +107,28 @@ export default function ChallengeDetails() {
   };
   
   const progressPercentage = (uploadCount / challenge?.targetValue) * 100;
-  
+  if (progressPercentage === 100) {
+    Swal.fire({
+      title: '🎁 Congratulations!',
+      html: `
+        <p class="text-lg font-semibold">Here’s your special coupon code:</p>
+        <div class="mt-2 p-4 bg-green-100 rounded-lg border-2 border-green-400 text-green-900 font-bold">
+        ${challenge?.discount?.discountCode || 'No code available'}  <!-- Using optional chaining -->
+        </div>
+        <p class="mt-2">Use it on your next purchase and enjoy </p>${challenge?.discount?.disc || 'No code available'}  <!-- Using optional chaining -->
+
+      `,
+      icon: 'gift',
+      showConfirmButton: true,
+      confirmButtonText: 'Claim Now',
+      background: '#f9f9f9',
+      customClass: {
+        popup: 'shadow-lg rounded-lg',
+        confirmButton: 'bg-[#116A7B] text-white px-4 py-2 rounded hover:bg-[#0e5c69]',
+      },
+    });
+    
+  }
 
   if (loading) {
     return (
@@ -175,7 +216,7 @@ export default function ChallengeDetails() {
                 </div>
                 <div className="flex items-center">
                   <Award className="mr-2" size={20} />
-                  <span>{challenge.discount.amount}% Off Reward</span>
+                  <span>{challenge.discount.discountCode}% Off Reward</span>
                 </div>
               </div>
             </div>
@@ -195,7 +236,7 @@ export default function ChallengeDetails() {
                 <TreePine className="text-[#116A7B] mb-2" size={24} />
                 <h3 className="font-semibold text-[#116A7B]">Difficulty Level</h3>
                 <p className={`capitalize font-bold ${
-                  challenge.difficultyLevel === 'easy' 
+                  challenge.difficultyLevel === 'beginner' 
                     ? 'text-green-500' 
                     : challenge.difficultyLevel === 'intermediate' 
                     ? 'text-yellow-500' 
@@ -220,7 +261,7 @@ export default function ChallengeDetails() {
             <div className="mt-8 bg-white p-6 rounded-xl shadow-lg">
               <h2 className="text-2xl font-bold text-[#116A7B] mb-4 flex items-center">
                 <Upload className="ml-2" size={24} />
-                 upload the evedence 
+                 upload the Proof 
               </h2>
               <div className="flex flex-col space-y-4">
                 <div className="relative">
@@ -260,6 +301,7 @@ export default function ChallengeDetails() {
                   <div
                     style={{ width: `${progressPercentage}%` }}
                     className="bg-[#116A7B] h-2 transition-all"
+                    
                   ></div>
                 </div>
                 <p>{uploadCount} / {challenge.targetValue}</p>

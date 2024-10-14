@@ -2,7 +2,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 
-const ProductsList = dynamic(() => import("../components/productsList"), {
+const ProductsList = dynamic(() => import("../components/productsList.js"), {
   loading: () => <p>Loading...</p>,
   ssr: true,
 });

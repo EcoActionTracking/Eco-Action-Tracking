@@ -54,6 +54,7 @@
 /////////////
 ///////////////////////
 //////////
+
 "use client";
 
 import React, { createContext, useState, useContext, useEffect } from "react";
@@ -67,7 +68,6 @@ export const NotificationProvider = ({ children }) => {
     try {
       const response = await fetch("/api/notifications");
       const data = await response.json();
-      console.log("Fetched notification data:", data);
       if (data.length > 0 && data[0].challenge) {
         setNotification(data[0]);
       } else {

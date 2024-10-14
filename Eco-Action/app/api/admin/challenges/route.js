@@ -1,6 +1,7 @@
 import dbConnect from "../../../../lib/mongodb";
 import Challenges from "../../../../models/Challenges";
 
+
 // GET: Fetch challenges
 export async function GET() {
   await dbConnect();

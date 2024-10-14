@@ -1,56 +1,51 @@
-import { NextResponse } from 'next/server';
-import crypto from 'crypto';
-import path from 'path';
-import fs from 'fs/promises';
-import Imageh from '../../../models/HashedImages'; // استيراد نموذج Image
+import { NextResponse } from "next/server";
+import crypto from "crypto";
+import path from "path";
+import fs from "fs/promises";
+import Imageh from "../../../models/HashedImages";
 import dbConnect from "../../../lib/mongodb";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function POST(request) {
   try {
     await dbConnect();
 
     const formData = await request.formData();
-    const file = formData.get('img');
-    const user_id = formData.get('user_id');
+    const file = formData.get("img");
+    const user_id = formData.get("user_id");
 
     if (!file) {
-      return NextResponse.json({ message: "No file uploaded" }, { status: 400 });
+      return NextResponse.json(
+        { message: "No file uploaded" },
+        { status: 400 }
+      );
     }
 
     if (!user_id) {
-      return NextResponse.json({ message: "User ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { message: "User ID is required" },
+        { status: 400 }
+      );
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const image_hash = crypto.createHash('sha256').update(buffer).digest('hex');
+    const image_hash = crypto.createHash("sha256").update(buffer).digest("hex");
 
-    // تحقق مما إذا كانت الصورة موجودة لهذا المستخدم
     const existingImage = await Imageh.findOne({ user_id });
 
-    // إذا كان للمستخدم صور مسبقة، زد العد
-    let uploadCount = 1; // تعيين العد الافتراضي إلى 1
+    let uploadCount = 1;
     if (existingImage) {
-      // زيادة العد في حال كانت الصور موجودة
       uploadCount = existingImage.uploadCount + 1;
 
-      // تحديث الصورة الحالية بالعد الجديد
-      await Imageh.updateOne(
-        { user_id }, 
-        { uploadCount } // تحديث العد
-      );
+      await Imageh.updateOne({ user_id }, { uploadCount });
     }
 
-    // حفظ الصورة في الفولدر
-    const uploadsDir = path.join(process.cwd(), 'uploads');
-    await fs.mkdir(uploadsDir, { recursive: true }); // تأكد من وجود الفولدر
+    const uploadsDir = path.join(process.cwd(), "uploads");
+    await fs.mkdir(uploadsDir, { recursive: true });
 
     const uniqueFileName = `${Date.now()}-${file.name}`;
     const file_path = path.join(uploadsDir, uniqueFileName);
@@ -61,30 +56,28 @@ export async function POST(request) {
       user_id,
       file_path,
       image_hash,
-      uploadCount // استخدم قيمة العد
+      uploadCount,
     });
 
-    await newImage.save(); 
+    await newImage.save();
 
-    return NextResponse.json({
-      message: 'Image uploaded successfully',
-      file_path,
-      image_hash,
-      uploadCount // أعد العد بعد التحميل
-    }, { status: 200 });
-
+    return NextResponse.json(
+      {
+        message: "Image uploaded successfully",
+        file_path,
+        image_hash,
+        uploadCount,
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error('Error in file upload:', error);
-    return NextResponse.json({
-      message: "Failed to upload image",
-      error: error.message
-    }, { status: 500 });
+    console.error("Error in file upload:", error);
+    return NextResponse.json(
+      {
+        message: "Failed to upload image",
+        error: error.message,
+      },
+      { status: 500 }
+    );
   }
 }
-
-
-
-
-
-
-

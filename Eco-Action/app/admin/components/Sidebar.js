@@ -1,17 +1,28 @@
 "use client";
 
 import React from "react";
-import { Leaf, BarChart2, Users, Sun, Settings } from "lucide-react";
+import {
+  PieChart,
+  Users,
+  Package,
+  Flag,
+  FileText,
+  PhoneCall,
+  ShoppingCart, // New import for Orders
+} from "lucide-react"; // Add your chosen icon here
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const sidebarItems = [
-  { name: "Overview", icon: Leaf, path: "/admin" },
-  { name: "Users", icon: BarChart2, path: "/admin/users" },
-  { name: "Products", icon: Users, path: "/admin/products" },
-  { name: "Challenges", icon: Sun, path: "/admin/challenges" },
-  { name: "Articles", icon: Settings, path: "/admin/Articles" },
+
+  { name: "Overview", icon: PieChart, path: "/admin" },
+  { name: "Users", icon: Users, path: "/admin/users" },
+  { name: "Products", icon: Package, path: "/admin/products" },
+  { name: "Orders", icon: ShoppingCart, path: "/admin/orders" },
+  { name: "Challenges", icon: Flag, path: "/admin/challenges" },
   { name: "Add Articles", icon: Settings, path: "/admin/AddArticles" },
+  { name: "Contacts", icon: PhoneCall, path: "/admin/contacts" },
+
 ];
 
 const Sidebar = () => {
