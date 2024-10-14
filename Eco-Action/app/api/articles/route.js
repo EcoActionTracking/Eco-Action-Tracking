@@ -12,8 +12,9 @@ export async function GET(request) {
   const skip = (page - 1) * limit;
 
   try {
-    const articles = await Article.find().skip(skip).limit(limit);
-    const total = await Article.countDocuments();
+    // Find articles where isDeleted is false
+    const articles = await Article.find({ isDeleted: false }).skip(skip).limit(limit);
+    const total = await Article.countDocuments({ isDeleted: false });
     const totalPages = Math.ceil(total / limit);
 
     return NextResponse.json({
