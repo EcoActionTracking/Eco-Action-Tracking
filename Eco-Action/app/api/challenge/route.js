@@ -1,13 +1,15 @@
 import dbConnect from "../../../lib/mongodb";
-import Challenge from "../../../models/Challenges";
+import Challenges from '../../../models/Challenges';
+
 
 // GET: Fetch challenges
 export async function GET() {
   await dbConnect();
 
-  try {
-    // Fetch all challenges that are not marked as deleted
-    const challenges = await Challenge.find({ isDeleted: false });
+    try {
+        // Fetch all challenges that are not marked as deleted
+        const challenges = await Challenges.find({ isDeleted: false });
+
 
     // Return the challenges in JSON format
     return new Response(JSON.stringify(challenges), {

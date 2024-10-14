@@ -30,5 +30,8 @@ const ArticleSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Method to soft delete the article
+
+
 export default mongoose.models.Article ||
   mongoose.model("Article", ArticleSchema);

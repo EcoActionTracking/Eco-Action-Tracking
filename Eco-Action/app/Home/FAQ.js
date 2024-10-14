@@ -9,8 +9,8 @@ export function FAQ() {
   };
 
   return (
-    <div className="font-[sans-serif] space-y-4 max-w-6xl mx-auto my-40">
-      <h2 className="text-3xl font-extrabold text-[#116A7B] mb-8">FAQS</h2>
+    <div className="font-[sans-serif] space-y-4 max-w-6xl mx-auto my-40 shadow-lg p-20">
+      <h2 className="text-3xl font-extrabold text-[#116A7B] mb-8 text-center">FAQS</h2>
       
       {faqData.map((faq, index) => (
         <div key={index} className="transition-all rounded-lg hover:bg-[#C2DEDC]">

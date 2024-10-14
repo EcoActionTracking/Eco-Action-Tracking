@@ -9,6 +9,7 @@ import { Leaf, User, Mail, Image, Save, X } from 'lucide-react';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../../lib/firebase'; 
 import { OrderUser } from './OrdersUser';
+import Discount from './Discount';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -110,7 +111,7 @@ const Profile = () => {
             {user ? (
         <section className="relative min-h-screen pt-40 pb-24">
             <img
-                src="https://i.pinimg.com/564x/47/e2/a2/47e2a2e4d258edaf1f521055b69df293.jpg"
+                src="https://i.pinimg.com/564x/ff/af/aa/ffafaa58eda7f77e104455745687b4b6.jpg"
                 alt="cover-image"
                 className="absolute top-0 left-0 z-0 object-cover w-full h-60"
             />
@@ -127,48 +128,29 @@ const Profile = () => {
                         <h3 className="mb-1 text-4xl font-bold text-gray-900 font-manrope">{user.username}</h3>
                         <p className="text-base font-normal leading-7 text-gray-500">{user.email}</p>
                     </div>
-                    <button className="rounded-md py-3.5 px-5 bg-[#C2DEDC] flex items-center group transition-all duration-500 hover:bg-[#bfc7c6] ">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                        >
-                            <path
-                                className="transition-all duration-500 stroke-gray-700 group-hover:stroke-[#116A7B]"
-                                d="M14.1667 11.6666V13.3333C14.1667 14.9046 14.1667 15.6903 13.6785 16.1785C13.1904 16.6666 12.4047 16.6666 10.8333 16.6666H7.50001C5.92866 16.6666 5.14299 16.6666 4.65483 16.1785C4.16668 15.6903 4.16668 14.9047 4.16668 13.3333V11.6666M16.6667 9.16663V13.3333M11.0157 10.434L12.5064 9.44014C14.388 8.18578 15.3287 7.55861 15.3287 6.66663C15.3287 5.77466 14.388 5.14749 12.5064 3.89313L11.0157 2.8993C10.1194 2.3018 9.67131 2.00305 9.16668 2.00305C8.66205 2.00305 8.21393 2.3018 7.31768 2.8993L5.82693 3.89313C3.9454 5.14749 3.00464 5.77466 3.00464 6.66663C3.00464 7.55861 3.9454 8.18578 5.82693 9.44014L7.31768 10.434C8.21393 11.0315 8.66205 11.3302 9.16668 11.3302C9.67131 11.3302 10.1194 11.0315 11.0157 10.434Z"
-                                stroke="#374151"
-                                strokeWidth="1.6"
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                        <span className="px-2 text-base font-medium leading-7 text-[#116A7B] transition-all duration-500 group-hover:text-[#116A7B]">
-                            Software Engineer
-                        </span>
-                    </button>
+                   
                 </div>
                 <div className="flex flex-col lg:flex-row max-lg:gap-5 items-center justify-between py-0.5">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => setView('edit')} className={`py-3.5 px-5 rounded-md ${view === 'edit' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'}   font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-400 hover:bg-[#58938e]`}>
+                        <button onClick={() => setView('edit')} className={`py-2 px-2.5 rounded-md ${view === 'edit' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'}   font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-400 hover:bg-[#58938e]`}>
                             Edit Profile
                         </button>
                         <button onClick={() => setView('changePassword')} 
-                        className={`py-3.5 px-5 rounded-md ${view === 'changePassword' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'} font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#58938e]`}
+                        className={`py-2 px-2.5 rounded-md ${view === 'changePassword' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'} font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#58938e]`}
                                 >
                           Change Password
                         </button>
                     </div>
                     <div className="flex flex-col items-center gap-6 md:flex-row">
                         <p onClick={() => setView('challenges')} 
-                                    className={`py-3.5 px-5 rounded-md ${view === 'challenges' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'} font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#58938e]`}
+                                    className={`py-2 px-2.5 rounded-md ${view === 'challenges' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'} font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#58938e]`}
                         >
                             Challenges |
                         </p>
-                        <p onClick={() => setView('Orders')}   className={`py-3.5 px-5 rounded-md ${view === 'Orders' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'} font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#58938e]`}>
+                        <p onClick={() => setView('Orders')}   className={`py-2 px-2.5 rounded-md ${view === 'Orders' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'} font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#58938e]`}>
                             Orders |
                         </p>
-                        <p className="flex items-center gap-2 text-lg font-medium leading-8 text-[#116A7B]">
+                        <p onClick={() => setView('Discount')} className={`py-2 px-2.5 rounded-md ${view === 'Discount' ? 'bg-gradient-to-r from-[#116A7B] to-[#B2EBF2] text-white' : 'bg-[#C2DEDC] text-[#116A7B]'} font-semibold text-base leading-7 shadow-sm shadow-transparent transition-all duration-500 hover:bg-[#58938e]`}>
                             Discount
                         </p>
                     </div>
@@ -228,7 +210,9 @@ const Profile = () => {
                             <ChangePassword id={user._id}/>
                         ) : view === 'Orders' ? (
                             <OrderUser userId={user._id}/>
-                        ) : (
+                        ) : view === 'Discount' ? (
+                            <Discount user={user._id}/>
+                        ) :(
                             <UserChallenges userId={user._id} />
                         )}
             </div>
