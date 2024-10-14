@@ -1,17 +1,14 @@
 import Link from "next/link";
-export default function HeroSection(){
-
-
-    return(
-      <main >
+export default function HeroSection() {
+  return (
+    <main>
       {/* Hero Section */}
-      <section className="relative overflow-hidden text-white h-[41rem]" >
+      <section className="relative overflow-hidden text-white h-[41rem]">
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div
           className="absolute inset-0 bg-center bg-cover"
           style={{
-            backgroundImage:
-              `url("https://i.pinimg.com/564x/71/d3/66/71d366cee67cbe14aade82a35ca6b05b.jpg")`
+            backgroundImage: `url("https://i.pinimg.com/564x/71/d3/66/71d366cee67cbe14aade82a35ca6b05b.jpg")`,
           }}
         ></div>
 
@@ -20,10 +17,15 @@ export default function HeroSection(){
             {/* Left Side: Company Info */}
             <div className="w-full mb-12 md:w-1/2 md:mb-0">
               <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl">
-              Natural fertilizer.<br />Natural resources.<br />Succeed.
+                Natural fertilizer.
+                <br />
+                Natural resources.
+                <br />
+                Succeed.
               </h1>
               <p className="mb-8 text-xl text-gray-300">
-              Compost acts as a natural fertilizer, boosting soil health and increasing its nutrient content.
+                Compost acts as a natural fertilizer, boosting soil health and
+                increasing its nutrient content.
               </p>
               <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                 <Link
@@ -32,19 +34,21 @@ export default function HeroSection(){
                 >
                   Get challenge
                 </Link>
-                <a
-                  href="#"
+                <Link
+                  href="/calculator"
                   className="px-8 py-3 font-semibold text-center text-white transition duration-300 border-2 border-white rounded-full hover:bg-white hover:text-blue-900"
                 >
                   Learn More
-                </a>
+                </Link>
               </div>
             </div>
 
             {/* Right Side: Features */}
             <div className="w-full md:w-1/2 md:pl-12">
               <div className="p-8 bg-white shadow-2xl bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl">
-                <h2 className="mb-6 text-2xl font-semibold">Why should we compost excess food?</h2>
+                <h2 className="mb-6 text-2xl font-semibold">
+                  Why should we compost excess food?
+                </h2>
                 <ul className="space-y-4">
                   <li className="flex items-center">
                     <svg
@@ -99,7 +103,6 @@ export default function HeroSection(){
                   </li>
                 </ul>
               </div>
-              
             </div>
           </div>
         </div>
@@ -119,5 +122,5 @@ export default function HeroSection(){
         </div>
       </section>
     </main>
-    );
+  );
 }
