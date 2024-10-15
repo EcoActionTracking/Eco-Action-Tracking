@@ -1000,6 +1000,7 @@ import { useCart } from "../context/CartContext";
 import { useRouter } from "next/navigation";
 import CheckoutNavigation from "../components/CheckoutNavigation";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
@@ -1044,7 +1045,7 @@ export default function CartPage() {
       }
       const updatedCart = await response.json();
       setCart(
-        cart.map((item) =>
+        cart.map(item =>
           item.productId._id === productId
             ? { ...item, quantity: newQuantity }
             : item
@@ -1052,7 +1053,7 @@ export default function CartPage() {
       );
       if (
         newQuantity >
-        cart.find((item) => item.productId._id === productId).quantity
+        cart.find(item => item.productId._id === productId).quantity
       ) {
         setCartQuantity(cartQuantity + 1);
       } else {
@@ -1063,7 +1064,7 @@ export default function CartPage() {
     }
   };
 
-  const removeItem = async (productId) => {
+  const removeItem = async productId => {
     try {
       const response = await fetch(`/api/cart/${productId}`, {
         method: "DELETE",
@@ -1071,7 +1072,7 @@ export default function CartPage() {
       if (!response.ok) {
         throw new Error("Failed to remove item");
       }
-      setCart(cart.filter((item) => item.productId._id !== productId));
+      setCart(cart.filter(item => item.productId._id !== productId));
       setCartQuantity(cartQuantity - 1);
     } catch (err) {
       setError(err.message);
@@ -1103,7 +1104,6 @@ export default function CartPage() {
       : "";
     router.push(`/checkout${discountQuery}`);
   };
-
   const applyPromoCode = async () => {
     try {
       const response = await fetch("/api/apply-promo", {
@@ -1123,10 +1123,26 @@ export default function CartPage() {
       } else {
         setError(data.message || "Failed to apply promo code");
         setAppliedDiscount(null);
+
+        // Error alert
+        Swal.fire({
+          title: "Error!",
+          text: data.message || "Failed to apply promo code",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     } catch (err) {
       setError("An error occurred while applying the promo code");
       setAppliedDiscount(null);
+
+      // Error alert for catch block
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred while applying the promo code",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -1145,11 +1161,6 @@ export default function CartPage() {
       </div>
     );
   }
-
-  if (error)
-    return (
-      <p className="text-center p-8 text-xl text-red-500">Error: {error}</p>
-    );
 
   // New Empty Cart Design
   if (!cart || cart.length === 0) {
@@ -1287,7 +1298,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <h4 className="text-lg font-bold text-[#4D869C]">
-                    ${(item.productId.price * item.quantity).toFixed(2)}
+                    JOD{(item.productId.price * item.quantity).toFixed(2)}
                   </h4>
                   <button
                     onClick={() => removeItem(item.productId._id)}
@@ -1324,27 +1335,27 @@ export default function CartPage() {
             <ul className="text-[#4D869C] divide-y divide-[#7AB2B2]">
               <li className="flex justify-between text-lg py-4">
                 <span>Subtotal</span>
-                <span className="font-semibold">${calculateSubtotal()}</span>
+                <span className="font-semibold">JOD{calculateSubtotal()}</span>
               </li>
               <li className="flex justify-between text-lg py-4">
                 <span>Shipping</span>
-                <span className="font-semibold">$4.00</span>
+                <span className="font-semibold">JOD4.00</span>
               </li>
               <li className="flex justify-between text-lg py-4">
                 <span>Tax</span>
-                <span className="font-semibold">$4.00</span>
+                <span className="font-semibold">JOD4.00</span>
               </li>
               {appliedDiscount && (
                 <li className="flex justify-between text-lg py-4 text-green-600">
                   <span>Discount</span>
                   <span className="font-semibold">
-                    -${appliedDiscount.amount.toFixed(2)}
+                    -JOD{appliedDiscount.amount.toFixed(2)}
                   </span>
                 </li>
               )}
               <li className="flex justify-between text-xl font-bold pt-4">
                 <span>Total</span>
-                <span>${calculateTotal()}</span>
+                <span>JOD{calculateTotal()}</span>
               </li>
             </ul>
             <div className="mt-8">
@@ -1357,7 +1368,7 @@ export default function CartPage() {
                   placeholder="Promo code"
                   className="w-full outline-none bg-white text-[#4D869C] text-lg px-4 py-3"
                   value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
+                  onChange={e => setPromoCode(e.target.value)}
                 />
                 <button
                   type="button"
@@ -1367,7 +1378,6 @@ export default function CartPage() {
                   Apply
                 </button>
               </div>
-              {error && <p className="text-red-500 mt-2">{error}</p>}
             </div>
             <motion.button
               whileHover={{ scale: 1.05 }}

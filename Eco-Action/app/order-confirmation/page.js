@@ -109,7 +109,7 @@ export default function OrderConfirmationPage() {
                         {item.quantity}
                       </td>
                       <td className="text-right py-2 text-[#7AB2B2]">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        JOD{(item.product.price * item.quantity).toFixed(2)}
                       </td>
                     </tr>
                   ))}
@@ -120,7 +120,7 @@ export default function OrderConfirmationPage() {
                       Subtotal:
                     </td>
                     <td className="text-right py-2 text-[#4D869C]">
-                      ${order.totalAmount.toFixed(2)}
+                      JOD{order.totalAmount.toFixed(2)}
                     </td>
                   </tr>
                   {order.discount && (
@@ -132,7 +132,7 @@ export default function OrderConfirmationPage() {
                         Discount ({order.discount.code}):
                       </td>
                       <td className="text-right py-2 text-green-600">
-                        -${order.discount.amount.toFixed(2)}
+                        -JOD{order.discount.amount.toFixed(2)}
                       </td>
                     </tr>
                   )}
@@ -141,7 +141,7 @@ export default function OrderConfirmationPage() {
                       Total:
                     </td>
                     <td className="text-right py-2 text-[#4D869C]">
-                      $
+                      JOD
                       {(
                         order.totalAmount -
                         (order.discount ? order.discount.amount : 0)

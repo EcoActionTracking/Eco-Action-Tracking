@@ -193,7 +193,7 @@ function ProductPopup({ product, onClose }) {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         className="bg-[#EEF7FF] rounded-lg p-10 max-w-5xl w-11/12 max-h-[95vh] overflow-y-auto relative"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         <button
           onClick={onClose}
@@ -219,7 +219,7 @@ function ProductPopup({ product, onClose }) {
             </div>
             <div className="mt-4">
               <p className="text-2xl font-bold text-[#4D869C] mb-4">
-                ${product.price.toFixed(2)}
+                JOD{product.price.toFixed(2)}
               </p>
             </div>
           </div>
@@ -286,7 +286,7 @@ function ProductCard({ product }) {
               {product.name}
             </h2>
             <span className="text-sm font-bold text-[#4D869C] ml-2">
-              ${product.price.toFixed(2)}
+              JOD{product.price.toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between items-center">
@@ -296,7 +296,7 @@ function ProductCard({ product }) {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 addToCart();
               }}

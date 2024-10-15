@@ -8,7 +8,7 @@ export function middleware(request) {
   // Define protected routes
   const protectedRoutes = ["/", "/checkout", "/order-confirmation"];
 
-  if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+  if (protectedRoutes.some(route => pathname.startsWith(route))) {
     if (!token || !verifyToken(token)) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
