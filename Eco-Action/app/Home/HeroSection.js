@@ -5,7 +5,7 @@ export default function HeroSection(){
     return(
       <main >
       {/* Hero Section */}
-      <section className="relative overflow-hidden text-white h-[41rem]" >
+      <section className="relative overflow-hidden text-white h-[41rem] px-20" >
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div
           className="absolute inset-0 bg-center bg-cover"
@@ -32,12 +32,12 @@ export default function HeroSection(){
                 >
                   Get challenge
                 </Link>
-                <a
-                  href="#"
+                <Link
+                  href="/calculator"
                   className="px-8 py-3 font-semibold text-center text-white transition duration-300 border-2 border-white rounded-full hover:bg-white hover:text-blue-900"
                 >
                   Learn More
-                </a>
+                </Link>
               </div>
             </div>
 

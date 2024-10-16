@@ -171,10 +171,10 @@ export default function Navbar({ token }) {
               </li>
               <li>
                 <Link
-                  href="/about"
+                  href="/eco-challenges"
                   className="lg:p-4 py-2 block hover:text-[#116A7B]"
                 >
-                  About
+                  Challenges
                 </Link>
               </li>
               <li>
