@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
   await dbConnect();
-
+  console.log("req", req.body);
   const token = req.cookies.get("token")?.value;
   const decodedToken = verifyToken(token);
 

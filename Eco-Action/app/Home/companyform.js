@@ -6,6 +6,10 @@ import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const homeImage = "/images/section.svg";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from '../../lib/firebase'; 
+import { ConversionSteps } from './ConversionSteps';
+
 
 export default function CompanyForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,9 +18,33 @@ export default function CompanyForm() {
     address: '',
     contact_number: '',
     email: '',
-    website: ''
+    website: '',
+    image: ''
   });
+  const [imageFile, setImageFile] = useState(null); // Track the image file locally
+    
+  // Handle image upload to Firebase and update the formData state
+  const handleImageUpload = async (file) => {
+    const storageRef = ref(storage, `images/${file.name}`);
+    try {
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      setFormData(prevData => ({ ...prevData, image: downloadURL }));
+      toast.success('Image uploaded successfully!');
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error('Failed to upload image.');
+    }
+  };
 
+  // Handle file change for image upload
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file); // Store the file
+      handleImageUpload(file); // Upload the file to Firebase
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -64,14 +92,15 @@ export default function CompanyForm() {
       
     <div className={`flex items-center text-center  min-h-[10rem] bg-gradient-to-t from-[#116A7B] to-gray-600 w-full font-[sans-serif] mt-20 `} 
     style={{
-        backgroundImage: `url(${homeImage})`, // Use the image URL directly
+        backgroundImage: `url()`, // Use the image URL directly
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
     }}>
   <div className="max-w-full p-6 mx-auto bg-[#116A7B] bg-opacity-50  px-20">
+      <ConversionSteps/>
     <h1 className="my-10 text-sm font-bold text-white sm:text-lg">
-    Join us in our mission to reduce food waste! Sign up your company or restaurant to provide excess food and enjoy exclusive discounts on our services. Together, we can make a difference!
+    Join us in our mission to reduce food waste! Sign up your  Hotels or Resturents to provide excess food and enjoy exclusive discounts on our services. Together, we can make a difference!
     </h1>
   
     <button
@@ -91,9 +120,9 @@ export default function CompanyForm() {
             <div className="absolute inset-0 transform -skew-y-6 shadow-lg bg-gradient-to-r from-[#116A7B] to-[#122e33] sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
             <div className="relative px-4 py-10 text-white bg-[#116A7B] shadow-lg sm:rounded-3xl sm:p-20">
               <div className="pb-6 text-center">
-                <h1 className="text-3xl">Company Registration</h1>
+                <h1 className="text-3xl">Subscribe With Us</h1>
                 <p className="text-gray-300">
-                  Fill up the form below to register your company.
+                  Fill up the form below to register your Hotels or Resturents.
                 </p>
               </div>
 
@@ -148,7 +177,16 @@ export default function CompanyForm() {
                   value={formData.website}
                   onChange={handleInputChange}
                 />
-
+               
+               <div className="relative mb-4">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="w-full pl-10 pr-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#116A7B] focus:border-[#116A7B]"
+                  />
+                </div>
+              
                 <div className="flex justify-between">
                   <button
                     type="button"

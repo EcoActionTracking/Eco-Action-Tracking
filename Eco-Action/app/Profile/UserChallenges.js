@@ -20,6 +20,7 @@ const UserChallenges = ({ userId }) => {
       if (response.data.userChallenges.length === 0) {
         setNoChallenges(true);
       } else {
+        console.log("userChallenges",response.data.userChallenges)
         setUserChallenges(response.data.userChallenges);
         setTotalPages(response.data.totalPages); // Set total pages from response
       }
@@ -84,11 +85,11 @@ const UserChallenges = ({ userId }) => {
               className="bg-white grid sm:grid-cols-2 items-center shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] w-full max-w-2xl max-sm:max-w-sm rounded-lg font-[sans-serif] overflow-hidden mx-auto mt-4"
             >
               <div className="min-h-[280px] h-full">
-                <img
-                  src={challenge.challengeId.image}
-                  alt={challenge.challengeId.title}
-                  className="object-cover w-full h-full"
-                />
+              <img
+                src={challenge.challengeId.image } 
+                alt={challenge.challengeId.title}
+                className="object-cover w-full h-full"
+              />
               </div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold">{challenge.challengeId.title}</h3>

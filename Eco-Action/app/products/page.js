@@ -9,8 +9,8 @@ const ProductsList = dynamic(() => import("../components/productsList.js"), {
 
 export default function ProductsPage() {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Products</h1>
+    <div className="container p-4 mx-auto">
+      <h1 className="mt-8 text-3xl font-bold text-center text-[#116A7B]">Products</h1>
       <ProductsList />
     </div>
   );

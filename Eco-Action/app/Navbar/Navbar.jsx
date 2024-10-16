@@ -99,12 +99,20 @@ import { Menu, ShoppingCart, User } from "lucide-react";
 import LogoutButton from "../LogoutButton";
 import { useCart } from "../context/CartContext";
 import { usePathname } from "next/navigation";
+import { useLogIn } from "../context/loginContext";
+import { useState, useEffect } from "react";
 
 export default function Navbar({ token }) {
   const cartContext = useCart(); // Store the context in a variable
   const cartQuantity = cartContext?.cartQuantity || 0; // Safely access cartQuantity
   const pathName = usePathname();
   const isAuth = pathName.startsWith("/admin");
+  const [token1, setToken] = useState("");
+  const { isLoggedIn, setIsLoggedIn } = useLogIn();
+  console.log(isLoggedIn);
+  useEffect(() => {
+    setToken(token);
+  }, [isLoggedIn]);
 
   if (isAuth) return null;
 
@@ -119,15 +127,18 @@ export default function Navbar({ token }) {
           />
         </Link>
         <div className="flex items-center lg:order-2 max-lg:ml-auto">
-          {!token && (
-            <Link
-              href="/login"
-              className="px-4 py-2 text-sm rounded-full font-bold text-white bg-[#116A7B] hover:bg-[#0E5A6A] transition-colors"
-            >
-              Login
-            </Link>
+          {!token1 && (
+            <>
+              {setIsLoggedIn(false)}
+              <Link
+                href="/login"
+                className="px-1 py-1 text-sm rounded-full font-bold text-white bg-[#116A7B] hover:bg-[#0E5A6A] transition-colors"
+              >
+                Login
+              </Link>
+            </>
           )}
-          {token && (
+          {token1 && (
             <>
               <Link href="/Profile" className="relative mr-5">
                 <User className="w-6 h-6 cursor-pointer hover:text-[#116A7B]" />
@@ -138,7 +149,7 @@ export default function Navbar({ token }) {
                   {cartQuantity}
                 </span>
               </Link>
-              <div className="px-4 py-2 text-sm rounded-full font-bold text-white bg-[#116A7B] hover:bg-[#0E5A6A] transition-colors cursor-pointer">
+              <div className="px-1 py-1 text-sm rounded-full font-bold text-white bg-[#116A7B] hover:bg-[#0E5A6A] transition-colors cursor-pointer">
                 <LogoutButton />
               </div>
             </>
@@ -166,20 +177,29 @@ export default function Navbar({ token }) {
                   href="/products"
                   className="lg:p-4 py-2 block hover:text-[#116A7B]"
                 >
-                  Products
+                  Market Place
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/about"
+                  href="/eco-challenges"
                   className="lg:p-4 py-2 block hover:text-[#116A7B]"
                 >
-                  About
+                  Challenges
+
                 </Link>
               </li>
               <li>
                 <Link
+                  href="/articles"
+                  className="lg:p-4 py-2 block hover:text-[#116A7B]"
+                >
+                  Articles
 
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/contactus"
                   className="lg:p-4 py-2 block hover:text-[#116A7B]"
                 >

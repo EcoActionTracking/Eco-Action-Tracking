@@ -4,7 +4,7 @@ import Product from "../../../../../models/Product";
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  console.log("edit id", id);
+
   await dbConnect();
 
   try {

@@ -238,7 +238,7 @@ export default function CheckoutPage() {
                     </p>
                   </div>
                   <p className="font-semibold text-[#4D869C]">
-                    ${(item.productId.price * item.quantity).toFixed(2)}
+                    JOD{(item.productId.price * item.quantity).toFixed(2)}
                   </p>
                 </div>
               ))}
@@ -255,14 +255,14 @@ export default function CheckoutPage() {
                   <div className="flex justify-between items-center text-green-600">
                     <p className="text-lg font-semibold">Discount:</p>
                     <p className="text-xl font-bold">
-                      -${appliedDiscount.amount.toFixed(2)}
+                      -JOD{appliedDiscount.amount.toFixed(2)}
                     </p>
                   </div>
                 )}
                 <div className="flex justify-between items-center mt-2">
                   <p className="text-lg font-semibold text-[#4D869C]">Total:</p>
                   <p className="text-xl font-bold text-[#4D869C]">
-                    ${calculateTotal()}
+                    JOD{calculateTotal()}
                   </p>
                 </div>
               </div>
