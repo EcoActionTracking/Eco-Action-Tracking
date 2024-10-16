@@ -322,7 +322,7 @@ function CheckoutForm({ cart, total, searchParams }) {
             quantity: item.quantity,
           })),
           shippingAddress: formData,
-          discountId: discount.id,
+          discountId: discount?.id,
         }),
       });
 
@@ -481,7 +481,7 @@ function CheckoutForm({ cart, total, searchParams }) {
         disabled={loading}
         className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-[#4D869C] hover:bg-[#7AB2B2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7AB2B2] transition-colors duration-200 ease-in-out transform hover:scale-105 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:hover:scale-100"
       >
-        {loading ? "Processing..." : `Pay $${total}`}
+        {loading ? "Processing..." : `Pay JOD${total}`}
       </button>
     </form>
   );

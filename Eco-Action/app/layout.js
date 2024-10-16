@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import Navbar from "../app/Navbar/Navbar";
 import { Footer } from "./Footer/Footer";
 import { CartProvider } from "./context/CartContext";
+import { LoginProvider } from "./context/loginContext";
 
 import { SessionProvider } from "next-auth/react";
 import { NotificationProvider } from "./context/NotificationContext";
@@ -45,15 +46,17 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NotificationProvider>
-          <CartProvider>
-            {!isLoginPage && <Navbar token={token} />}
-            <NotificationAlert />
+        <LoginProvider>
+          <NotificationProvider>
+            <CartProvider>
+              {!isLoginPage && <Navbar token={token} />}
+              <NotificationAlert />
 
-            {children}
-            <Footer />
-          </CartProvider>
-        </NotificationProvider>
+              {children}
+              <Footer />
+            </CartProvider>
+          </NotificationProvider>
+        </LoginProvider>
       </body>
     </html>
   );
