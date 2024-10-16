@@ -20,6 +20,7 @@ const nextConfig = {
       "fakestoreapi.com",
       "i.pinimg.com",
       "firebasestorage.googleapis.com",
+      'media.giphy.com',
     ],
   },
   env: {

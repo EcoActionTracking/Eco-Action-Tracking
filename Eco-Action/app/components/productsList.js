@@ -64,7 +64,7 @@
 //   if (error) return <div>Error: {error}</div>;
 
 //   return (
-//     <div className="container mx-auto px-4">
+//     <div className="container px-4 mx-auto">
 //       <form
 //         className="max-w-lg mx-auto mb-4"
 //         onSubmit={(e) => e.preventDefault()}
@@ -161,12 +161,12 @@
 //           </div>
 //         </div>
 //       </form>
-//       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+//       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 //         {currentProducts.map((product) => (
 //           <ProductCard key={product._id} product={product} />
 //         ))}
 //       </div>
-//       <div className="mt-4 flex justify-center">
+//       <div className="flex justify-center mt-4">
 //         {Array.from({ length: totalPages }, (_, i) => (
 //           <button
 //             key={i}
@@ -248,7 +248,7 @@
 
 //   return (
 //     <div
-//       className="container mx-auto px-4"
+//       className="container px-4 mx-auto"
 //       style={{ backgroundColor: "#EEF7FF" }}
 //     >
 //       <form
@@ -347,12 +347,12 @@
 //           </div>
 //         </div>
 //       </form>
-//       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+//       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 //         {currentProducts.map((product) => (
 //           <ProductCard key={product._id} product={product} />
 //         ))}
 //       </div>
-//       <div className="mt-4 flex justify-center">
+//       <div className="flex justify-center mt-4">
 //         {Array.from({ length: totalPages }, (_, i) => (
 //           <button
 //             key={i}
@@ -443,23 +443,23 @@ function ProductsList() {
   }
 
   if (error)
-    return <div className="text-center text-red-500 mt-8">Error: {error}</div>;
+    return <div className="mt-8 text-center text-red-500">Error: {error}</div>;
 
   return (
     <div
-      className="container mx-auto px-4"
-      style={{ backgroundColor: "#EEF7FF" }}
+      className="container px-6 mx-auto"
+     
     >
       <form
         className="max-w-lg mx-auto mb-4"
         onSubmit={e => e.preventDefault()}
       >
-        <div className="flex items-center">
+        <div className="flex items-center my-20">
           <div className="relative">
             <button
               id="dropdown-button"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex-shrink-0 z-10 inline-flex items-center h-full py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-[#CDE8E5] border border-[#7AB2B2] rounded-s-lg hover:bg-[#7AB2B2] focus:ring-4 focus:outline-none focus:ring-[#7AB2B2] dark:bg-[#4D869C] dark:hover:bg-[#7AB2B2] dark:focus:ring-[#7AB2B2] dark:text-white dark:border-[#7AB2B2]"
+              className="flex-shrink-0 z-10 inline-flex items-center h-full py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-[#CDE8E5] border border-[#7AB2B2] rounded-s-lg hover:bg-[#7AB2B2] focus:ring-4 focus:outline-none focus:ring-[#7AB2B2] dark:bg-[#4D869C] dark:hover:bg-[#7AB2B2] dark:focus:ring-[#7AB2B2] dark:text-white dark:border-[#7AB2B2] "
               type="button"
               style={{ height: "42px" }}
             >
@@ -546,12 +546,12 @@ function ProductsList() {
           </div>
         </div>
       </form>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 mb-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {currentProducts.map(product => (
           <ProductCard key={product._id} product={product} />
         ))}
       </div>
-      <div className="mt-4 flex justify-center">
+      <div className="flex justify-center mt-7">
         {Array.from({ length: totalPages }, (_, i) => (
           <button
             key={i}

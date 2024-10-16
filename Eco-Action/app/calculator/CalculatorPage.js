@@ -24,15 +24,15 @@
 // //   };
 
 // //   return (
-// //     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-400 to-blue-500 py-12 px-4 sm:px-6 lg:px-8">
+// //     <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gradient-to-r from-green-400 to-blue-500 sm:px-6 lg:px-8">
 // //       <motion.div
-// //         className="max-w-lg w-full bg-white rounded-lg shadow-2xl overflow-hidden"
+// //         className="w-full max-w-lg overflow-hidden bg-white rounded-lg shadow-2xl"
 // //         initial={{ opacity: 0, scale: 0.9 }}
 // //         animate={{ opacity: 1, scale: 1 }}
 // //         transition={{ duration: 0.5 }}
 // //       >
 // //         <div className="px-6 py-8">
-// //           <h1 className="text-3xl font-bold text-gray-900 text-center mb-6">
+// //           <h1 className="mb-6 text-3xl font-bold text-center text-gray-900">
 // //             Environmental Impact Calculator
 // //           </h1>
 // //           <motion.div
@@ -43,7 +43,7 @@
 // //           >
 // //             <label
 // //               htmlFor="foodWaste"
-// //               className="block text-lg font-medium text-gray-700 mb-2"
+// //               className="block mb-2 text-lg font-medium text-gray-700"
 // //             >
 // //               Amount of Food Waste (kg)
 // //             </label>
@@ -58,18 +58,18 @@
 // //           </motion.div>
 // //           {error && (
 // //             <motion.div
-// //               className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-center"
+// //               className="flex items-center p-4 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-lg"
 // //               initial={{ opacity: 0 }}
 // //               animate={{ opacity: 1 }}
 // //               transition={{ delay: 0.3, duration: 0.4 }}
 // //             >
-// //               <AlertCircle className="h-6 w-6 mr-3" />
+// //               <AlertCircle className="w-6 h-6 mr-3" />
 // //               <span>{error}</span>
 // //             </motion.div>
 // //           )}
 // //           <motion.button
 // //             onClick={handleCalculate}
-// //             className="w-full bg-green-500 text-white text-lg px-6 py-3 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 transition-colors duration-300"
+// //             className="w-full px-6 py-3 text-lg text-white transition-colors duration-300 bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50"
 // //             whileHover={{ scale: 1.05 }}
 // //             whileTap={{ scale: 0.95 }}
 // //           >
@@ -77,12 +77,12 @@
 // //           </motion.button>
 // //           {results && (
 // //             <motion.div
-// //               className="mt-8 bg-green-50 border border-green-200 rounded-lg p-6"
+// //               className="p-6 mt-8 border border-green-200 rounded-lg bg-green-50"
 // //               initial={{ y: 50, opacity: 0 }}
 // //               animate={{ y: 0, opacity: 1 }}
 // //               transition={{ delay: 0.4, duration: 0.6 }}
 // //             >
-// //               <h2 className="text-2xl font-semibold text-green-800 mb-4">
+// //               <h2 className="mb-4 text-2xl font-semibold text-green-800">
 // //                 Environmental Impact:
 // //               </h2>
 // //               <div className="grid grid-cols-2 gap-6 text-center">
@@ -139,16 +139,16 @@
 // //   };
 
 // //   return (
-// //     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-// //       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+// //     <div className="min-h-screen px-4 py-12 bg-gray-100 sm:px-6 lg:px-8">
+// //       <div className="max-w-2xl mx-auto overflow-hidden bg-white rounded-lg shadow-md">
 // //         <div className="px-4 py-5 sm:p-6">
-// //           <h1 className="text-2xl font-bold text-gray-900 mb-6">
+// //           <h1 className="mb-6 text-2xl font-bold text-gray-900">
 // //             Environmental Impact Calculator
 // //           </h1>
 // //           <div className="mb-4">
 // //             <label
 // //               htmlFor="foodWaste"
-// //               className="block text-sm font-medium text-gray-700 mb-2"
+// //               className="block mb-2 text-sm font-medium text-gray-700"
 // //             >
 // //               Amount of Food Waste (kg)
 // //             </label>
@@ -162,22 +162,22 @@
 // //             />
 // //           </div>
 // //           {error && (
-// //             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+// //             <div className="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded">
 // //               <div className="flex items-center">
-// //                 <AlertCircle className="h-5 w-5 mr-2" />
+// //                 <AlertCircle className="w-5 h-5 mr-2" />
 // //                 <span>{error}</span>
 // //               </div>
 // //             </div>
 // //           )}
 // //           <button
 // //             onClick={handleCalculate}
-// //             className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200"
+// //             className="w-full px-4 py-2 text-white transition-colors duration-200 bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
 // //           >
 // //             Calculate Impact
 // //           </button>
 // //           {results && (
-// //             <div className="mt-6 bg-green-50 border border-green-200 rounded-md p-4">
-// //               <h2 className="text-lg font-semibold text-green-800 mb-3">
+// //             <div className="p-4 mt-6 border border-green-200 rounded-md bg-green-50">
+// //               <h2 className="mb-3 text-lg font-semibold text-green-800">
 // //                 Environmental Impact:
 // //               </h2>
 // //               <div className="grid grid-cols-2 gap-4">
@@ -276,9 +276,9 @@
 // //   };
 
 // //   return (
-// //     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4 flex items-center justify-center">
-// //       <div className="bg-white rounded-3xl shadow-xl overflow-hidden max-w-md w-full">
-// //         <div className="bg-green-600 text-white p-6 flex items-center justify-between">
+// //     <div className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-green-50 to-blue-50">
+// //       <div className="w-full max-w-md overflow-hidden bg-white shadow-xl rounded-3xl">
+// //         <div className="flex items-center justify-between p-6 text-white bg-green-600">
 // //           <h1 className="text-2xl font-bold">حاسبة الأثر البيئي</h1>
 // //           <Leaf className="w-8 h-8" />
 // //         </div>
@@ -286,7 +286,7 @@
 // //           <div className="mb-6">
 // //             <label
 // //               htmlFor="foodWaste"
-// //               className="block text-sm font-medium text-gray-700 mb-2"
+// //               className="block mb-2 text-sm font-medium text-gray-700"
 // //             >
 // //               كمية نفايات الطعام (كجم)
 // //             </label>
@@ -301,25 +301,25 @@
 // //             />
 // //           </div>
 // //           {error && (
-// //             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-full flex items-center">
-// //               <AlertCircle className="h-5 w-5 mr-2" />
+// //             <div className="flex items-center p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-full">
+// //               <AlertCircle className="w-5 h-5 mr-2" />
 // //               <span>{error}</span>
 // //             </div>
 // //           )}
 // //           <button
 // //             onClick={handleCalculate}
-// //             className="w-full bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200"
+// //             className="w-full px-4 py-2 text-white transition-colors duration-200 bg-green-600 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
 // //           >
 // //             حساب الأثر
 // //           </button>
 // //           {results && (
-// //             <div className="mt-6 bg-green-50 border border-green-200 rounded-2xl p-4">
-// //               <h2 className="text-lg font-semibold text-green-800 mb-3">
+// //             <div className="p-4 mt-6 border border-green-200 bg-green-50 rounded-2xl">
+// //               <h2 className="mb-3 text-lg font-semibold text-green-800">
 // //                 الأثر البيئي:
 // //               </h2>
 // //               <div className="grid grid-cols-2 gap-4 text-right">
 // //                 {Object.entries(results).map(([key, value]) => (
-// //                   <div key={key} className="bg-white p-3 rounded-xl shadow-sm">
+// //                   <div key={key} className="p-3 bg-white shadow-sm rounded-xl">
 // //                     <p className="text-sm text-gray-600">
 // //                       {key === "fertilizerProduced" && "السماد المنتج"}
 // //                       {key === "wasteReduced" && "النفايات المخفضة"}
@@ -337,7 +337,7 @@
 // //                   </div>
 // //                 ))}
 // //               </div>
-// //               <div className="mt-4 text-sm text-gray-600 bg-white p-4 rounded-xl">
+// //               <div className="p-4 mt-4 text-sm text-gray-600 bg-white rounded-xl">
 // //                 <p>
 // //                   بإعادة تدوير {results.wasteReduced} كجم من نفايات الطعام، لقد
 // //                   أحدثت تأثيرًا بيئيًا كبيرًا!
@@ -387,9 +387,9 @@
 //   };
 
 //   return (
-//     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4 flex items-center justify-center">
-//       <div className="bg-white rounded-3xl shadow-xl overflow-hidden max-w-md w-full">
-//         <div className="bg-green-600 text-white p-6 flex items-center justify-between">
+//     <div className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-green-50 to-blue-50">
+//       <div className="w-full max-w-md overflow-hidden bg-white shadow-xl rounded-3xl">
+//         <div className="flex items-center justify-between p-6 text-white bg-green-600">
 //           <h1 className="text-2xl font-bold">
 //             Environmental Impact Calculator
 //           </h1>
@@ -399,7 +399,7 @@
 //           <div className="mb-6">
 //             <label
 //               htmlFor="foodWaste"
-//               className="block text-sm font-medium text-gray-700 mb-2"
+//               className="block mb-2 text-sm font-medium text-gray-700"
 //             >
 //               Food Waste Amount (kg)
 //             </label>
@@ -413,25 +413,25 @@
 //             />
 //           </div>
 //           {error && (
-//             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-full flex items-center">
-//               <AlertCircle className="h-5 w-5 mr-2" />
+//             <div className="flex items-center p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded-full">
+//               <AlertCircle className="w-5 h-5 mr-2" />
 //               <span>{error}</span>
 //             </div>
 //           )}
 //           <button
 //             onClick={handleCalculate}
-//             className="w-full bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200"
+//             className="w-full px-4 py-2 text-white transition-colors duration-200 bg-green-600 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
 //           >
 //             Calculate Impact
 //           </button>
 //           {results && (
-//             <div className="mt-6 bg-green-50 border border-green-200 rounded-2xl p-4">
-//               <h2 className="text-lg font-semibold text-green-800 mb-3">
+//             <div className="p-4 mt-6 border border-green-200 bg-green-50 rounded-2xl">
+//               <h2 className="mb-3 text-lg font-semibold text-green-800">
 //                 Environmental Impact:
 //               </h2>
 //               <div className="grid grid-cols-2 gap-4">
 //                 {Object.entries(results).map(([key, value]) => (
-//                   <div key={key} className="bg-white p-3 rounded-xl shadow-sm">
+//                   <div key={key} className="p-3 bg-white shadow-sm rounded-xl">
 //                     <p className="text-sm text-gray-600">
 //                       {key
 //                         .replace(/([A-Z])/g, " $1")
@@ -443,7 +443,7 @@
 //                   </div>
 //                 ))}
 //               </div>
-//               <div className="mt-4 text-sm text-gray-600 bg-white p-4 rounded-xl">
+//               <div className="p-4 mt-4 text-sm text-gray-600 bg-white rounded-xl">
 //                 <p>
 //                   By recycling {results.wasteReduced} kg of food waste, you've
 //                   made a significant environmental impact!
@@ -494,52 +494,52 @@
 //   };
 
 //   return (
-//     <div className="min-h-screen bg-gray-100 p-4 flex items-center justify-center">
-//       <div className="bg-white rounded-3xl shadow-xl overflow-hidden max-w-4xl w-full flex">
+//     <div className="flex items-center justify-center min-h-screen p-4 bg-gray-100">
+//       <div className="flex w-full max-w-4xl overflow-hidden bg-white shadow-xl rounded-3xl">
 //         {/* Left panel */}
-//         <div className="w-1/2 bg-gray-50 p-8 flex flex-col justify-between">
+//         <div className="flex flex-col justify-between w-1/2 p-8 bg-gray-50">
 //           <div>
-//             <h1 className="text-4xl font-bold mb-2">
+//             <h1 className="mb-2 text-4xl font-bold">
 //               <span className="text-orange-400">Environmental</span>
 //               <br />
 //               <span className="text-navy-800">Impact Calculator</span>
 //             </h1>
 //           </div>
 //           <div className="relative w-48 h-48 mx-auto">
-//             <div className="absolute inset-0 bg-sky-200 rounded-full"></div>
-//             <div className="absolute inset-4 bg-sky-400 rounded-2xl transform rotate-12"></div>
-//             <div className="absolute top-4 left-4 w-16 h-16 bg-yellow-400 rounded-full shadow-lg"></div>
-//             <div className="absolute bottom-4 right-4 w-16 h-16 bg-yellow-400 rounded-full shadow-lg"></div>
+//             <div className="absolute inset-0 rounded-full bg-sky-200"></div>
+//             <div className="absolute transform inset-4 bg-sky-400 rounded-2xl rotate-12"></div>
+//             <div className="absolute w-16 h-16 bg-yellow-400 rounded-full shadow-lg top-4 left-4"></div>
+//             <div className="absolute w-16 h-16 bg-yellow-400 rounded-full shadow-lg bottom-4 right-4"></div>
 //           </div>
 //         </div>
 
 //         {/* Right panel */}
-//         <div className="w-1/2 bg-sky-200 p-8">
+//         <div className="w-1/2 p-8 bg-sky-200">
 //           <div className="space-y-4">
-//             <div className="flex justify-between items-center">
-//               <span className="text-sky-800">Calculate</span>
+//             <div className="flex items-center justify-between">
+//               <span className="text-white">Calculate</span>
 //               <div className="relative">
-//                 <select className="appearance-none bg-white rounded-md py-2 px-4 pr-8 shadow-sm text-sky-800">
+//                 <select className="px-4 py-2 pr-8 text-white bg-white rounded-md shadow-sm appearance-none">
 //                   <option>The final amount</option>
 //                 </select>
 //                 <ChevronDown
-//                   className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sky-800"
+//                   className="absolute text-white transform -translate-y-1/2 right-2 top-1/2"
 //                   size={20}
 //                 />
 //               </div>
 //             </div>
 
 //             <div className="flex items-center">
-//               <span className="w-1/3 text-sky-800">Food waste</span>
-//               <div className="w-2/3 flex">
+//               <span className="w-1/3 text-white">Food waste</span>
+//               <div className="flex w-2/3">
 //                 <input
 //                   type="number"
 //                   value={foodWaste}
 //                   onChange={(e) => setFoodWaste(e.target.value)}
-//                   className="flex-grow bg-white rounded-l-md py-2 px-4 shadow-sm"
+//                   className="flex-grow px-4 py-2 bg-white shadow-sm rounded-l-md"
 //                   placeholder="Enter amount"
 //                 />
-//                 <select className="bg-white rounded-r-md py-2 px-2 shadow-sm border-l text-sky-800">
+//                 <select className="px-2 py-2 text-white bg-white border-l shadow-sm rounded-r-md">
 //                   <option>kg</option>
 //                 </select>
 //               </div>
@@ -547,16 +547,16 @@
 
 //             <button
 //               onClick={handleCalculate}
-//               className="w-full bg-orange-400 text-white py-3 rounded-md hover:bg-orange-500 transition-colors duration-200"
+//               className="w-full py-3 text-white transition-colors duration-200 bg-orange-400 rounded-md hover:bg-orange-500"
 //             >
 //               CALCULATE
 //             </button>
 
-//             {error && <div className="text-red-600 text-sm">{error}</div>}
+//             {error && <div className="text-sm text-red-600">{error}</div>}
 
 //             {results && (
-//               <div className="bg-white rounded-md p-4 shadow-sm">
-//                 <h2 className="text-lg font-semibold text-sky-800 mb-2">
+//               <div className="p-4 bg-white rounded-md shadow-sm">
+//                 <h2 className="mb-2 text-lg font-semibold text-white">
 //                   Environmental Impact:
 //                 </h2>
 //                 <div className="grid grid-cols-2 gap-2 text-sm">
@@ -608,25 +608,25 @@ const CalculatorPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 flex items-center justify-center">
-      <div className="bg-white rounded-3xl shadow-xl overflow-hidden max-w-4xl w-full flex">
+    <div className="flex items-center justify-center min-h-screen p-4 ">
+      <div className="flex w-full max-w-4xl overflow-hidden bg-white shadow-xl rounded-3xl">
         {/* Left panel */}
-        <div className="w-1/2 bg-gray-50 p-8 flex flex-col justify-between">
+        <div className="flex flex-col justify-between w-1/2 p-8 bg-gray-50 ">
           <div>
-            <h1 className="text-4xl font-bold mb-2">
+            <h1 className="mb-2 text-4xl font-bold">
               <span className="text-orange-400">Environmental</span>
               <br />
               <span className="text-navy-800">Impact Calculator</span>
             </h1>
           </div>
           <div className="relative w-48 h-48 mx-auto">
-            <div className="absolute inset-0 bg-sky-200 rounded-full"></div>
-            <div className="absolute inset-4 bg-sky-400 rounded-2xl transform rotate-12"></div>
-            <div className="absolute top-4 left-4 w-16 h-16 bg-yellow-400 rounded-full shadow-lg"></div>
-            <div className="absolute bottom-4 right-4 w-16 h-16 bg-yellow-400 rounded-full shadow-lg"></div>
+            <div className="absolute inset-0 rounded-full bg-sky-200"></div>
+            <div className="absolute transform inset-4 bg-[#116A7B] rounded-2xl rotate-12"></div>
+            <div className="absolute w-16 h-16 bg-yellow-400 rounded-full shadow-lg top-4 left-4"></div>
+            <div className="absolute w-16 h-16 bg-yellow-400 rounded-full shadow-lg bottom-4 right-4"></div>
           </div>
           {results && (
-            <div className="mt-4 text-sm text-gray-600 bg-white p-4 rounded-xl">
+            <div className="p-4 mt-4 text-sm text-gray-600 bg-white rounded-xl">
               <p>
                 By recycling {results.wasteReduced} kg of food waste, you've
                 made a significant environmental impact!
@@ -646,32 +646,21 @@ const CalculatorPage = () => {
         </div>
 
         {/* Right panel */}
-        <div className="w-1/2 bg-sky-200 p-8">
+        <div className="w-1/2 p-8 bg-[#116A7B] ">
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sky-800">Calculate</span>
-              <div className="relative">
-                <select className="appearance-none bg-white rounded-md py-2 px-4 pr-8 shadow-sm text-sky-800">
-                  <option>The final amount</option>
-                </select>
-                <ChevronDown
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sky-800"
-                  size={20}
-                />
-              </div>
-            </div>
+        
 
-            <div className="flex items-center">
-              <span className="w-1/3 text-sky-800">Food waste</span>
-              <div className="w-2/3 flex">
+            <div className="flex items-center mt-20">
+              <span className="w-1/3 text-white">Food waste</span>
+              <div className="flex w-2/3">
                 <input
                   type="number"
                   value={foodWaste}
                   onChange={(e) => setFoodWaste(e.target.value)}
-                  className="flex-grow bg-white rounded-l-md py-2 px-4 shadow-sm"
+                  className="flex-grow px-4 py-2 bg-white shadow-sm rounded-l-md"
                   placeholder="Enter amount"
                 />
-                <select className="bg-white rounded-r-md py-2 px-2 shadow-sm border-l text-sky-800">
+                <select className="px-2 py-2 text-[#12393e] bg-white border-l shadow-sm rounded-r-md">
                   <option>kg</option>
                 </select>
               </div>
@@ -679,16 +668,16 @@ const CalculatorPage = () => {
 
             <button
               onClick={handleCalculate}
-              className="w-full bg-orange-400 text-white py-3 rounded-md hover:bg-orange-500 transition-colors duration-200"
+              className="w-full py-3 text-white transition-colors duration-200 bg-orange-400 rounded-md hover:bg-orange-500"
             >
               CALCULATE
             </button>
 
-            {error && <div className="text-red-600 text-sm">{error}</div>}
+            {error && <div className="text-sm text-red-600">{error}</div>}
 
             {results && (
-              <div className="bg-white rounded-md p-4 shadow-sm">
-                <h2 className="text-lg font-semibold text-sky-800 mb-2">
+              <div className="p-4 bg-white rounded-md shadow-sm">
+                <h2 className="mb-2 text-lg font-semibold text-white">
                   Environmental Impact:
                 </h2>
                 <div className="grid grid-cols-2 gap-2 text-sm">
