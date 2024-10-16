@@ -1,11 +1,8 @@
-"use client"; // This indicates client-side rendering for Next.js
+"use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import ImageUpload from "./ImageUpload";
-import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { uploadImage } from "@/utils/uploadImage";
 import { FaTimes } from "react-icons/fa";
 
 const ProductForm = ({ product, onClose, onSave }) => {
@@ -33,56 +30,80 @@ const ProductForm = ({ product, onClose, onSave }) => {
     }
   }, [product]);
 
-  const handleImageUpload = file => {
+  const handleImageUpload = (file) => {
     setFile(file);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsUploading(true);
-    setUploadError(null);
 
-    let updatedImageUrl = imageUrl;
+    // Show confirmation alert before proceeding with the submit
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to save changes to this product.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#116A7B",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, save it!",
+    });
 
-    if (file) {
+    // Proceed only if the user confirms
+    if (result.isConfirmed) {
+      setIsUploading(true);
+      setUploadError(null);
+
+      let updatedImageUrl = imageUrl;
+
+      if (file) {
+        try {
+          updatedImageUrl = await uploadImage(file); // Ensure this function is defined
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          setUploadError("Failed to upload image. Please try again.");
+          setIsUploading(false);
+          return;
+        }
+      }
+
+      const productData = {
+        name,
+        description,
+        price,
+        category,
+        stock_quantity: stockQuantity,
+        images: [updatedImageUrl],
+      };
+
       try {
-        updatedImageUrl = await uploadImage(file);
+        if (product) {
+          // Assuming onSave handles both adding and updating products
+          await onSave({ ...productData, _id: product._id });
+        } else {
+          await onSave(productData);
+        }
+        onClose();
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Product saved successfully!",
+        });
       } catch (error) {
-        console.error("Error uploading image:", error);
-        setUploadError("Failed to upload image. Please try again.");
+        console.error("Error saving product:", error);
+        setUploadError("Failed to save product. Please try again.");
+      } finally {
         setIsUploading(false);
-        return;
       }
-    }
-
-    const productData = {
-      name,
-      description,
-      price,
-      category,
-      stock_quantity: stockQuantity,
-      images: [updatedImageUrl],
-    };
-
-    try {
-      if (product) {
-        await onSave({ ...productData, _id: product._id });
-      } else {
-        await onSave(productData);
-      }
-      onClose();
-    } catch (error) {
-      console.error("Error saving product:", error);
-      setUploadError("Failed to save product. Please try again.");
-    } finally {
-      setIsUploading(false);
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
-      <div className="bg-white rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 max-w-4xl my-8 overflow-hidden">
-        <div className="bg-gradient-to-r from-green-600 to-teal-600 p-6 flex justify-between items-center">
+      <div
+        className="bg-white rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 max-w-4xl my-8 overflow-hidden"
+        style={{ maxHeight: "85vh" }}
+      >
+        <div className="bg-gradient-to-r from-zait to-teal-600 p-6 flex justify-between items-center rounded-t-lg">
           <h3 className="text-2xl font-bold text-white">
             {product ? "Edit Product" : "Add New Product"}
           </h3>
@@ -94,8 +115,12 @@ const ProductForm = ({ product, onClose, onSave }) => {
           </button>
         </div>
 
-        <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Name */}
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="p-6 space-y-6 overflow-y-auto"
+          style={{ maxHeight: "70vh" }}
+        >
           <div>
             <label
               htmlFor="name"
@@ -107,8 +132,8 @@ const ProductForm = ({ product, onClose, onSave }) => {
               id="name"
               type="text"
               value={name}
-              onChange={e => setName(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-zait focus:border-transparent"
               required
             />
           </div>
@@ -124,8 +149,8 @@ const ProductForm = ({ product, onClose, onSave }) => {
             <textarea
               id="description"
               value={description}
-              onChange={e => setDescription(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-24 resize-y"
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-zait focus:border-transparent h-24 resize-y"
               required
             />
           </div>
@@ -143,8 +168,8 @@ const ProductForm = ({ product, onClose, onSave }) => {
                 id="price"
                 type="number"
                 value={price}
-                onChange={e => setPrice(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setPrice(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-zait focus:border-transparent"
                 required
               />
             </div>
@@ -161,8 +186,8 @@ const ProductForm = ({ product, onClose, onSave }) => {
                 id="category"
                 type="text"
                 value={category}
-                onChange={e => setCategory(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-zait focus:border-transparent"
                 required
               />
             </div>
@@ -180,8 +205,8 @@ const ProductForm = ({ product, onClose, onSave }) => {
               id="stockQuantity"
               type="number"
               value={stockQuantity}
-              onChange={e => setStockQuantity(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) => setStockQuantity(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-zait focus:border-transparent"
               required
             />
           </div>
@@ -196,10 +221,12 @@ const ProductForm = ({ product, onClose, onSave }) => {
 
           {/* Upload Error Message */}
           {uploadError && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{uploadError}</AlertDescription>
-            </Alert>
+            <div
+              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+              role="alert"
+            >
+              <span className="block sm:inline">{uploadError}</span>
+            </div>
           )}
 
           {/* Form Buttons */}
@@ -213,7 +240,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
             </button>
             <button
               type="submit"
-              className="py-2 px-6 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-600 hover:to-teal-600 transition duration-300"
+              className="py-2 px-6 bg-gradient-to-r from-zait to-teal-600 text-white rounded-lg hover:from-zait hover:to-teal-600 transition duration-300"
               disabled={isUploading}
             >
               {isUploading
