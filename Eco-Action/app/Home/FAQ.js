@@ -9,11 +9,11 @@ export function FAQ() {
   };
 
   return (
-    <div className="font-[sans-serif] space-y-4 max-w-6xl mx-auto my-40 shadow-lg p-20">
+    <div className="font-[sans-serif] space-y-4 max-w-6xl mx-auto my-20 shadow-lg p-20">
       <h2 className="text-3xl font-extrabold text-[#116A7B] mb-8 text-center">FAQS</h2>
       
       {faqData.map((faq, index) => (
-        <div key={index} className="transition-all rounded-lg bg-[#C2DEDC]">
+        <div key={index} className="transition-all rounded-lg bg-gradient-to-t from-[#69aab6] to-gray-200">
           <button
             className="w-full text-base font-semibold text-left py-5 px-3 text-[#333] flex items-center"
             type="button"

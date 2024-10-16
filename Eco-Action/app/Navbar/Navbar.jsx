@@ -101,6 +101,7 @@ import { useCart } from "../context/CartContext";
 import { usePathname } from "next/navigation";
 import { useLogIn } from "../context/loginContext";
 import { useState, useEffect } from "react";
+const logo = "/images/logo.svg";
 
 export default function Navbar({ token }) {
   const cartContext = useCart(); // Store the context in a variable
@@ -121,9 +122,9 @@ export default function Navbar({ token }) {
       <div className="flex flex-wrap items-center justify-between w-full gap-4">
         <Link href="/">
           <img
-            src="https://readymadeui.com/readymadeui.svg"
+            src={logo}
             alt="logo"
-            className="w-36"
+            className="w-32 h-12"
           />
         </Link>
         <div className="flex items-center lg:order-2 max-lg:ml-auto">

@@ -70,20 +70,20 @@ const ContactManagement = () => {
 
   if (loading) {
     return (
-      <div className="text-center text-xl text-green-700">
+      <div className="text-xl text-center text-green-700">
         Loading contacts...
       </div>
     );
   }
 
   if (error) {
-    return <div className="text-center text-red-500 text-xl">{error}</div>;
+    return <div className="text-xl text-center text-red-500">{error}</div>;
   }
 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-green-50 to-teal-50">
-      <div className="container mx-auto bg-white p-8 rounded-2xl shadow-lg border border-green-200">
-        <h2 className="text-4xl font-bold mb-8 text-green-800 text-center">
+      <div className="container p-8 mx-auto bg-white border border-green-200 shadow-lg rounded-2xl">
+        <h2 className="mb-8 text-4xl font-bold text-center text-green-800">
           Contact Messages
         </h2>
 
@@ -91,23 +91,23 @@ const ContactManagement = () => {
           <input
             type="text"
             placeholder="Search by name..."
-            className="w-full p-4 pl-12 border-2 border-green-300 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-300"
+            className="w-full p-4 pl-12 transition duration-300 border-2 border-green-300 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />{" "}
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full table-auto bg-white rounded-lg overflow-hidden">
+          <table className="w-full overflow-hidden bg-white rounded-lg table-auto">
             <thead className="bg-gradient-to-r from-green-600 to-teal-600">
               <tr>
-                <th className="py-4 px-6 text-left text-white font-semibold">
+                <th className="px-6 py-4 font-semibold text-left text-white">
                   Name
                 </th>
-                <th className="py-4 px-6 text-left text-white font-semibold">
+                <th className="px-6 py-4 font-semibold text-left text-white">
                   Email
                 </th>
-                <th className="py-4 px-6 text-left text-white font-semibold">
+                <th className="px-6 py-4 font-semibold text-left text-white">
                   Message
                 </th>
               </tr>
