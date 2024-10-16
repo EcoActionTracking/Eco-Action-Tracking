@@ -19,6 +19,7 @@ import {
   Check,
 } from "lucide-react";
 import axios from "axios";
+import { connectStorageEmulator } from "firebase/storage";
 export default function ChallengeDetails() {
   const [challenge, setChallenge] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,6 +27,7 @@ export default function ChallengeDetails() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadCount, setUploadCount] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [completed, setCompleted] = useState(false);
   const fileInputRef = useRef(null);
   const params = useParams();
 
@@ -75,6 +77,20 @@ export default function ChallengeDetails() {
     }
     // Load uploadCount from localStorage on page load
   }, [params.id]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await axios.patch(`/api/userChallenges/${params.id}`, {
+          token: Cookies.get("token"),
+        });
+        setCompleted(response.data.completed);
+      } catch (error) {
+        console.error("Error fetching challenge:", error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
   const handleImageUpload = async () => {
     if (!selectedImage) {
       Swal.fire({
@@ -146,31 +162,49 @@ export default function ChallengeDetails() {
   };
 
   const progressPercentage = (uploadCount / challenge?.targetValue) * 100;
-  if (progressPercentage === 100) {
-    Swal.fire({
-      title: "🎁 Congratulations!",
-      html: `
+  if (progressPercentage === 100 && !completed) {
+    (async () => {
+      Swal.fire({
+        title: "🎁 Congratulations!",
+        html: `
         <p class="text-lg font-semibold">Here’s your special coupon code:</p>
         <div class="mt-2 p-4 bg-green-100 rounded-lg border-2 border-green-400 text-green-900 font-bold">
-        ${
-          challenge?.discount?.discountCode || "No code available"
-        }  <!-- Using optional chaining -->
+          ${challenge?.discount?.discountCode || "No code available"}
         </div>
-        <p class="mt-2">Use it on your next purchase and enjoy </p>${
+        <p class="mt-2">Use it on your next purchase and enjoy ${
           challenge?.discount?.disc || "No code available"
-        }  <!-- Using optional chaining -->
-
+        }</p>
       `,
-      icon: "gift",
-      showConfirmButton: true,
-      confirmButtonText: "Claim Now",
-      background: "#f9f9f9",
-      customClass: {
-        popup: "shadow-lg rounded-lg",
-        confirmButton:
-          "bg-[#116A7B] text-white px-4 py-2 rounded hover:bg-[#0e5c69]",
-      },
-    });
+        icon: "gift",
+        showCancelButton: true, // To add a second button
+        confirmButtonText: "Explore Shop",
+        cancelButtonText: "View Profile",
+        background: "#f9f9f9",
+        customClass: {
+          popup: "shadow-lg rounded-lg",
+          confirmButton:
+            "bg-[#116A7B] text-white px-4 py-2 rounded hover:bg-[#0e5c69]",
+          cancelButton:
+            "bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400",
+        },
+      }).then(result => {
+        if (result.isConfirmed) {
+          // Redirect to the shop
+          window.location.href = "/products";
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          // Redirect to the profile page
+          window.location.href = "/Profile";
+        }
+      });
+      await axios.post("/api/discounts", {
+        userId: Cookies.get("token"),
+        challengeId: params.id,
+      });
+      await axios.put(`/api/userChallenges/${params.id}`, {
+        token: Cookies.get("token"),
+      });
+      setCompleted(true);
+    })();
   }
 
   if (loading) {
@@ -290,10 +324,12 @@ export default function ChallengeDetails() {
                   <Users className="mr-2" size={20} />
                   <span>{challenge.participationCount} Participants</span>
                 </div>
-                <div className="flex items-center">
-                  <Award className="mr-2" size={20} />
-                  <span>{challenge.discount.discountCode}% Off Reward</span>
-                </div>
+                {completed && (
+                  <div className="flex items-center">
+                    <Award className="mr-2" size={20} />
+                    <span>{challenge.discount.discountCode}% Off Reward</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -346,7 +382,7 @@ export default function ChallengeDetails() {
           </div>
 
           {/* upload files */}
-          {userChallengesData && (
+          {userChallengesData && !completed && (
             <>
               <div className="mt-8 bg-white p-6 rounded-xl shadow-lg">
                 <h2 className="text-2xl font-bold text-[#116A7B] mb-4 flex items-center">
