@@ -3,13 +3,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Leaf, Package, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import Pagination from "../components/pagintaion"; // Import your Pagination component
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const GradientButton = ({ children, isActive, onClick }) => (
   <button
     onClick={onClick}
     className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
       isActive
-        ? "bg-gradient-to-r from-green-400 to-blue-500 text-white shadow-lg"
+        ? "bg-gradient-to-r from-[#116A7B] to-[#122e33] text-white shadow-lg"
         : "bg-gray-200 text-gray-700 hover:bg-gray-300"
     }`}
   >
@@ -17,9 +19,18 @@ const GradientButton = ({ children, isActive, onClick }) => (
   </button>
 );
 
+const MarkAsCompletedButton = ({ onClick }) => (
+  <button
+    onClick={onClick}
+    className=" mt-4 px-4 py-4 mx-4 my-6 bg-gradient-to-r from-gray-600 to-[#116A7B] text-white rounded-full font-semibold hover:from-gray-600 hover:to-[#0E585D] transition-all duration-300"
+  >
+    Mark as Completed
+  </button>
+);
+
 const OrderCard = ({ order, onStatusChange, isPending }) => (
-  <div className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
-    <div className="p-6 space-y-4">
+  <div className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl flex flex-col">
+    <div className="p-6 space-y-4 flex-grow">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold text-gray-800">
           {order.user.username}
@@ -56,15 +67,10 @@ const OrderCard = ({ order, onStatusChange, isPending }) => (
           ))}
         </ul>
       </div>
-      {isPending && (
-        <button
-          onClick={() => onStatusChange(order._id)}
-          className="w-full mt-4 px-4 py-2 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-full font-semibold hover:from-green-500 hover:to-blue-600 transition-all duration-300"
-        >
-          Mark as Completed
-        </button>
-      )}
     </div>
+    {isPending && (
+      <MarkAsCompletedButton onClick={() => onStatusChange(order._id)} />
+    )}
   </div>
 );
 
@@ -73,6 +79,10 @@ export default function OrdersSection() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage] = useState(6); // Adjust as needed
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -91,14 +101,34 @@ export default function OrdersSection() {
   };
 
   const handleStatusChange = async (orderId) => {
-    try {
-      await axios.patch(`/api/admin/orders/${orderId}`);
-      fetchOrders();
-    } catch (error) {
-      console.error(
-        "Failed to update order status:",
-        error.response?.data || error.message
-      );
+    // Show SweetAlert confirmation
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to mark this order as completed?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#116A7B",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, mark it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.patch(`/api/admin/orders/${orderId}`);
+        fetchOrders(); // Refresh orders after status change
+        Swal.fire(
+          "Marked!",
+          "The order has been marked as completed.",
+          "success"
+        );
+      } catch (error) {
+        console.error(
+          "Failed to update order status:",
+          error.response?.data || error.message
+        );
+        Swal.fire("Error!", "Failed to update order status.", "error");
+      }
     }
   };
 
@@ -106,8 +136,19 @@ export default function OrdersSection() {
     fetchOrders();
   }, [activeTab]);
 
+  // Pagination Logic
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#C2DEDC] to-[#122e33] p-8">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-800 mb-8">
           Order Management
@@ -135,7 +176,7 @@ export default function OrdersSection() {
         <div className="bg-white bg-opacity-60 backdrop-filter backdrop-blur-lg rounded-xl p-8 shadow-lg">
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <Loader2 className="animate-spin text-green-500" size={48} />
+              <Loader2 className="animate-spin text-[#116A7B]" size={48} />
             </div>
           ) : error ? (
             <div className="flex justify-center items-center h-64 text-red-500">
@@ -148,16 +189,26 @@ export default function OrdersSection() {
               No orders found.
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {orders.map((order) => (
-                <OrderCard
-                  key={order._id}
-                  order={order}
-                  onStatusChange={handleStatusChange}
-                  isPending={activeTab === "pending"}
+            <>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {currentOrders.map((order) => (
+                  <OrderCard
+                    key={order._id}
+                    order={order}
+                    onStatusChange={handleStatusChange}
+                    isPending={activeTab === "pending"}
+                  />
+                ))}
+              </div>
+              {/* Pagination Controls */}
+              {ordersPerPage && (
+                <Pagination
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
                 />
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </div>

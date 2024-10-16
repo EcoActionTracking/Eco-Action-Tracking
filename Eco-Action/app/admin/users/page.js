@@ -12,6 +12,7 @@ import {
 import { MdEdit } from "react-icons/md";
 import Swal from "sweetalert2";
 import { motion, AnimatePresence } from "framer-motion";
+import Pagination from "../components/pagintaion"; // Import the Pagination component
 
 const UsersManagement = () => {
   const [users, setUsers] = useState([]);
@@ -38,35 +39,50 @@ const UsersManagement = () => {
   }, []);
 
   const toggleStatus = async (id, currentStatus) => {
-    try {
-      await axios.put(`/api/admin/users/${id}/status`, {
-        isActive: !currentStatus,
-      });
+    const result = await Swal.fire({
+      title: `Are you sure?`,
+      text: `You are about to ${
+        currentStatus ? "deactivate" : "activate"
+      } this user.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#116A7B",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, proceed!",
+      cancelButtonText: "No, cancel!",
+    });
 
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user._id === id ? { ...user, isActive: !currentStatus } : user
-        )
-      );
+    if (result.isConfirmed) {
+      try {
+        await axios.put(`/api/admin/users/${id}/status`, {
+          isActive: !currentStatus,
+        });
 
-      Swal.fire({
-        title: `User ${!currentStatus ? "activated" : "deactivated"}!`,
-        text: `The user has been ${
-          !currentStatus ? "activated" : "deactivated"
-        } successfully.`,
-        icon: !currentStatus ? "success" : "warning",
-        confirmButtonText: "OK",
-        confirmButtonColor: "#2F855A", // Darker green for eco-friendly theme
-      });
-    } catch (error) {
-      console.error("Error updating user status:", error);
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to update the user status.",
-        icon: "error",
-        confirmButtonText: "OK",
-        confirmButtonColor: "#2F855A", // Darker green for eco-friendly theme
-      });
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user._id === id ? { ...user, isActive: !currentStatus } : user
+          )
+        );
+
+        Swal.fire({
+          title: `User ${!currentStatus ? "activated" : "deactivated"}!`,
+          text: `The user has been ${
+            !currentStatus ? "activated" : "deactivated"
+          } successfully.`,
+          icon: !currentStatus ? "success" : "warning",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#116A7B",
+        });
+      } catch (error) {
+        console.error("Error updating user status:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to update the user status.",
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#116A7B",
+        });
+      }
     }
   };
 
@@ -85,10 +101,10 @@ const UsersManagement = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen p-8 bg-gradient-to-br from-green-50 to-teal-50"
+      className="min-h-screen p-8 bg-gradient-to-br from-C2DEDC to-gray-600"
     >
-      <div className="container mx-auto bg-white p-8 rounded-2xl shadow-lg border border-green-200">
-        <h2 className="text-4xl font-bold mb-8 text-green-800 text-center">
+      <div className="container mx-auto bg-white p-8 rounded-2xl shadow-lg border border-gray-600">
+        <h2 className="text-4xl font-bold mb-8 text-[#122e33] text-center">
           User Management
         </h2>
 
@@ -96,15 +112,15 @@ const UsersManagement = () => {
           <input
             type="text"
             placeholder="Search by name..."
-            className="w-full p-4 pl-12 border-2 border-green-300 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-300"
+            className="w-full p-4 pl-12 border-2 border-[#116A7B] rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-[#116A7B] focus:border-transparent transition duration-300"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <FaSearch className="absolute top-5 left-4 text-green-500 text-xl" />
+          <FaSearch className="absolute top-5 left-4 text-[#116A7B] text-xl" />
         </div>
 
         {loading ? (
-          <div className="text-center text-xl text-green-700">
+          <div className="text-center text-xl text-[#122e33]">
             Loading users...
           </div>
         ) : error ? (
@@ -113,7 +129,7 @@ const UsersManagement = () => {
           <>
             <div className="overflow-x-auto">
               <table className="w-full table-auto bg-white rounded-lg overflow-hidden">
-                <thead className="bg-gradient-to-r from-green-600 to-teal-600">
+                <thead className="bg-gradient-to-r from-[#116A7B] to-[#122e33]">
                   <tr>
                     <th className="py-4 px-6 text-left text-white font-semibold">
                       Name
@@ -139,23 +155,23 @@ const UsersManagement = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -20 }}
                           transition={{ duration: 0.3 }}
-                          className="hover:bg-green-50 transition-colors duration-300"
+                          className="hover:bg-C2DEDC transition-colors duration-300"
                         >
-                          <td className="py-4 px-6 text-gray-800 flex items-center">
-                            <FaUserAlt className="text-green-500 mr-3" />
+                          <td className="py-4 px-6 text-[#333] flex items-center">
+                            <FaUserAlt className="text-[#116A7B] mr-3" />
                             {user.username}
                           </td>
-                          <td className="py-4 px-6 text-gray-800">
+                          <td className="py-4 px-6 text-[#333]">
                             <div className="flex items-center">
-                              <FaEnvelope className="text-green-500 mr-3" />
+                              <FaEnvelope className="text-[#116A7B] mr-3" />
                               {user.email}
                             </div>
                           </td>
-                          <td className="py-4 px-6 text-gray-800">
+                          <td className="py-4 px-6 text-[#333]">
                             <span
                               className={`flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
                                 user.isActive
-                                  ? "bg-green-200 text-green-800"
+                                  ? "bg-[#116A7B] text-white"
                                   : "bg-red-200 text-red-800"
                               }`}
                             >
@@ -177,7 +193,7 @@ const UsersManagement = () => {
                               className={`py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out flex items-center ${
                                 user.isActive
                                   ? "bg-red-500 hover:bg-red-600 text-white"
-                                  : "bg-green-500 hover:bg-green-600 text-white"
+                                  : "bg-[#116A7B] hover:bg-[#122e33] text-white"
                               }`}
                             >
                               <MdEdit className="mr-2" />
@@ -190,7 +206,7 @@ const UsersManagement = () => {
                       <tr>
                         <td
                           colSpan="5"
-                          className="py-8 px-6 text-center text-gray-500 text-lg"
+                          className="py-8 px-6 text-center text-gray-600 text-lg"
                         >
                           No users found
                         </td>
@@ -201,65 +217,12 @@ const UsersManagement = () => {
               </table>
             </div>
 
-            <div className="flex items-center justify-center mt-8 space-x-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage(1)}
-                className="py-2 px-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                First
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage(currentPage - 1)}
-                className="py-2 px-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </motion.button>
-
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-                (page) => (
-                  <motion.button
-                    key={page}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setCurrentPage(page)}
-                    className={`py-2 px-4 rounded-full shadow-lg transition duration-300 ${
-                      currentPage === page
-                        ? "bg-green-600 text-white"
-                        : "bg-gray-100 text-green-600 hover:bg-green-500 hover:text-white"
-                    }`}
-                  >
-                    {page}
-                  </motion.button>
-                )
-              )}
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(currentPage + 1)}
-                className="py-2 px-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(totalPages)}
-                className="py-2 px-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Last
-              </motion.button>
-            </div>
+            {/* Pagination Component */}
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+            />
           </>
         )}
       </div>

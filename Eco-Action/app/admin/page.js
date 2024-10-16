@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Users, ShoppingBag, Award, TrendingUp, Loader2 } from "lucide-react";
+import { Users, ShoppingBag, Award, Loader2, Leaf } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -29,6 +29,48 @@ const StatCard = ({ title, value, icon: Icon, gradient }) => (
     </CardContent>
   </Card>
 );
+
+const ImpactCard = () => {
+  const [stats, setStats] = useState({
+    totalCarbonReduced: 0,
+    totalCompletedChallenges: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch("/api/impact-statistics");
+        const data = await response.json();
+        if (data.success) {
+          setStats(data.statistics);
+        }
+      } catch (error) {
+        console.error("Failed to fetch impact statistics:", error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  return (
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg bg-gradient-to-r from-[#116A7B] to-[#122e33]">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-base font-medium text-white">
+          Carbon impact
+        </CardTitle>
+        <Leaf className="h-4 w-4 text-white" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-xl font-bold text-white">
+          {stats.totalCarbonReduced} kg Carbon Reduced
+        </div>
+        <div className="text-sm text-gray-200 mt-1">
+          {stats.totalCompletedChallenges} challenges completed
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const Dashboard = () => {
   const [data, setData] = useState({ users: [], products: [], challenges: [] });
@@ -62,12 +104,11 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  // Eco-friendly color gradients
+  // Color gradients
   const gradients = [
-    "bg-gradient-to-r from-green-600 to-green-400", // Forest green
-    "bg-gradient-to-r from-blue-500 to-green-400", // Ocean to forest
-    "bg-gradient-to-r from-yellow-400 to-green-500", // Sunlight to leaves
-    "bg-gradient-to-r from-teal-500 to-green-400", // Teal to green
+    "bg-gradient-to-r from-[#116A7B] to-[#122e33]", // Custom blue-green gradient
+    "bg-gradient-to-r from-[#122e33] to-gray-600", // Darker tones
+    "bg-gradient-to-r from-gray-600 to-[#C2DEDC]", // Neutral transition
   ];
 
   const chartData = [
@@ -82,7 +123,7 @@ const Dashboard = () => {
       : chartData.filter((item) => item.name.toLowerCase() === activeTab);
 
   return (
-    <div className="p-6 space-y-6 bg-green-50 dark:bg-green-900">
+    <div className="p-6 space-y-6 bg-[#9ebdc2] dark:bg-[#9ebdc2]">
       {error && (
         <Alert variant="destructive">
           <AlertTitle>Error</AlertTitle>
@@ -94,7 +135,7 @@ const Dashboard = () => {
           title="Total Users"
           value={data.users.length}
           icon={Users}
-          gradient={gradients[0]}
+          gradient={gradients[1]}
         />
         <StatCard
           title="Total Products"
@@ -106,18 +147,13 @@ const Dashboard = () => {
           title="Active Challenges"
           value={data.challenges.length}
           icon={Award}
-          gradient={gradients[2]}
+          gradient={gradients[1]}
         />
-        <StatCard
-          title="Eco Impact"
-          value="Positive"
-          icon={TrendingUp}
-          gradient={gradients[3]}
-        />
+        <ImpactCard />
       </div>
-      <Card className="overflow-hidden bg-white dark:bg-green-800">
+      <Card className="overflow-hidden bg-white dark:bg-gray-600">
         <CardHeader>
-          <CardTitle className="text-xl font-bold text-green-800 dark:text-green-100">
+          <CardTitle className="text-xl font-bold text-[#122e33] dark:text-[#C2DEDC]">
             Overview Statistics
           </CardTitle>
           <div className="flex space-x-2 mt-2">
@@ -129,8 +165,8 @@ const Dashboard = () => {
                 onClick={() => setActiveTab(tab)}
                 className={
                   activeTab === tab
-                    ? "bg-green-600 hover:bg-green-700"
-                    : "text-green-600 border-green-600 hover:bg-green-100"
+                    ? "bg-[#116A7B] hover:bg-[#122e33] text-white"
+                    : "text-[#116A7B] border-[#116A7B] hover:bg-[#C2DEDC]"
                 }
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -141,13 +177,13 @@ const Dashboard = () => {
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={filteredChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#a7f3d0" />
-              <XAxis dataKey="name" stroke="#047857" />
-              <YAxis stroke="#047857" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#C2DEDC" />
+              <XAxis dataKey="name" stroke="#333" />
+              <YAxis stroke="#333" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#ecfdf5",
-                  borderColor: "#10b981",
+                  backgroundColor: "#C2DEDC",
+                  borderColor: "#122e33",
                   borderRadius: "8px",
                 }}
               />
@@ -158,8 +194,8 @@ const Dashboard = () => {
               />
               <defs>
                 <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#059669" stopOpacity={0.8} />
+                  <stop offset="5%" stopColor="#116A7B" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#122e33" stopOpacity={0.8} />
                 </linearGradient>
               </defs>
             </BarChart>
@@ -170,7 +206,7 @@ const Dashboard = () => {
         <Button
           onClick={fetchData}
           disabled={loading}
-          className="bg-green-600 hover:bg-green-700 text-white"
+          className="bg-[#116A7B] hover:bg-[#122e33] text-white"
         >
           {loading ? (
             <>

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import dbConnect from "../../../../lib/mongodb";
 import UserChallenges from "../../../../models/UserChallenges";
-
 // Helper function to get user ID from token
 function getUserIdFromToken(token) {
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -55,23 +54,20 @@ export async function POST(req, { params }) {
 
 export async function PUT(request, { params }) {
   const { challengeId } = params;
-  const { progress } = await request.json();
-
-  // Validate progress value
-  if (progress < 0 || progress > 100) {
-    return new Response(
-      JSON.stringify({ message: "Progress must be between 0 and 100" }),
-      {
-        status: 400,
-      }
-    );
-  }
-
+  const body = await request.json();
+  const { token } = body;
+  console.log("token: ", token);
+  const userId = getUserIdFromToken(token);
+  console.log("userId: ", userId);
   try {
     await dbConnect();
-
+    console.log("challenge id: ", challengeId);
     // Find the UserChallenge by ID
-    const userChallenge = await UserChallenges.findById(challengeId);
+    const userChallenge = await UserChallenges.findOne({
+      challengeId,
+      userId,
+    });
+    console.log(userChallenge);
     if (!userChallenge) {
       return new Response(
         JSON.stringify({ message: "UserChallenge not found" }),
@@ -80,14 +76,8 @@ export async function PUT(request, { params }) {
         }
       );
     }
-
-    // Update the progress
-    userChallenge.progress = progress;
-
     // Update the completion status if progress is 100
-    if (progress >= 100) {
-      userChallenge.completed = true;
-    }
+    userChallenge.completed = true;
 
     // Save the updated document
     await userChallenge.save();
@@ -102,4 +92,23 @@ export async function PUT(request, { params }) {
       status: 500,
     });
   }
+}
+
+export async function PATCH(request, { params }) {
+  const { challengeId } = params;
+  const body = await request.json();
+  console.log("PATCH body: ", body);
+  const { token } = body;
+  const userId = getUserIdFromToken(token);
+  await dbConnect();
+  const userChallenges = await UserChallenges.findOne({ challengeId, userId });
+  if (userChallenges.completed) {
+    return new Response(JSON.stringify(userChallenges), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  return new Response(JSON.stringify({ message: "Challenge not completed" }), {
+    status: 404,
+  });
 }

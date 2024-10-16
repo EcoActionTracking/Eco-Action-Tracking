@@ -1,4 +1,3 @@
-// ProductManagement.js
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -19,7 +18,7 @@ const ProductManagement = () => {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(5); // Number of products per page
+  const [productsPerPage] = useState(5);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -32,7 +31,6 @@ const ProductManagement = () => {
         setLoading(false);
       }
     };
-
     getProducts();
   }, []);
 
@@ -63,7 +61,6 @@ const ProductManagement = () => {
         });
       }
     } catch (error) {
-      console.error("Error adding product:", error);
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -73,43 +70,54 @@ const ProductManagement = () => {
   };
 
   const handleEditProduct = async (updatedProduct) => {
-    try {
-      const response = await fetch(
-        `/api/admin/products/${updatedProduct._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedProduct),
-        }
-      );
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to edit this product.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#116A7B",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, edit it!",
+    });
 
-      if (response.ok) {
-        const updatedProducts = products.map((p) =>
-          p._id === updatedProduct._id ? updatedProduct : p
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(
+          `/api/admin/products/${updatedProduct._id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedProduct),
+          }
         );
-        setProducts(updatedProducts);
-        setEditingProduct(null);
-        Swal.fire({
-          icon: "success",
-          title: "Updated!",
-          text: "Product updated successfully!",
-        });
-      } else {
+
+        if (response.ok) {
+          const updatedProducts = products.map((p) =>
+            p._id === updatedProduct._id ? updatedProduct : p
+          );
+          setProducts(updatedProducts);
+          setEditingProduct(null);
+          Swal.fire({
+            icon: "success",
+            title: "Updated!",
+            text: "Product updated successfully!",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong! Failed to update the product.",
+          });
+        }
+      } catch (error) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
           text: "Something went wrong! Failed to update the product.",
         });
       }
-    } catch (error) {
-      console.error("Error updating product:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong! Failed to update the product.",
-      });
     }
   };
 
@@ -119,7 +127,7 @@ const ProductManagement = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "#116A7B",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
     });
@@ -142,7 +150,6 @@ const ProductManagement = () => {
           );
         }
       } catch (error) {
-        console.error("Error deleting product:", error);
         Swal.fire(
           "Error!",
           "Something went wrong. The product could not be deleted.",
@@ -162,7 +169,6 @@ const ProductManagement = () => {
 
   const totalPages = Math.ceil(products.length / productsPerPage);
 
-  // Handle page change
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -172,28 +178,28 @@ const ProductManagement = () => {
   );
 
   return (
-    <div className="min-h-screen p-8 bg-gradient-to-br from-green-50 to-teal-50">
-      <div className="container mx-auto bg-white p-8 rounded-2xl shadow-lg border border-green-200">
-        <h2 className="text-4xl font-bold mb-8 text-green-800 text-center">
+    <div className="min-h-screen p-6 bg-gradient-to-br from-[#116A7B] to-[#2F8F9D]">
+      <div className="container mx-auto bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+        <h2 className="text-3xl font-bold mb-6 text-[#116A7B] text-center">
           Product Management
         </h2>
 
-        <div className="mb-8 flex justify-between items-center">
+        <div className="mb-6 flex justify-between items-center">
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <button
             onClick={() => setAddingProduct(true)}
-            className="py-2 px-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition duration-300 flex items-center"
+            className="py-2 px-4 bg-[#116A7B] text-white rounded-lg shadow hover:bg-opacity-90 transition"
           >
             Add New Product
           </button>
         </div>
 
         {loading ? (
-          <div className="text-center text-xl text-green-700">
+          <div className="text-center text-xl text-[#116A7B]">
             Loading products...
           </div>
         ) : error ? (
-          <div className="text-center text-red-500 text-xl">{error}</div>
+          <div className="text-center text-red-600 text-xl">{error}</div>
         ) : (
           <>
             <ProductList

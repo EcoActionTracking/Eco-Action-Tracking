@@ -120,7 +120,7 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
         className="bg-white rounded-lg shadow-2xl w-11/12 max-w-3xl my-8 overflow-y-auto ml-32"
         style={{ maxHeight: "85vh" }}
       >
-        <div className="bg-gradient-to-r from-green-500 to-teal-500 p-6 rounded-t-lg flex justify-between items-center">
+        <div className="bg-gradient-to-r from-[#116A7B] to-[#122e33] p-6 rounded-t-lg flex justify-between items-center">
           <h3 className="text-2xl font-bold text-white">
             {challenge ? "Edit Challenge" : "Create New Challenge"}
           </h3>
@@ -341,7 +341,7 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
             <button
               type="button"
               onClick={handleAddStage}
-              className="w-full py-3 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 flex items-center justify-center"
+              className="w-full py-2 px-6 bg-gradient-to-r from-[#116A7B] to-[#122e33] text-white rounded-lg transition duration-300 hover:from-[#116A7B] hover:to-[#122e33] flex items-center justify-center"
             >
               <FaPlus className="mr-2" /> Add Stage
             </button>
@@ -375,7 +375,7 @@ const ChallengeForm = ({ challenge, onSave, onClose }) => {
             </button>
             <button
               type="submit"
-              className="py-2 px-6 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-lg hover:from-green-600 hover:to-teal-600 transition duration-300"
+              className="py-2 px-6 bg-gradient-to-r from-[#116A7B] to-[#122e33] text-white rounded-lg hover:from-zait hover:to-teal-600 transition duration-300"
             >
               {challenge ? "Save Changes" : "Create Challenge"}
             </button>
