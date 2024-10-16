@@ -61,62 +61,86 @@ const ChallengeManagement = () => {
   };
 
   const handleEditChallenge = async (formData) => {
-    try {
-      if (!formData._id) {
-        throw new Error("Challenge ID is missing");
-      }
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to update this challenge.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#116A7B",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, update it!",
+    });
 
-      const { __v, createdAt, updatedAt, ...cleanedData } = formData;
-
-      const response = await axios.put(
-        `/api/admin/challenges/${formData._id}`,
-        cleanedData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+    if (result.isConfirmed) {
+      try {
+        if (!formData._id) {
+          throw new Error("Challenge ID is missing");
         }
-      );
 
-      if (response.status !== 200) {
-        throw new Error(`Server responded with status: ${response.status}`);
+        const { __v, createdAt, updatedAt, ...cleanedData } = formData;
+
+        const response = await axios.put(
+          `/api/admin/challenges/${formData._id}`,
+          cleanedData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status !== 200) {
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
+
+        setEditingChallenge(null);
+        await fetchChallenges();
+
+        Swal.fire({
+          title: "Challenge updated!",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text:
+            error.response?.data?.message || "Failed to update the challenge.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
-
-      setEditingChallenge(null);
-      await fetchChallenges();
-
-      Swal.fire({
-        title: "Challenge updated!",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-    } catch (error) {
-      Swal.fire({
-        title: "Error!",
-        text:
-          error.response?.data?.message || "Failed to update the challenge.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
     }
   };
 
   const handleDeleteChallenge = async (_id) => {
-    try {
-      await axios.patch(`/api/admin/challenges/${_id}`, { isDeleted: true });
-      fetchChallenges();
-      Swal.fire({
-        title: "Challenge deleted!",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-    } catch (error) {
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to delete the challenge.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to delete this challenge. This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#116A7B",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.patch(`/api/admin/challenges/${_id}`, { isDeleted: true });
+        fetchChallenges();
+        Swal.fire({
+          title: "Challenge deleted!",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to delete the challenge.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
     }
   };
 
@@ -141,7 +165,7 @@ const ChallengeManagement = () => {
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-green-50 to-teal-50">
       <div className="container mx-auto bg-white p-8 rounded-2xl shadow-lg border border-green-200">
-        <h2 className="text-4xl font-bold mb-8 text-green-800 text-center">
+        <h2 className="text-3xl font-bold mb-6 text-[#116A7B] text-center">
           Challenge Management
         </h2>
 
@@ -149,7 +173,7 @@ const ChallengeManagement = () => {
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <button
             onClick={() => setAddingChallenge(true)}
-            className="py-2 px-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition-transform duration-300 transform hover:scale-105 active:scale-95 flex items-center"
+            className="py-2 px-4 bg-[#116A7B] text-white rounded-full shadow hover:bg-opacity-90 transition-transform duration-300 transform hover:scale-105 active:scale-95 flex items-center"
           >
             <MdAdd className="mr-2" />
             Add New Challenge
@@ -169,13 +193,14 @@ const ChallengeManagement = () => {
               onEdit={setEditingChallenge}
               onDelete={handleDeleteChallenge}
             />
-            {totalPages > 1 && ( // Only show pagination if there's more than one page
+            {
+              // Only show pagination if there's more than one page
               <Pagination
                 totalPages={totalPages}
                 currentPage={currentPage}
                 onPageChange={handlePageChange}
               />
-            )}
+            }
           </>
         )}
       </div>
