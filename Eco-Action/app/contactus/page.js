@@ -47,10 +47,10 @@
 //   return (
 //     <div className="min-h-screen bg-gray-50">
 //       {/* Hero Section */}
-//       <div className="bg-green-900 text-white py-16">
-//         <div className="container mx-auto px-4">
-//           <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
-//           <p className="text-xl text-green-100 max-w-2xl">
+//       <div className="py-16 text-white bg-green-900">
+//         <div className="container px-4 mx-auto">
+//           <h1 className="mb-4 text-4xl font-bold md:text-5xl">Contact Us</h1>
+//           <p className="max-w-2xl text-xl text-green-100">
 //             We're here to help and answer any questions you might have. We look
 //             forward to hearing from you.
 //           </p>
@@ -58,17 +58,17 @@
 //       </div>
 
 //       {/* Main Content */}
-//       <div className="container mx-auto px-4 py-12">
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+//       <div className="container px-4 py-12 mx-auto">
+//         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
 //           {/* Contact Form */}
-//           <div className="bg-white rounded-lg shadow-lg p-6 md:p-8">
-//             <h2 className="text-2xl font-semibold mb-6">Send us a Message</h2>
+//           <div className="p-6 bg-white rounded-lg shadow-lg md:p-8">
+//             <h2 className="mb-6 text-2xl font-semibold">Send us a Message</h2>
 //             <form onSubmit={handleSubmit}>
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+//               <div className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2">
 //                 <div>
 //                   <label
 //                     htmlFor="firstName"
-//                     className="block text-sm font-medium text-gray-700 mb-1"
+//                     className="block mb-1 text-sm font-medium text-gray-700"
 //                   >
 //                     First Name
 //                   </label>
@@ -85,7 +85,7 @@
 //                 <div>
 //                   <label
 //                     htmlFor="lastName"
-//                     className="block text-sm font-medium text-gray-700 mb-1"
+//                     className="block mb-1 text-sm font-medium text-gray-700"
 //                   >
 //                     Last Name
 //                   </label>
@@ -103,7 +103,7 @@
 //               <div className="mb-6">
 //                 <label
 //                   htmlFor="email"
-//                   className="block text-sm font-medium text-gray-700 mb-1"
+//                   className="block mb-1 text-sm font-medium text-gray-700"
 //                 >
 //                   Email
 //                 </label>
@@ -120,7 +120,7 @@
 //               <div className="mb-6">
 //                 <label
 //                   htmlFor="message"
-//                   className="block text-sm font-medium text-gray-700 mb-1"
+//                   className="block mb-1 text-sm font-medium text-gray-700"
 //                 >
 //                   Message
 //                 </label>
@@ -150,28 +150,28 @@
 
 //           {/* Contact Information */}
 //           <div>
-//             <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-8">
-//               <h2 className="text-2xl font-semibold mb-6">
+//             <div className="p-6 mb-8 bg-white rounded-lg shadow-lg md:p-8">
+//               <h2 className="mb-6 text-2xl font-semibold">
 //                 Contact Information
 //               </h2>
 //               <div className="space-y-4">
 //                 <ContactItem
-//                   icon={<Phone className="h-6 w-6" />}
+//                   icon={<Phone className="w-6 h-6" />}
 //                   title="Phone"
 //                   content="+1 (555) 123-4567"
 //                 />
 //                 <ContactItem
-//                   icon={<Mail className="h-6 w-6" />}
+//                   icon={<Mail className="w-6 h-6" />}
 //                   title="Email"
 //                   content="support@ecofriendly.com"
 //                 />
 //                 <ContactItem
-//                   icon={<MapPin className="h-6 w-6" />}
+//                   icon={<MapPin className="w-6 h-6" />}
 //                   title="Address"
 //                   content="123 Green Street, Eco City, EC 12345"
 //                 />
 //                 <ContactItem
-//                   icon={<Clock className="h-6 w-6" />}
+//                   icon={<Clock className="w-6 h-6" />}
 //                   title="Business Hours"
 //                   content="Monday - Friday: 9am - 5pm"
 //                 />
@@ -182,12 +182,12 @@
 //       </div>
 
 //       {/* FAQ Section */}
-//       <div className="bg-white py-12">
-//         <div className="container mx-auto px-4">
-//           <h2 className="text-3xl font-bold text-center mb-8">
+//       <div className="py-12 bg-white">
+//         <div className="container px-4 mx-auto">
+//           <h2 className="mb-8 text-3xl font-bold text-center">
 //             Frequently Asked Questions
 //           </h2>
-//           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+//           <div className="grid max-w-4xl grid-cols-1 gap-6 mx-auto md:grid-cols-2">
 //             <FAQItem
 //               question="What are your customer service hours?"
 //               answer="Our customer service team is available Monday through Friday, 9am to 5pm Eastern Time."
@@ -214,7 +214,7 @@
 // function ContactItem({ icon, title, content }) {
 //   return (
 //     <div className="flex items-start">
-//       <div className="flex-shrink-0 h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center text-green-600 mr-4">
+//       <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 mr-4 text-green-600 bg-green-100 rounded-lg">
 //         {icon}
 //       </div>
 //       <div>
@@ -227,8 +227,8 @@
 
 // function FAQItem({ question, answer }) {
 //   return (
-//     <div className="border-l-4 border-green-500 pl-4">
-//       <h3 className="text-lg font-medium text-gray-900 mb-2">{question}</h3>
+//     <div className="pl-4 border-l-4 border-green-500">
+//       <h3 className="mb-2 text-lg font-medium text-gray-900">{question}</h3>
 //       <p className="text-gray-600">{answer}</p>
 //     </div>
 //   );
@@ -284,10 +284,10 @@
 //   return (
 //     <div className="min-h-screen bg-sky-400">
 //       {/* Hero Section */}
-//       <div className="bg-sky-400 text-white py-16">
-//         <div className="container mx-auto px-4">
-//           <h1 className="text-4xl md:text-5xl font-bold mb-4">Get in Touch</h1>
-//           <p className="text-xl text-white max-w-2xl">
+//       <div className="py-16 text-white bg-sky-400">
+//         <div className="container px-4 mx-auto">
+//           <h1 className="mb-4 text-4xl font-bold md:text-5xl">Get in Touch</h1>
+//           <p className="max-w-2xl text-xl text-white">
 //             Do you need more information? Please contact us to find more about
 //             our products and services.
 //           </p>
@@ -295,14 +295,14 @@
 //       </div>
 
 //       {/* Main Content */}
-//       <div className="container mx-auto px-4 py-12">
-//         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+//       <div className="container px-4 py-12 mx-auto">
+//         <div className="overflow-hidden bg-white rounded-lg shadow-lg">
 //           <div className="grid grid-cols-1 md:grid-cols-3">
 //             {/* Contact Form */}
 //             <div className="col-span-2 p-8">
-//               <h2 className="text-2xl font-semibold mb-6">Send us a message</h2>
+//               <h2 className="mb-6 text-2xl font-semibold">Send us a message</h2>
 //               <form onSubmit={handleSubmit}>
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+//                 <div className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2">
 //                   <div>
 //                     <input
 //                       type="text"
@@ -374,21 +374,21 @@
 //             </div>
 
 //             {/* Contact Information */}
-//             <div className="bg-sky-500 text-white p-8">
-//               <h2 className="text-2xl font-semibold mb-6">
+//             <div className="p-8 text-white bg-sky-500">
+//               <h2 className="mb-6 text-2xl font-semibold">
 //                 Contact information
 //               </h2>
 //               <div className="space-y-4">
 //                 <ContactItem
-//                   icon={<MapPin className="h-6 w-6" />}
+//                   icon={<MapPin className="w-6 h-6" />}
 //                   content="345 Street 2, Bucharest"
 //                 />
 //                 <ContactItem
-//                   icon={<Phone className="h-6 w-6" />}
+//                   icon={<Phone className="w-6 h-6" />}
 //                   content="+16(3412) 421 241"
 //                 />
 //                 <ContactItem
-//                   icon={<Mail className="h-6 w-6" />}
+//                   icon={<Mail className="w-6 h-6" />}
 //                   content="contact@yoursite.com"
 //                 />
 //               </div>
@@ -459,8 +459,8 @@
 //     <div className="min-h-screen bg-[#CDE8E5]">
 //       {/* Hero Section */}
 //       <div className="bg-[#CDE8E5] text-[#4D869C] py-3">
-//         <div className="container mx-auto px-4">
-//           <h1 className="text-4xl md:text-5xl font-bold mb-4">Get in Touch</h1>
+//         <div className="container px-4 mx-auto">
+//           <h1 className="mb-4 text-4xl font-bold md:text-5xl">Get in Touch</h1>
 //           <p className="text-xl text-[#7AB2B2] max-w-2xl">
 //             Do you need more information? Please contact us to find more about
 //             our products and services.
@@ -469,8 +469,8 @@
 //       </div>
 
 //       {/* Main Content */}
-//       <div className="container mx-auto px-4">
-//         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+//       <div className="container px-4 mx-auto">
+//         <div className="overflow-hidden bg-white rounded-lg shadow-lg">
 //           <div className="grid grid-cols-1 md:grid-cols-3">
 //             {/* Contact Form */}
 //             <div className="col-span-2 p-6">
@@ -478,7 +478,7 @@
 //                 Send us a message
 //               </h2>
 //               <form onSubmit={handleSubmit} className="max-w-2xl">
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+//                 <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
 //                   <div>
 //                     <input
 //                       type="text"
@@ -551,20 +551,20 @@
 
 //             {/* Contact Information */}
 //             <div className="bg-[#4D869C] text-white p-6">
-//               <h2 className="text-2xl font-semibold mb-6">
+//               <h2 className="mb-6 text-2xl font-semibold">
 //                 Contact information
 //               </h2>
 //               <div className="space-y-4">
 //                 <ContactItem
-//                   icon={<MapPin className="h-5 w-5" />}
+//                   icon={<MapPin className="w-5 h-5" />}
 //                   content="345 Street 2, Jordan"
 //                 />
 //                 <ContactItem
-//                   icon={<Phone className="h-5 w-5" />}
+//                   icon={<Phone className="w-5 h-5" />}
 //                   content="+962786544235"
 //                 />
 //                 <ContactItem
-//                   icon={<Mail className="h-5 w-5" />}
+//                   icon={<Mail className="w-5 h-5" />}
 //                   content="contact@yoursite.com"
 //                 />
 //               </div>
@@ -633,12 +633,12 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#CDE8E5]">
+    <div className="min-h-screen px-32">
       {/* Hero Section */}
-      <div className="bg-[#CDE8E5] text-[#4D869C] py-3">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Get in Touch</h1>
-          <p className="text-xl text-[#7AB2B2] max-w-2xl">
+      <div className=" text-[#4D869C] py-3 text-center my-10">
+        <div className="container px-4 mx-auto text-center">
+          <h1 className="mb-4 text-4xl font-bold text-center md:text-5xl">Get in Touch</h1>
+          <p className="text-xl text-[#7AB2B2]  text-center">
             Do you need more information? Please contact us to find more about
             our products and services.
           </p>
@@ -646,7 +646,7 @@ export default function ContactPage() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4">
+      <div className="container px-4 mx-auto">
         <div className="bg-[#EEF7FF] rounded-lg shadow-lg overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-3">
             {/* Contact Form */}
@@ -655,7 +655,7 @@ export default function ContactPage() {
                 Send us a message
               </h2>
               <form onSubmit={handleSubmit} className="max-w-2xl">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
                   <div>
                     <input
                       type="text"
@@ -728,20 +728,20 @@ export default function ContactPage() {
 
             {/* Contact Information */}
             <div className="bg-[#4D869C] text-white p-6">
-              <h2 className="text-2xl font-semibold mb-6">
+              <h2 className="mb-6 text-2xl font-semibold">
                 Contact information
               </h2>
               <div className="space-y-4">
                 <ContactItem
-                  icon={<MapPin className="h-5 w-5" />}
+                  icon={<MapPin className="w-5 h-5" />}
                   content="345 Street 2, Jordan"
                 />
                 <ContactItem
-                  icon={<Phone className="h-5 w-5" />}
+                  icon={<Phone className="w-5 h-5" />}
                   content="+962786544235"
                 />
                 <ContactItem
-                  icon={<Mail className="h-5 w-5" />}
+                  icon={<Mail className="w-5 h-5" />}
                   content="contact@yoursite.com"
                 />
               </div>

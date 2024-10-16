@@ -9,9 +9,9 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => onPageChange(1)} // Go to first page
+        onClick={() => onPageChange(1)}
         disabled={currentPage === 1}
-        className="py-2 px-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="py-2 px-4 bg-[#116A7B] text-white rounded-full shadow-lg hover:bg-[#122e33] transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         First
       </motion.button>
@@ -22,27 +22,29 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="py-2 px-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="py-2 px-4 bg-[#116A7B] text-white rounded-full shadow-lg hover:bg-[#122e33] transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Previous
       </motion.button>
 
-      {/* Page Numbers  */}
-      {Array.from({ length: totalPages }, (_, index) => (
-        <motion.button
-          key={index + 1}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => onPageChange(index + 1)}
-          className={`py-2 px-4 rounded-full shadow-lg transition duration-300 ${
-            currentPage === index + 1
-              ? "bg-green-600 text-white"
-              : "bg-gray-100 text-green-600 hover:bg-green-500 hover:text-white"
-          }`}
-        >
-          {index + 1}
-        </motion.button>
-      ))}
+      {/* Page Numbers */}
+      {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+        (page) => (
+          <motion.button
+            key={page}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onPageChange(page)}
+            className={`py-2 px-4 rounded-full shadow-lg transition duration-300 ${
+              currentPage === page
+                ? "bg-[#122e33] text-white"
+                : "bg-[#116A7B] text-white hover:bg-[#122e33]"
+            }`}
+          >
+            {page}
+          </motion.button>
+        )
+      )}
 
       {/* Next Button */}
       <motion.button
@@ -50,7 +52,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="py-2 px-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="py-2 px-4 bg-[#116A7B] text-white rounded-full shadow-lg hover:bg-[#122e33] transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Next
       </motion.button>
@@ -61,7 +63,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         whileTap={{ scale: 0.95 }}
         onClick={() => onPageChange(totalPages)}
         disabled={currentPage === totalPages}
-        className="py-2 px-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="py-2 px-4 bg-[#116A7B] text-white rounded-full shadow-lg hover:bg-[#122e33] transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Last
       </motion.button>

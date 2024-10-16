@@ -186,6 +186,7 @@ export default function Navbar({ token }) {
                   className="lg:p-4 py-2 block hover:text-[#116A7B]"
                 >
                   Challenges
+
                 </Link>
               </li>
               <li>
@@ -194,6 +195,7 @@ export default function Navbar({ token }) {
                   className="lg:p-4 py-2 block hover:text-[#116A7B]"
                 >
                   Articles
+
                 </Link>
               </li>
               <li>

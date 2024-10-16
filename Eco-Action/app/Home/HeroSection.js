@@ -3,7 +3,9 @@ export default function HeroSection() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative overflow-hidden text-white h-[41rem]">
+
+      <section className="relative overflow-hidden text-white h-[41rem] px-20" >
+
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div
           className="absolute inset-0 bg-center bg-cover"

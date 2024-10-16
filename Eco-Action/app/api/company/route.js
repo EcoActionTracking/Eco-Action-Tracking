@@ -36,7 +36,7 @@ export async function POST(req) {
       });
     }
 
-    const { company_name, address, contact_number, email, website } = await req.json();
+    const { company_name, address, contact_number, email, website, image } = await req.json();
 
     if (!user_id) {
       return new Response(JSON.stringify({ message: 'User ID is required' }), {
@@ -64,6 +64,7 @@ export async function POST(req) {
       contact_number,
       email,
       website,
+      image,
     });
 
     // حفظ الشركة في قاعدة البيانات

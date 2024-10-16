@@ -70,7 +70,7 @@ const ContactManagement = () => {
 
   if (loading) {
     return (
-      <div className="text-center text-xl text-green-700">
+      <div className="text-center text-xl text-[#116A7B]">
         Loading contacts...
       </div>
     );
@@ -81,9 +81,9 @@ const ContactManagement = () => {
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gradient-to-br from-green-50 to-teal-50">
+    <div className="min-h-screen p-8 bg-gradient-to-br from-[#116A7B] to-[#122e33]">
       <div className="container mx-auto bg-white p-8 rounded-2xl shadow-lg border border-green-200">
-        <h2 className="text-4xl font-bold mb-8 text-green-800 text-center">
+        <h2 className="text-4xl font-bold mb-8 text-[#116A7B] text-center">
           Contact Messages
         </h2>
 
@@ -91,15 +91,15 @@ const ContactManagement = () => {
           <input
             type="text"
             placeholder="Search by name..."
-            className="w-full p-4 pl-12 border-2 border-green-300 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-300"
+            className="w-full p-4 pl-12 border-2 border-[#116A7B] rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-[#116A7B] focus:border-transparent transition duration-300"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-          />{" "}
+          />
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full table-auto bg-white rounded-lg overflow-hidden">
-            <thead className="bg-gradient-to-r from-green-600 to-teal-600">
+            <thead className="bg-gradient-to-r from-[#116A7B] to-[#122e33]">
               <tr>
                 <th className="py-4 px-6 text-left text-white font-semibold">
                   Name
@@ -113,7 +113,6 @@ const ContactManagement = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {/* Use currentContacts here to render paginated results */}
               {currentContacts.map((contact) => (
                 <tr key={contact._id}>
                   <td className="px-6 py-4 whitespace-nowrap">

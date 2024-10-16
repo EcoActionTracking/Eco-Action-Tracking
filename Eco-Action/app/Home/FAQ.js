@@ -13,7 +13,7 @@ export function FAQ() {
       <h2 className="text-3xl font-extrabold text-[#116A7B] mb-8 text-center">FAQS</h2>
       
       {faqData.map((faq, index) => (
-        <div key={index} className="transition-all rounded-lg hover:bg-[#C2DEDC]">
+        <div key={index} className="transition-all rounded-lg bg-[#C2DEDC]">
           <button
             className="w-full text-base font-semibold text-left py-5 px-3 text-[#333] flex items-center"
             type="button"
