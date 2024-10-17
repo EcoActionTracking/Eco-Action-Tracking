@@ -608,13 +608,13 @@ const CalculatorPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 ">
+    <div className="flex items-center justify-center p-4 ">
       <div className="flex w-full max-w-4xl overflow-hidden bg-white shadow-xl rounded-3xl">
         {/* Left panel */}
         <div className="flex flex-col justify-between w-1/2 p-8 bg-gray-50 ">
           <div>
             <h1 className="mb-2 text-4xl font-bold">
-              <span className="text-orange-400">Environmental</span>
+              <span className="text-[#116A7B]">Environmental</span>
               <br />
               <span className="text-navy-800">Impact Calculator</span>
             </h1>
@@ -622,8 +622,8 @@ const CalculatorPage = () => {
           <div className="relative w-48 h-48 mx-auto">
             <div className="absolute inset-0 rounded-full bg-sky-200"></div>
             <div className="absolute transform inset-4 bg-[#116A7B] rounded-2xl rotate-12"></div>
-            <div className="absolute w-16 h-16 bg-yellow-400 rounded-full shadow-lg top-4 left-4"></div>
-            <div className="absolute w-16 h-16 bg-yellow-400 rounded-full shadow-lg bottom-4 right-4"></div>
+            <div className="absolute w-16 h-16 bg-gradient-to-r from-[#5f99a5] to-[#B2EBF2] rounded-full shadow-lg top-4 left-4"></div>
+            <div className="absolute w-16 h-16 bg-gradient-to-r from-[#5f99a5] to-[#B2EBF2] rounded-full shadow-lg bottom-4 right-4"></div>
           </div>
           {results && (
             <div className="p-4 mt-4 text-sm text-gray-600 bg-white rounded-xl">
@@ -650,7 +650,7 @@ const CalculatorPage = () => {
           <div className="space-y-4">
         
 
-            <div className="flex items-center mt-20">
+            <div className="flex items-center mt-20 pe-20">
               <span className="w-1/3 text-white">Food waste</span>
               <div className="flex w-2/3">
                 <input
@@ -668,7 +668,7 @@ const CalculatorPage = () => {
 
             <button
               onClick={handleCalculate}
-              className="w-full py-3 text-white transition-colors duration-200 bg-orange-400 rounded-md hover:bg-orange-500"
+              className="w-full py-3 text-white transition-colors duration-200 bg-gradient-to-r from-[#5f99a5] to-[#B2EBF2] rounded-md hover:text-[#116A7B]"
             >
               CALCULATE
             </button>

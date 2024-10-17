@@ -6,6 +6,9 @@ import { FAQ } from './Home/FAQ';
 import { Slider } from './Home/Slider';
 import {Image} from './Home/image';
 import { AboutUs } from './Home/AboutUs';
+import Carousel3D from './Carousel3D/page';
+// import CalculatorPage from './calculator/CalculatorPage';
+import { CalculatorHome } from './Home/CalculatorHome';
 
 const HomePage = () => {
   return (
@@ -14,7 +17,8 @@ const HomePage = () => {
    <Slider/>
    <CompanyForm/>
    <AboutUs/>
-   <Image/>
+   <Carousel3D/>
+   <CalculatorHome/>
    <FAQ/>
    </>
   );

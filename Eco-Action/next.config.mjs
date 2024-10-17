@@ -20,7 +20,15 @@ const nextConfig = {
       "fakestoreapi.com",
       "i.pinimg.com",
       "firebasestorage.googleapis.com",
-      'media.giphy.com',
+      "media.giphy.com",
+      "arka360.com",
+      "encrypted-tbn0.gstatic.com",
+      "www.eurokidsindia.com", // Previously added domain
+      "honesthome.in", // Add this line for the new domain
+      "i0.wp.com",
+      "other-allowed-domain.com",
+      "cdn.shopify.com",
+      'lemonnier.es', 
     ],
   },
   env: {
@@ -30,3 +38,5 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
+

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+const logo = "/images/logo.svg";
 
 export function Footer() {
   const pathName = usePathname();
@@ -17,7 +18,7 @@ export function Footer() {
               <img
                 alt="logo"
                 className="w-44 "
-                src="https://readymadeui.com/readymadeui-light.svg"
+                src={logo}
               />
             </a>
           </div>

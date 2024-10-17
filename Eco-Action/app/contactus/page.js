@@ -635,7 +635,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen px-32">
       {/* Hero Section */}
-      <div className=" text-[#4D869C] py-3 text-center my-10">
+      <div className=" text-[#116A7B] py-3 text-center my-10">
         <div className="container px-4 mx-auto text-center">
           <h1 className="mb-4 text-4xl font-bold text-center md:text-5xl">Get in Touch</h1>
           <p className="text-xl text-[#7AB2B2]  text-center">
@@ -685,7 +685,7 @@ export default function ContactPage() {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CDE8E5] rounded-md focus:ring-2 focus:ring-[#7AB2B2] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#CDE8E5] rounded-md focus:ring-2 focus:ring-[#7a9cb2] focus:border-transparent"
                     placeholder="Email Here..."
                     required
                   />
@@ -717,7 +717,7 @@ export default function ContactPage() {
                   className={`w-full bg-[#4D869C] text-white py-2 px-4 rounded-md ${
                     loading
                       ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-[#7AB2B2]"
+                      : "hover:bg-[#3a8ca0]"
                   } transition-colors font-medium`}
                   disabled={loading}
                 >
@@ -727,7 +727,7 @@ export default function ContactPage() {
             </div>
 
             {/* Contact Information */}
-            <div className="bg-[#4D869C] text-white p-6">
+            <div className="bg-[#116A7B] text-white p-6">
               <h2 className="mb-6 text-2xl font-semibold">
                 Contact information
               </h2>

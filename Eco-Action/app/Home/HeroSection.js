@@ -1,18 +1,23 @@
 import Link from "next/link";
+
+const heroSection = "/images/hero.svg";
 export default function HeroSection() {
   return (
     <main>
       {/* Hero Section */}
-
-      <section className="relative overflow-hidden text-white h-[41rem] px-20" >
-
-        <div className="absolute inset-0 bg-black opacity-50"></div>
+      <section className="relative overflow-hidden text-white h-[41rem] px-20">
+        {/* Gradient overlay with transparency */}
         <div
-          className="absolute inset-0 bg-center bg-cover"
+          className="absolute inset-0 bg-gradient-to-t from-[#116A7B]/70 to-gray-600/200"
           style={{
-            backgroundImage: `url("https://i.pinimg.com/564x/71/d3/66/71d366cee67cbe14aade82a35ca6b05b.jpg")`,
+            backgroundImage: `url("${heroSection}")`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
         ></div>
+
+        {/* Optional black overlay for extra darkness */}
+        <div className="absolute inset-0 bg-black opacity-60"></div>
 
         <div className="container relative z-10 px-4 py-24 mx-auto md:py-32">
           <div className="flex flex-col items-center justify-between md:flex-row">
@@ -32,16 +37,11 @@ export default function HeroSection() {
               <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                 <Link
                   href="/eco-challenges"
-                  className="px-8 py-3 font-semibold text-center text-blue-900 transition duration-300 bg-white rounded-full hover:bg-blue-100"
+                  className="px-8 py-3 font-semibold text-center text-[#116A7B] transition duration-300 bg-white rounded-full hover:bg-blue-100"
                 >
                   Get challenge
                 </Link>
-                <Link
-                  href="/calculator"
-                  className="px-8 py-3 font-semibold text-center text-white transition duration-300 border-2 border-white rounded-full hover:bg-white hover:text-blue-900"
-                >
-                  Learn More
-                </Link>
+             
               </div>
             </div>
 

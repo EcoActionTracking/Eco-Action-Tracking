@@ -7,6 +7,7 @@ import axios from "axios";
 import { Leaf } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLogIn } from "../context/loginContext";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
