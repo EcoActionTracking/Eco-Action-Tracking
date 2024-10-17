@@ -1,218 +1,293 @@
 "use client";
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MdAdd, MdEdit } from "react-icons/md";
-import { FaTrashAlt, FaTimes } from "react-icons/fa";
-import axios from "axios"; 
+
+import React, { useEffect, useState } from "react";
+import ArticleList from "../components/ArticleList";
+import ArticleForm from "../components/ArticleForm";
 import SearchBar from "../components/searchbar";
 import Pagination from "../components/pagintaion";
-import Link from "next/link";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { fetchArticles } from "@/utils/api";
+import Swal from "sweetalert2";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "@/lib/firebase";
 
-const ImageModal = ({ isOpen, onClose, imageSrc, articleDescription }) => {
-  if (!isOpen) return null;
+const ArticleManagement = () => {
+  const [articles, setArticles] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [editingArticle, setEditingArticle] = useState(null);
+  const [addingArticle, setAddingArticle] = useState(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [articlesPerPage] = useState(5);
+
+  useEffect(() => {
+    const getArticles = async () => {
+      try {
+        const data = await fetchArticles();
+        setArticles(data);
+      } catch (err) {
+        setError("Error fetching articles: " + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getArticles();
+  }, []);
+
+  // Handle media upload to Firebase
+  const handleMediaUpload = async (files, folder) => {
+    if (!files || files.length === 0) return [];
+
+    const uploadedURLs = [];
+    for (const file of files) {
+      const storageRef = ref(storage, `${folder}/${file.name}`);
+      try {
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
+        uploadedURLs.push(downloadURL);
+      } catch (error) {
+        console.error(`Error uploading ${folder}:`, error);
+        throw new Error(`Failed to upload ${folder}`);
+      }
+    }
+    return uploadedURLs;
+  };
+
+  const handleAddArticle = async (newArticle) => {
+    try {
+      // Upload photos and videos to Firebase
+      const uploadedPhotos = await handleMediaUpload(
+        newArticle.photos,
+        "images"
+      );
+      const uploadedVideos = await handleMediaUpload(
+        newArticle.videos,
+        "videos"
+      );
+
+      // Prepare the article data with media URLs in the correct structure
+      const articleData = {
+        title: newArticle.title,
+        description: newArticle.description,
+        category: newArticle.category,
+        media: {
+          photos: uploadedPhotos,
+          videos: uploadedVideos,
+        },
+      };
+
+      const response = await fetch("/api/admin/articles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(articleData),
+      });
+
+      if (response.ok) {
+        const addedArticle = await response.json();
+        setArticles([...articles, addedArticle]);
+        setAddingArticle(false);
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Article added successfully!",
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to add article");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message || "Failed to add the article.",
+      });
+    }
+  };
+
+  const handleEditArticle = async (updatedArticle) => {
+    try {
+      // Upload new media if provided
+      let photoUrls = updatedArticle.media?.photos || [];
+      let videoUrls = updatedArticle.media?.videos || [];
+
+      if (updatedArticle.newPhotos?.length > 0) {
+        const newPhotoUrls = await handleMediaUpload(
+          updatedArticle.newPhotos,
+          "images"
+        );
+        photoUrls = [...photoUrls, ...newPhotoUrls];
+      }
+      if (updatedArticle.newVideos?.length > 0) {
+        const newVideoUrls = await handleMediaUpload(
+          updatedArticle.newVideos,
+          "videos"
+        );
+        videoUrls = [...videoUrls, ...newVideoUrls];
+      }
+
+      // Prepare the article data with media URLs in the correct structure
+      const articleData = {
+        title: updatedArticle.title,
+        description: updatedArticle.description,
+        category: updatedArticle.category,
+        media: {
+          photos: photoUrls,
+          videos: videoUrls,
+        },
+        _id: updatedArticle._id,
+      };
+
+      const response = await fetch(`/api/admin/articles/${articleData._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(articleData),
+      });
+
+      if (response.ok) {
+        const updatedArticleData = await response.json();
+        const updatedArticles = articles.map((a) =>
+          a._id === updatedArticleData._id ? updatedArticleData : a
+        );
+        setArticles(updatedArticles);
+        setEditingArticle(null);
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: "Article updated successfully!",
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update article");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message || "Failed to update the article.",
+      });
+    }
+  };
+
+  const handleDeleteArticle = async (_id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#116A7B",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(`/api/admin/articles/${_id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const updatedArticles = articles.filter((a) => a._id !== _id);
+          setArticles(updatedArticles);
+          Swal.fire("Deleted!", "The article has been deleted.", "success");
+        } else {
+          const errorData = await response.json();
+          Swal.fire(
+            "Error!",
+            errorData.error || "Failed to delete the article.",
+            "error"
+          );
+        }
+      } catch (error) {
+        Swal.fire("Error!", "Failed to delete the article.", "error");
+      }
+    }
+  };
+
+  // Pagination Logic
+  const indexOfLastArticle = currentPage * articlesPerPage;
+  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
+  const currentArticles = articles.slice(
+    indexOfFirstArticle,
+    indexOfLastArticle
+  );
+
+  const totalPages = Math.ceil(articles.length / articlesPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const filteredArticles = currentArticles.filter((article) =>
+    article.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 ">
-      <div className="bg-white rounded-lg p-4 max-w-3xl max-h-[90vh] overflow-auto ml-40 h-[40rem] w-[40rem]">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">Article Details</h2>
+    <div className="min-h-screen p-6 bg-gradient-to-br from-[#116A7B] to-[#2F8F9D]">
+      <div className="container mx-auto bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+        <h2 className="text-3xl font-bold mb-6 text-[#116A7B] text-center">
+          Article Management
+        </h2>
+
+        <div className="mb-6 flex justify-between items-center">
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            onClick={() => setAddingArticle(true)}
+            className="py-2 px-4 bg-[#116A7B] text-white rounded-lg shadow hover:bg-opacity-90 transition"
           >
-            <FaTimes size={24} />
+            Add New Article
           </button>
         </div>
-        <img
-          src={imageSrc}
-          alt="Article Image"
-          className="rounded w-[40rem] h-[35rem]"
-        />
-        <p className="mt-4 text-gray-800">{articleDescription}</p> {/* Display description here */}
+
+        {loading ? (
+          <div className="text-center text-xl text-[#116A7B]">
+            Loading articles...
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-600 text-xl">{error}</div>
+        ) : (
+          <>
+            <ArticleList
+              articles={filteredArticles}
+              onDelete={handleDeleteArticle}
+              onEdit={setEditingArticle}
+            />
+
+            {articlesPerPage && (
+              <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </>
+        )}
       </div>
+
+      {editingArticle && (
+        <ArticleForm
+          article={editingArticle}
+          onClose={() => setEditingArticle(null)}
+          onSave={handleEditArticle}
+        />
+      )}
+
+      {addingArticle && (
+        <ArticleForm
+          onClose={() => setAddingArticle(false)}
+          onSave={handleAddArticle}
+        />
+      )}
     </div>
   );
 };
 
-export default function ArticlesTable() {
-    const [articles, setArticles] = useState([]);
-    const [filteredArticles, setFilteredArticles] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [modalImage, setModalImage] = useState(null);
-    const [modalDescription, setModalDescription] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1); // Current page state
-    const [totalPages, setTotalPages] = useState(1); // Total pages state
-
-    useEffect(() => {
-      const fetchArticles = async () => {
-        try {
-          const res = await axios.get(`/api/articles?page=${currentPage}&limit=5`);
-          setArticles(res.data.articles);
-          setFilteredArticles(res.data.articles);
-          setTotalPages(res.data.totalPages);
-        } catch (error) {
-          console.error("Error fetching articles:", error);
-        }
-      };
-  
-      fetchArticles();
-    }, [currentPage]); // Refetch data when currentPage changes
-  
-    useEffect(() => {
-      const filtered = articles.filter(article =>
-        article.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredArticles(filtered);
-    }, [searchTerm, articles]);
-
-    const openModal = (image, description) => {
-      setModalImage(image);
-      setModalDescription(description);
-    };
-  
-    const closeModal = () => {
-      setModalImage(null);
-      setModalDescription(null);
-    };
-
-    const handlePageChange = (page) => {
-      setCurrentPage(page); // Update the current page state
-    };
-
-
-   
-    const handleSoftDelete = async (_id) => {
-      try {
-        const response = await axios.put(`/api/admin/articles/${_id}`);
-    
-        // Check for a successful response
-        if (response.status === 200) {
-          // Update state to remove the deleted article from the list
-          setArticles((prevArticles) => prevArticles.filter(article => article._id !== _id));
-          setFilteredArticles((prevFiltered) => prevFiltered.filter(article => article._id !== _id));
-          toast.success('Article deleted successfully!');
-        } else {
-          toast.error('Failed to delete the article');
-          throw new Error('Failed to soft delete the article');
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error('Error occurred while deleting the article');
-      }
-    };
-    
-
-    return (
-      <div className="min-h-screen p-8 bg-gradient-to-br from-green-50 to-teal-50">
-        <ToastContainer/>
-        <div className="container p-8 mx-auto bg-white border border-green-200 shadow-lg rounded-2xl">
-          <h2 className="mb-8 text-4xl font-bold text-center text-green-800">
-            Articles Management
-          </h2>
-
-          <div className="flex items-center justify-between mb-8">
-            <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <Link href="/admin/AddArticles">
-              <div
-                className="flex items-center px-4 py-2 text-white transition-transform duration-300 transform bg-green-500 rounded-full shadow-lg hover:bg-green-600 hover:scale-105 active:scale-95"
-              >
-                <MdAdd className="mr-2" />
-                Add New Article
-              </div>
-            </Link>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full overflow-hidden bg-white rounded-lg table-auto">
-              <thead className="bg-gradient-to-r from-green-600 to-teal-600">
-                <tr>
-                  <th className="px-6 py-4 font-semibold text-left text-white">
-                    Title
-                  </th>
-                  <th className="px-6 py-4 font-semibold text-left text-white">
-                    Category
-                  </th>
-                  <th className="px-6 py-4 font-semibold text-left text-white">
-                    Media
-                  </th>
-                  <th className="px-6 py-4 font-semibold text-left text-white">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <AnimatePresence>
-                  {filteredArticles.map((article) => (
-                    <motion.tr
-                      key={article._id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                      className="transition-colors duration-300 hover:bg-green-50"
-                    >
-                      <td className="px-6 py-4 text-gray-800">{article.title}</td>
-                      <td className="px-6 py-4 text-gray-800">{article.category}</td>
-                      <td className="px-6 py-4 text-gray-800">
-                        {article.media?.photos?.length > 0 ? (
-                          <div className="flex space-x-2">
-                            {article.media.photos.map((photo, index) => (
-                              <img
-                                key={index}
-                                src={photo || "/placeholder/80/80"}
-                                alt={`Photo ${index + 1}`}
-                                className="object-cover w-20 h-20 rounded cursor-pointer"
-                                onClick={() => openModal(photo, article.description)}
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <p>No media available</p>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-gray-800">
-                        <div className="flex items-center space-x-4">
-                        <Link href={`/admin/Articles/Update/${article._id}`}>
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="text-blue-500 transition duration-300 hover:text-blue-700"
-                          >
-                            <MdEdit className="text-2xl" />
-                          </motion.button>
-                          </Link>
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => handleSoftDelete(article._id)}
-                            className="text-red-500 transition duration-300 hover:text-red-700"
-                          >
-                            <FaTrashAlt className="text-xl" />
-                          </motion.button>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
-              </tbody>
-            </table>
-
-            <ImageModal
-              isOpen={!!modalImage}
-              onClose={closeModal}
-              imageSrc={modalImage}
-              articleDescription={modalDescription}
-            />
-          </div>
-
-          <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-          />
-        </div>
-      </div>
-    );
-}
+export default ArticleManagement;

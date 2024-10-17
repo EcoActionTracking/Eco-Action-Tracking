@@ -20,3 +20,11 @@ export const fetchContacts = async () => {
     throw new Error("Failed to fetch contacts: " + error.message);
   }
 };
+
+export const fetchArticles = async () => {
+  const response = await fetch("/api/admin/articles");
+  if (!response.ok) {
+    throw new Error("Failed to fetch articles");
+  }
+  return response.json();
+};

@@ -24,7 +24,6 @@ export async function GET() {
       notification.lastShownChallenge = selectedChallenge._id;
       await notification.save();
 
-      console.log("Fetched challenge:", selectedChallenge);
       return NextResponse.json([{ challenge: selectedChallenge }]);
     } else {
       console.log("No new challenges to show");
