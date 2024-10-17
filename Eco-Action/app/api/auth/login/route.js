@@ -33,7 +33,12 @@ export async function POST(request) {
     // Return response with success and redirect to '/'
     return NextResponse.json({
       success: true,
-      user: { id: user._id, username: user.username, email: user.email },
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
       redirect: "/", // Adjust to the desired route (e.g., '/dashboard')
     });
   } catch (error) {

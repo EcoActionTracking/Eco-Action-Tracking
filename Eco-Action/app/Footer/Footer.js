@@ -5,7 +5,10 @@ const logo = "/images/logo.svg";
 
 export function Footer() {
   const pathName = usePathname();
-  const isAuth = pathName.startsWith("/admin");
+  const isAuth =
+    pathName.startsWith("/admin") ||
+    pathName.startsWith("/login") ||
+    pathName.startsWith("/signup");
 
   if (isAuth) return null;
 
@@ -15,11 +18,7 @@ export function Footer() {
         <div className="flex flex-wrap items-center gap-6 sm:justify-between max-sm:flex-col">
           <div>
             <a href="javascript:void(0)">
-              <img
-                alt="logo"
-                className="w-44 "
-                src={logo}
-              />
+              <img alt="logo" className="w-44 " src={logo} />
             </a>
           </div>
           <ul className="flex flex-wrap items-center justify-center space-x-6 gap-y-2 md:justify-end">

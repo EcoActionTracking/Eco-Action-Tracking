@@ -63,7 +63,7 @@ const ArticleList = ({ articles, onDelete, onEdit }) => {
           <tbody>
             <AnimatePresence>
               {articles.length > 0 ? (
-                articles.map((article) => (
+                articles.map(article => (
                   <motion.tr
                     key={article._id}
                     initial={{ opacity: 0, y: 20 }}
@@ -74,10 +74,14 @@ const ArticleList = ({ articles, onDelete, onEdit }) => {
                   >
                     <td className="py-4 px-6 text-gray-800">
                       <img
-                        src={article.image || "/api/placeholder/80/80"}
+                        src={
+                          article.media.photos[0] || "/api/placeholder/80/80"
+                        }
                         alt={article.title}
                         className="w-20 h-20 object-cover rounded cursor-pointer"
-                        onClick={() => openModal(article.image, article.title)}
+                        onClick={() =>
+                          openModal(article.media.photos[0], article.title)
+                        }
                       />
                     </td>
                     <td className="py-4 px-6 text-gray-800 flex items-center">

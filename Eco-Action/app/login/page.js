@@ -27,6 +27,11 @@ export default function Login() {
         setError(data.error);
       } else if (data.success && data.redirect) {
         console.log("Redirecting to:", data.redirect);
+        console.log("data: ", data);
+        if (data.user.role === "Admin") {
+          router.push("/admin");
+          return;
+        }
         router.push(data.redirect);
         setIsLoggedIn(true);
       } else {

@@ -107,7 +107,10 @@ export default function Navbar({ token }) {
   const cartContext = useCart(); // Store the context in a variable
   const cartQuantity = cartContext?.cartQuantity || 0; // Safely access cartQuantity
   const pathName = usePathname();
-  const isAuth = pathName.startsWith("/admin");
+  const isAuth =
+    pathName.startsWith("/admin") ||
+    pathName.startsWith("/login") ||
+    pathName.startsWith("/signup");
   const [token1, setToken] = useState("");
   const { isLoggedIn, setIsLoggedIn } = useLogIn();
   console.log(isLoggedIn);
@@ -120,12 +123,9 @@ export default function Navbar({ token }) {
   return (
     <header className="flex shadow-md py-4 px-4 sm:px-10 bg-white font-sans min-h-[70px] tracking-wide relative z-50">
       <div className="flex flex-wrap items-center justify-between w-full gap-4">
-        <Link href="/">
-          <img
-            src={logo}
-            alt="logo"
-            className="w-32 h-12"
-          />
+        <Link href="/" className="flex items-center">
+          <img src={logo} alt="logo" className="w-16 h-12" />
+          <h1 className="text-2xl font-bold text-[#116A7B]">RotRight</h1>
         </Link>
         <div className="flex items-center lg:order-2 max-lg:ml-auto">
           {!token1 && (
@@ -133,7 +133,7 @@ export default function Navbar({ token }) {
               {setIsLoggedIn(false)}
               <Link
                 href="/login"
-                className="px-1 py-1 text-sm rounded-full font-bold text-white bg-[#116A7B] hover:bg-[#0E5A6A] transition-colors"
+                className="px-5 py-3 text-sm rounded-full font-bold text-white bg-[#116A7B] hover:bg-[#0E5A6A] transition-colors"
               >
                 Login
               </Link>
@@ -187,7 +187,6 @@ export default function Navbar({ token }) {
                   className="lg:p-4 py-2 block hover:text-[#116A7B]"
                 >
                   Challenges
-
                 </Link>
               </li>
               <li>
@@ -196,7 +195,6 @@ export default function Navbar({ token }) {
                   className="lg:p-4 py-2 block hover:text-[#116A7B]"
                 >
                   Articles
-
                 </Link>
               </li>
               <li>

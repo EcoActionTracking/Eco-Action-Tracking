@@ -20,8 +20,7 @@ const sidebarItems = [
   { name: "Products", icon: Package, path: "/admin/products" },
   { name: "Orders", icon: ShoppingCart, path: "/admin/orders" },
   { name: "Challenges", icon: Flag, path: "/admin/challenges" },
-  { name: "Add Articles", icon: Flag, path: "/admin/AddArticles" },
-  { name: "All Articles", icon: Flag, path: "/admin/articles" },
+  { name: "Articles", icon: Flag, path: "/admin/articles" },
   { name: "Contacts", icon: PhoneCall, path: "/admin/contacts" },
 ];
 
@@ -33,7 +32,7 @@ const Sidebar = () => {
       <h1 className="text-2xl font-bold mb-8">Eco Action Tracking</h1>
 
       <nav>
-        {sidebarItems.map((item) => {
+        {sidebarItems.map(item => {
           const Icon = item.icon;
           const isActive = pathname === item.path;
 
