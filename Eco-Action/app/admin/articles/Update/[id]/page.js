@@ -1,29 +1,29 @@
 "use client";
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Camera, Video, X } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
-import Modal from '../../../components/modal'; // Ensure you import the Modal component
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Camera, Video, X } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import Modal from "../../../components/modal";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from '../../../../../lib/firebase'; // Adjust import based on your project structure
+import { storage } from "../../../../../lib/firebase";
 
 const UpdateArticle = () => {
   const params = useParams();
   const id = params.id;
-  const router = useRouter(); // To navigate after update
+  const router = useRouter();
 
   const [article, setArticle] = useState({});
   const [error, setError] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [mediaUrl, setMediaUrl] = useState('');
+  const [mediaUrl, setMediaUrl] = useState("");
   const [isVideo, setIsVideo] = useState(false);
   const [form, setForm] = useState({
-    title: '',
-    description: '',
-    category: '',
+    title: "",
+    description: "",
+    category: "",
     photos: [],
     videos: [],
   });
@@ -46,8 +46,8 @@ const UpdateArticle = () => {
           toast.error("Error fetching article. Please try again later.");
         }
       } else {
-        setError('Article ID is missing.');
-        toast.error('Article ID is missing.');
+        setError("Article ID is missing.");
+        toast.error("Article ID is missing.");
       }
     };
 
@@ -65,11 +65,11 @@ const UpdateArticle = () => {
   const handleFileChange = async (e) => {
     const { name, files } = e.target;
     const filesArray = Array.from(files);
-    
+
     for (const file of filesArray) {
-      if (file.type.startsWith('image/')) {
+      if (file.type.startsWith("image/")) {
         await handleImageUpload(file);
-      } else if (file.type.startsWith('video/')) {
+      } else if (file.type.startsWith("video/")) {
         await handleVideoUpload(file);
       }
     }
@@ -85,11 +85,14 @@ const UpdateArticle = () => {
     try {
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
-      setForm((prevData) => ({ ...prevData, photos: [...prevData.photos, downloadURL] }));
-      toast.success('Image uploaded successfully!');
+      setForm((prevData) => ({
+        ...prevData,
+        photos: [...prevData.photos, downloadURL],
+      }));
+      toast.success("Image uploaded successfully!");
     } catch (error) {
       console.error("Error uploading image:", error);
-      toast.error('Failed to upload image.');
+      toast.error("Failed to upload image.");
     }
   };
 
@@ -98,11 +101,14 @@ const UpdateArticle = () => {
     try {
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
-      setForm((prevData) => ({ ...prevData, videos: [...prevData.videos, downloadURL] }));
-      toast.success('Video uploaded successfully!');
+      setForm((prevData) => ({
+        ...prevData,
+        videos: [...prevData.videos, downloadURL],
+      }));
+      toast.success("Video uploaded successfully!");
     } catch (error) {
       console.error("Error uploading video:", error);
-      toast.error('Failed to upload video.');
+      toast.error("Failed to upload video.");
     }
   };
 
@@ -122,7 +128,7 @@ const UpdateArticle = () => {
 
   const closeModal = () => {
     setModalOpen(false);
-    setMediaUrl('');
+    setMediaUrl("");
   };
 
   const handleSubmit = async (e) => {
@@ -132,7 +138,7 @@ const UpdateArticle = () => {
     try {
       await axios.put(`/api/admin/UpdateArticle/${id}`, form);
       toast.success("Article updated successfully!");
-      router.push('/admin/Articles'); // Redirect after successful update
+      router.push("/admin/Articles");
     } catch (error) {
       console.error("Error updating article:", error);
       toast.error("Error updating article. Please try again later.");
@@ -144,13 +150,24 @@ const UpdateArticle = () => {
   return (
     <div className="max-w-2xl p-8 mx-auto bg-white rounded-lg shadow-md">
       <ToastContainer />
-      <h1 className="mb-6 text-3xl font-bold text-center text-green-900">Update Article</h1>
+      <h1 className="mb-6 text-3xl font-bold text-center text-green-900">
+        Update Article
+      </h1>
 
-      {error && <p className="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-md">{error}</p>}
+      {error && (
+        <p className="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-md">
+          {error}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="title" className="block mb-1 text-sm font-medium text-gray-700">Title</label>
+          <label
+            htmlFor="title"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Title
+          </label>
           <input
             type="text"
             name="title"
@@ -163,7 +180,12 @@ const UpdateArticle = () => {
         </div>
 
         <div>
-          <label htmlFor="description" className="block mb-1 text-sm font-medium text-gray-700">Description</label>
+          <label
+            htmlFor="description"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Description
+          </label>
           <textarea
             name="description"
             id="description"
@@ -176,7 +198,12 @@ const UpdateArticle = () => {
         </div>
 
         <div>
-          <label htmlFor="category" className="block mb-1 text-sm font-medium text-gray-700">Category</label>
+          <label
+            htmlFor="category"
+            className="block mb-1 text-sm font-medium text-gray-700"
+          >
+            Category
+          </label>
           <select
             name="category"
             id="category"
@@ -185,85 +212,109 @@ const UpdateArticle = () => {
             className="block w-full px-3 py-2 mt-1 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
           >
-            <option value="" disabled>Select a category</option>
+            <option value="" disabled>
+              Select a category
+            </option>
             <option value="news">News</option>
             <option value="tutorial">Tutorial</option>
             <option value="opinion">Opinion</option>
           </select>
         </div>
 
-        {/* Image Previews */}
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Photos</label>
-          <input
-            type="file"
-            name="photos"
-            multiple
-            accept="image/*"
-            onChange={handleFileChange}
-            className="block w-full mt-1"
-          />
-          <div className="flex flex-wrap mt-2">
-            {form.photos.map((photo, index) => (
-              <div key={index} className="relative w-24 h-24 mb-2 mr-2">
-                <img
-                  src={photo} // Use the uploaded image URLs for preview
-                  alt={`Preview ${index}`}
-                  className="object-cover w-full h-full rounded-md cursor-pointer"
-                  onClick={() => handlePreviewClick(photo, false)} // Open modal for image
-                />
-                <button type="button" className="absolute top-0 right-0 p-1 text-white bg-red-600 rounded-full" onClick={() => removePreview('photos', index)}>
-                  <X size={16} />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+        <FileUpload
+          label="Photos"
+          name="photos"
+          files={form.photos}
+          handleFileChange={handleFileChange}
+          removePreview={removePreview}
+          handlePreviewClick={handlePreviewClick}
+          accept="image/*"
+        />
 
-        {/* Video Previews */}
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Videos</label>
-          <input
-            type="file"
-            name="videos"
-            multiple
-            accept="video/*"
-            onChange={handleFileChange}
-            className="block w-full mt-1"
-          />
-          <div className="flex flex-wrap mt-2">
-            {form.videos.map((video, index) => (
-              <div key={index} className="relative w-24 h-24 mb-2 mr-2">
-                <video
-                  src={video} // Use the uploaded video URLs for preview
-                  controls
-                  className="object-cover w-full h-full rounded-md cursor-pointer"
-                  onClick={() => handlePreviewClick(video, true)} // Open modal for video
-                />
-                <button type="button" className="absolute top-0 right-0 p-1 text-white bg-red-600 rounded-full" onClick={() => removePreview('videos', index)}>
-                  <X size={16} />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+        <FileUpload
+          label="Videos"
+          name="videos"
+          files={form.videos}
+          handleFileChange={handleFileChange}
+          removePreview={removePreview}
+          handlePreviewClick={handlePreviewClick}
+          accept="video/*"
+        />
 
-        <button type="submit" disabled={uploading} className="w-full px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700">
-          {uploading ? 'Updating...' : 'Update Article'}
+        <button
+          type="submit"
+          disabled={uploading}
+          className="w-full px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700"
+        >
+          {uploading ? "Updating..." : "Update Article"}
         </button>
       </form>
 
-      {/* Modal for Media Preview */}
       <Modal open={modalOpen} onClose={closeModal}>
         {isVideo ? (
           <video src={mediaUrl} controls className="w-full" />
         ) : (
           <img src={mediaUrl} alt="Preview" className="w-full" />
         )}
-        <button onClick={closeModal} className="px-4 py-2 mt-4 text-white bg-red-600 rounded-md">Close</button>
+        <button
+          onClick={closeModal}
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+        >
+          <X size={24} />
+        </button>
       </Modal>
     </div>
   );
 };
+
+const FileUpload = ({
+  label,
+  name,
+  files,
+  handleFileChange,
+  removePreview,
+  handlePreviewClick,
+  accept,
+}) => (
+  <div>
+    <label className="block mb-1 text-sm font-medium text-gray-700">
+      {label}
+    </label>
+    <input
+      type="file"
+      name={name}
+      accept={accept}
+      onChange={handleFileChange}
+      multiple
+      className="block w-full text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    />
+    <div className="flex flex-wrap mt-2">
+      {files.map((file, index) => (
+        <div key={index} className="relative w-24 h-24 p-1 m-2 border rounded">
+          {file.type.startsWith("image/") ? (
+            <img
+              src={file}
+              alt="Preview"
+              className="object-cover w-full h-full cursor-pointer"
+              onClick={() => handlePreviewClick(file, false)}
+            />
+          ) : (
+            <video
+              src={file}
+              className="object-cover w-full h-full cursor-pointer"
+              onClick={() => handlePreviewClick(file, true)}
+            />
+          )}
+          <button
+            onClick={() => removePreview(name, index)}
+            className="absolute top-1 right-1 text-red-500 hover:text-red-700"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 export default UpdateArticle;
