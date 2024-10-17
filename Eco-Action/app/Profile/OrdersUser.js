@@ -17,6 +17,7 @@ export function OrderUser({ userId }) {
     try {
       const response = await axios.get(`/api/order/${userId}?page=${page}&limit=${limit}`);
       const { orders, currentPage, totalPages } = response.data;
+      console.log("orders", orders)
       if (orders.length === 0) {
         setNoOrders(true);
       } else {
@@ -66,6 +67,9 @@ export function OrderUser({ userId }) {
                
                 <h2 className="pb-6 text-3xl font-bold leading-10 text-center text-[#116A7B] border-b border-gray-200 font-manrope">
                   Order Summary
+                </h2>
+                <h2 className={`pb-6 text-3xl font-bold leading-10 text-center text-[#116A7B] border-b border-gray-200 font-manrope ${order.orderStatus ? "text-green-900" : "text-red-700"}`}>
+                  {order.orderStatus ? "Completed" : "Pending "}
                 </h2>
 
                 <div className='flex flex-col'>

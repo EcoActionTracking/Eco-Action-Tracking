@@ -2,13 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-
-const slides = [
-  { image: "/path/to/image1.jpg", title: "#متى_نقدرها" },
-  { image: "/path/to/image2.jpg", title: "70 مليون ريال" },
-  { image: "/path/to/image3.jpg", title: "عنوان آخر" },
-  // أضف المزيد من الشرائح حسب الحاجة
-];
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function Carousel3D() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -16,16 +11,36 @@ export default function Carousel3D() {
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
   const carouselRef = useRef(null);
+  const router = useRouter();
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`/api/articles`);
+        setArticles(response.data.articles || []); // Ensure it is an array
+      } catch (err) {
+        setError("Failed to fetch articles");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      if (!dragging) {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+      if (!dragging && articles.length > 0) {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % articles.length);
       }
     }, 2000);
 
     return () => clearInterval(timer);
-  }, [dragging]);
+  }, [dragging, articles]);
 
   const handleMouseDown = (e) => {
     setDragging(true);
@@ -44,21 +59,23 @@ export default function Carousel3D() {
     if (Math.abs(translateX) > moveThreshold) {
       if (translateX > 0) {
         setCurrentIndex(
-          (prevIndex) => (prevIndex - 1 + slides.length) % slides.length
+          (prevIndex) => (prevIndex - 1 + articles.length) % articles.length
         );
       } else {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % articles.length);
       }
     }
     setTranslateX(0);
   };
 
   const renderSlide = (index) => {
-    let offset = index - currentIndex;
-    if (offset < -Math.floor(slides.length / 2)) offset += slides.length;
-    if (offset > Math.floor(slides.length / 2)) offset -= slides.length;
+    if (articles.length === 0) return null; // Prevent rendering if no articles
 
-    const slide = slides[index];
+    let offset = index - currentIndex;
+    if (offset < -Math.floor(articles.length / 2)) offset += articles.length;
+    if (offset > Math.floor(articles.length / 2)) offset -= articles.length;
+
+    const slide = articles[index];
     return (
       <div
         key={index}
@@ -67,14 +84,14 @@ export default function Carousel3D() {
           transform: `translateX(${offset * 60}%) scale(${
             1 - Math.abs(offset) * 0.2
           }) perspective(1000px) rotateY(${offset * 45}deg)`,
-          zIndex: slides.length - Math.abs(offset),
+          zIndex: articles.length - Math.abs(offset),
           opacity: 1 - Math.abs(offset) * 0.3,
         }}
       >
         <div className="h-full p-4 bg-white rounded-lg shadow-lg">
           <div className="relative mb-4 h-3/4">
             <Image
-              src={slide.image}
+              src={slide.media?.photos[0]}
               alt={slide.title}
               layout="fill"
               objectFit="cover"
@@ -82,24 +99,36 @@ export default function Carousel3D() {
             />
           </div>
           <h2 className="text-xl font-bold text-right">{slide.title}</h2>
-          <div className="flex items-center justify-between mt-2">
-            <Image src="/path/to/logo.png" alt="Logo" width={50} height={25} />
-            <div className="px-4 py-1 text-sm text-white bg-yellow-400 rounded-full">
-              اقرأ المزيد
-            </div>
-          </div>
         </div>
       </div>
     );
   };
 
+  if (loading) {
+    return <p className="text-center">Loading...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  if (articles.length === 0) {
+    return <p>No articles available.</p>;
+  }
+
+  function handleReadMore(articleId){
+    router.push(`/articles/${articleId}`);
+  }
   return (
-    <div className="w-full max-w-5xl mx-auto">
-      <h1 className="mb-6 text-4xl font-bold text-right text-orange-500">
-        المنشورات المصورة:
-      </h1>
+   
+    
+    <div className="bg-gradient-to-t from-[#69aab6] to-gray-200 py-20" onClick={() => handleReadMore(articles[currentIndex]?._id)}>
+         <h2 className="mb-20 text-4xl font-bold text-center text-[#116A7B]">Eco articles</h2>
+
+    <div className="flex mx-auto max-w-7xl ">
+      {/* Slider Section */}
       <div
-        className="relative h-[400px] bg-teal-400 rounded-lg overflow-hidden cursor-grab"
+        className="relative h-[400px] w-1/2 rounded-lg overflow-hidden cursor-grab"
         ref={carouselRef}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -110,9 +139,22 @@ export default function Carousel3D() {
           className="absolute inset-0 flex items-center justify-center"
           style={{ transform: `translateX(${translateX}px)` }}
         >
-          {slides.map((_, index) => renderSlide(index))}
+          {articles.map((_, index) => renderSlide(index))}
         </div>
       </div>
+
+      {/* Article Description Section */}
+      <div className="flex flex-col justify-center w-1/2 p-4 text-white" >
+
+        <h2 className="mb-4 text-2xl font-bold">{articles[currentIndex]?.title}</h2>
+        <p className="text-lg">
+          {articles[currentIndex]?.description || "No description available."}
+        </p>
+      </div>
     </div>
+
+    </div>
+        
+
   );
 }

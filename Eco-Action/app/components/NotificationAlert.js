@@ -29,14 +29,14 @@
 //       }`}
 //       style={{ maxWidth: "90%", width: "400px" }}
 //     >
-//       <div className="flex justify-between items-center">
+//       <div className="flex items-center justify-between">
 //         <div>
-//           <h3 className="font-bold text-sm">New Challenge</h3>
-//           <p className="text-xs mt-1">{notification.challenge.title}</p>
+//           <h3 className="text-sm font-bold">New Challenge</h3>
+//           <p className="mt-1 text-xs">{notification.challenge.title}</p>
 //         </div>
 //         <button
 //           onClick={handleDismiss}
-//           className="bg-white text-blue-500 px-2 py-1 rounded-full text-xs hover:bg-blue-100 transition-colors duration-200"
+//           className="px-2 py-1 text-xs text-blue-500 transition-colors duration-200 bg-white rounded-full hover:bg-blue-100"
 //         >
 //           ✕
 //         </button>
@@ -74,26 +74,26 @@ const NotificationAlert = () => {
 
   return (
     <div
-      className={`fixed top-16 left-1/2 transform -translate-x-1/2 bg-green-50 border-2 border-green-200 text-green-800 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out ${
+      className={`fixed top-16 left-1/2 transform -translate-x-1/2 bg-[#edf5f7] border-2 border-[#116A7B] text-[#116A7B] p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
       }`}
       style={{ maxWidth: "90%", width: "350px" }}
     >
       <div className="flex items-start space-x-3">
         <div className="flex-shrink-0">
-          <Leaf className="h-6 w-6 text-green-500" />
+          <Leaf className="w-6 h-6 text-[#116A7B]" />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-sm">New Eco Challenge</h3>
-          <p className="text-xs mt-1">{notification.challenge.title}</p>
+          <h3 className="text-sm font-semibold">New Eco Challenge</h3>
+          <p className="mt-1 text-xs">{notification.challenge.title}</p>
         </div>
         <button
           onClick={handleDismiss}
-          className="flex-shrink-0 bg-green-200 text-green-800 rounded-full p-1 hover:bg-green-300 transition-colors duration-200"
+          className="flex-shrink-0 p-1 text-[#116A7B] transition-colors duration-200 bg-[#99cad6] rounded-full hover:bg-[#74969e]"
           aria-label="Close notification"
         >
           <svg
-            className="h-4 w-4"
+            className="w-4 h-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
