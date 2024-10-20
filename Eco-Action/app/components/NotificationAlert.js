@@ -52,11 +52,13 @@
 import React, { useEffect, useState } from "react";
 import { useNotification } from "../context/NotificationContext";
 import { Leaf } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const NotificationAlert = () => {
   const { notification, dismissNotification } = useNotification();
   const [isVisible, setIsVisible] = useState(false);
-
+  const pathName = usePathname();
+  const isAuth = pathName.startsWith("/admin");
   useEffect(() => {
     if (notification) {
       setIsVisible(true);
@@ -71,6 +73,7 @@ const NotificationAlert = () => {
       dismissNotification();
     }, 300);
   };
+  if (isAuth) return null;
 
   return (
     <div

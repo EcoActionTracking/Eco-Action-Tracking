@@ -28,7 +28,8 @@ const nextConfig = {
       "i0.wp.com",
       "other-allowed-domain.com",
       "cdn.shopify.com",
-      'lemonnier.es', 
+      "lemonnier.es",
+      "shutterstock.com",
     ],
   },
   env: {
@@ -38,5 +39,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
-

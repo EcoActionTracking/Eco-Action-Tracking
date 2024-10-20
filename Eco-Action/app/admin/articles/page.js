@@ -38,14 +38,16 @@ const ArticleManagement = () => {
 
   // Handle media upload to Firebase
   const handleMediaUpload = async (files, folder) => {
+    console.log("before Return: ", files);
     if (!files || files.length === 0) return [];
-
+    console.log("after Return: ", files);
     const uploadedURLs = [];
     for (const file of files) {
       const storageRef = ref(storage, `${folder}/${file.name}`);
       try {
         await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(storageRef);
+        console.log(`Uploaded ${folder}:`, downloadURL);
         uploadedURLs.push(downloadURL);
       } catch (error) {
         console.error(`Error uploading ${folder}:`, error);
@@ -55,15 +57,16 @@ const ArticleManagement = () => {
     return uploadedURLs;
   };
 
-  const handleAddArticle = async (newArticle) => {
+  const handleAddArticle = async newArticle => {
     try {
       // Upload photos and videos to Firebase
+      console.log("newArticle: ", newArticle);
       const uploadedPhotos = await handleMediaUpload(
-        newArticle.photos,
+        newArticle.media.photos,
         "images"
       );
       const uploadedVideos = await handleMediaUpload(
-        newArticle.videos,
+        newArticle.media.videos,
         "videos"
       );
 
@@ -77,7 +80,7 @@ const ArticleManagement = () => {
           videos: uploadedVideos,
         },
       };
-
+      console.log(articleData);
       const response = await fetch("/api/admin/articles", {
         method: "POST",
         headers: {
@@ -108,7 +111,7 @@ const ArticleManagement = () => {
     }
   };
 
-  const handleEditArticle = async (updatedArticle) => {
+  const handleEditArticle = async updatedArticle => {
     try {
       // Upload new media if provided
       let photoUrls = updatedArticle.media?.photos || [];
@@ -151,7 +154,7 @@ const ArticleManagement = () => {
 
       if (response.ok) {
         const updatedArticleData = await response.json();
-        const updatedArticles = articles.map((a) =>
+        const updatedArticles = articles.map(a =>
           a._id === updatedArticleData._id ? updatedArticleData : a
         );
         setArticles(updatedArticles);
@@ -174,7 +177,7 @@ const ArticleManagement = () => {
     }
   };
 
-  const handleDeleteArticle = async (_id) => {
+  const handleDeleteArticle = async _id => {
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -195,7 +198,7 @@ const ArticleManagement = () => {
         });
 
         if (response.ok) {
-          const updatedArticles = articles.filter((a) => a._id !== _id);
+          const updatedArticles = articles.filter(a => a._id !== _id);
           setArticles(updatedArticles);
           Swal.fire("Deleted!", "The article has been deleted.", "success");
         } else {
@@ -222,11 +225,11 @@ const ArticleManagement = () => {
 
   const totalPages = Math.ceil(articles.length / articlesPerPage);
 
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = pageNumber => {
     setCurrentPage(pageNumber);
   };
 
-  const filteredArticles = currentArticles.filter((article) =>
+  const filteredArticles = currentArticles.filter(article =>
     article.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 

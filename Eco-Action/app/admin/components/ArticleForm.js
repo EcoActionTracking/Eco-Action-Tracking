@@ -40,7 +40,7 @@ export default function ArticleForm({ article, onClose, onSave }) {
     }
   }, [article]);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
@@ -64,7 +64,7 @@ export default function ArticleForm({ article, onClose, onSave }) {
     return uploadedURLs;
   };
 
-  const handleMediaChange = (e) => {
+  const handleMediaChange = e => {
     const files = Array.from(e.target.files);
     setForm({
       ...form,
@@ -72,7 +72,7 @@ export default function ArticleForm({ article, onClose, onSave }) {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setError("");
     setSuccess("");
@@ -152,27 +152,27 @@ export default function ArticleForm({ article, onClose, onSave }) {
     }
   }, [article]);
 
-  const handleFileChange = useCallback((event) => {
+  const handleFileChange = useCallback(event => {
     const { name, files } = event.target;
     handleMediaChange(event);
 
     const fileArray = Array.from(files);
-    const newPreviews = fileArray.map((file) => URL.createObjectURL(file));
+    const newPreviews = fileArray.map(file => URL.createObjectURL(file));
 
-    setPreviews((prev) => ({
+    setPreviews(prev => ({
       ...prev,
       [name]: [...prev[name], ...newPreviews],
     }));
   }, []);
 
   const removePreview = useCallback((type, index) => {
-    setPreviews((prev) => ({
+    setPreviews(prev => ({
       ...prev,
       [type]: prev[type].filter((_, i) => i !== index),
     }));
 
     // Also remove from form data
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
       [type]: Array.from(prev[type]).filter((_, i) => i !== index),
     }));
